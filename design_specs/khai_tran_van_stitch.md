@@ -1,44 +1,73 @@
 # 🎨 Bản Đặc Tả Thiết Kế Giao Diện (Stitch UI Design Spec)
-## Phụ trách: Khải Trần Văn (Trang chủ & Hệ thống)
+## Phụ trách: Khai Trần Văn (Dashboard)
 
-### 1. Tiêu chuẩn Giao diện Chung (Global UI Standards) ⭐⭐⭐⭐⭐
-Vì Khải phụ trách Layout và Components dùng chung, bạn cần thiết kế sẵn các thành phần sau để cả team tái sử dụng:
-*   **Responsive (Bắt buộc)**:
-    *   **Desktop**: Hiển thị Sidebar cố định bên trái.
-    *   **Tablet/Mobile**: Sidebar bị ẩn, hiển thị Menu Hamburger (☰) trên Header để bấm xổ ra. Table có thể cuộn ngang.
-*   **Breadcrumb**: Mọi trang đều phải có luồng điều hướng ở Header. Ví dụ: `Dashboard > Project > Chi tiết`.
-*   **Toast Notification (Thông báo góc màn hình)**: Hiển thị góc trên bên phải sau mỗi thao tác (Thêm/Sửa/Xóa).
-    *   ✅ Thành công (Màu xanh).
-    *   ❌ Thất bại/Lỗi (Màu đỏ).
-*   **Loading State**:
-    *   Sử dụng **Spinner** cho các nút bấm khi đang call API (VD: nút "Lưu đang quay quay").
-    *   Sử dụng **Skeleton Card / Skeleton Table** khi lần đầu load trang (chưa có data).
-*   **Confirm Modal (Xác nhận Xóa)**:
-    *   Mẫu chung: "Bạn có chắc chắn muốn xóa [Tên đối tượng] này?" kèm 2 nút `[Hủy]` và `[Xóa]` (Nút xóa màu đỏ).
-*   **Empty State (Trạng thái rỗng)**:
-    *   Khi bảng chưa có dữ liệu, KHÔNG để trắng. Phải hiện Icon/Hình minh họa (VD: Hình folder trống) kèm Text "Chưa có dữ liệu" và nút `[+ Tạo mới]`.
-*   **Standard Table & Pagination**:
-    *   Table phải có: Cột STT, Checkbox (đầu hàng), Nút Sort ở header, và Cột Action (Sửa/Xóa) ở cuối.
-    *   Pagination (Phân trang): Dropdown chọn số dòng `10 / 20 / 50 per page`.
+## 1. TỔNG QUAN DỰ ÁN (PROJECT OVERVIEW)
+- Tên dự án: ETRMS (Enterprise Task & Resource Management System).
+- Mục tiêu: Hệ thống Quản trị Dự án và Vận hành Phòng ban doanh nghiệp.
+- Công nghệ: HTML5 + CSS3 + JavaScript (ES6) (Frontend Single Page Application / Static HTML). Không Backend, Không API, Không Database.
+- Lưu trữ dữ liệu: Mô phỏng hoàn toàn bằng LocalStorage (Mock Data & Client-side State Management).
+- Phong cách thiết kế: Enterprise, hiện đại, tối giản, chuyên nghiệp, lấy cảm hứng từ Jira, Redmine và ClickUp.
 
-### 2. Layout Tổng thể (Base Layout)
-*   **Sidebar & Header**: Chứa Logo, Menu điều hướng, thanh Search tổng, Avatar.
-*   **Main Content (Giữa)**: Khu vực render nội dung các trang con.
+## 2. DESIGN SYSTEM & ATOMIC COMPONENTS
+### 2.1 Bảng màu (Color Palette)
+- Màu chủ đạo (Primary): Royal Blue (#1890FF / #096DD9), Pure White (#FFFFFF).
+- Màu trung tính (Neutrals): Dark Gray Text (#262626), Gray Border (#D9D9D9), Background Light Gray (#F5F5F5).
+- Màu trạng thái Sức tải (WSI Capacity): Rảnh rỗi (<100% WSI): Green (#52C41A), Đủ tải (100% WSI): Yellow (#FAAD14), Quá tải (>100% WSI - Alert): Red (#FF4D4F).
+- Màu độ ưu tiên (Task Priority): P1_URGENT: Dark Red (#CF1322), P2_HIGH: Orange (#FA8C16), P3_MEDIUM: Blue (#1890FF), P4_LOW: Gray (#8C8C8C).
 
-### 3. Màn hình Dashboard Tổng quan (`pages/dashboard/dashboard.html`)
-*   **Thẻ thống kê (Cards)**: Tổng số Project, Task, Nhân viên, Phòng ban.
-*   **Danh sách hiển thị nhanh**: Kế thừa Standard Table và Empty State.
-    *   Công việc của tôi (My Tasks).
-    *   Project gần đây.
-    *   Task gần đây.
-    *   Task sắp đến hạn (Hiển thị nổi bật/màu đỏ cảnh báo).
+### 2.2 Quy chuẩn UI Baseline
+- Typography: Font family Inter, -apple-system, Roboto. Font sizes: Title (20-24px Bold), Subtitle (16px Semi-bold), Body (14px Regular), Caption (12px Light).
+- Border Radius: Default 6px (Buttons, Inputs, Cards), Pills 16px (Badges), Modal 8px.
+- Buttons:
+  - Primary Button: Nền Blue (#1890FF), chữ trắng (Lưu, Xác nhận, Start Working, Submit Task, Approve).
+  - Secondary Button: Border Gray, nền trắng, chữ xám (Hủy, Quay lại, Log Time).
+  - Danger Button: Nền Red (#FF4D4F), chữ trắng (Xóa, Reject - Kích hoạt Modal bắt buộc lý do).
+- Cards: White bg, shadow 0 2px 8px rgba(0,0,0,0.06), border 1px solid #F0F0F0.
+- Inputs & Selects: Height 32px/40px, border #D9D9D9, focus border #40A9FF with box-shadow ripple.
+- Badges: Padding 2px 8px, border-radius 10px, font-size 12px (Dùng cho Priority, Status, Overdue Flag).
+- Progress Bar: Height 8px, border-radius 4px, dynamic fill color (Xanh/Vàng/Đỏ tùy theo WSI % hoặc Progress %).
+- Data Table: Header background #FAFAFA, row hover background #E6F7FF, cell padding 12px 16px, border-bottom 1px solid #F0F0F0.
+- Modal: Overlay background rgba(0, 0, 0, 0.45), centered modal box, header with close X, sticky footer buttons.
+- Toast / Notifications: Top-right floating banner (Success Green, Error Red, Info Blue).
+- Charts: Canvas / SVG based lightweight graphs (Donut Chart, Bar Chart, Line Chart).
 
-### 4. Màn hình Hồ sơ Cá nhân (`pages/profile/profile.html`)
-*   **Fields**: Hiển thị Avatar, Họ tên, Email, Phòng ban, Vai trò.
-*   **Đặc tả Mật khẩu (Password)**:
-    *   KHÔNG hiển thị rõ mật khẩu, KHÔNG cần nút "Hiện mật khẩu".
-    *   Chỉ hiển thị dòng chữ: `Mật khẩu: ••••••••` kèm nút `[Đổi mật khẩu]` kế bên.
+## 3. LAYOUT CHUNG (APPLICATION LAYOUT)
+```text
++-----------------------------------------------------------------------------+
+|                                    HEADER                                   |
+| Logo ETRMS | Page Title | Global Search | Notifications | User Avatar Dropdown |
++--------------+--------------------------------------------------------------+
+|              | BREADCRUMB: Home / Module / Current Page                      |
+|              +--------------------------------------------------------------+
+|   SIDEBAR    | TOOLBAR: Search Box | Filters | Grouping | Primary Action Btn |
+|  (Left Fixed |+--------------------------------------------------------------+
+| Collapsible  |                                                              |
+|  Accordion)  |                         MAIN CONTENT                         |
+|              |          (Data Tables / Cards / Kanban / Analytics)          |
+|              |                                                              |
+|              +--------------------------------------------------------------+
+|              | FOOTER: © 2026 ETRMS System - LocalStorage Mode              |
++--------------+--------------------------------------------------------------+
+```
 
-### 5. Màn hình Đổi Mật khẩu (`pages/profile/change-password.html`)
-*   **Form Validation**: Mật khẩu mới không được trùng mật khẩu cũ, Mật khẩu xác nhận phải khớp.
-*   **Buttons**: `Lưu thay đổi` (Bấm vào hiện Toast), `Hủy`.
+## 4. CÂY MENU ĐẦY ĐỦ (SIDEBAR ACCORDION NAVIGATION)
+- 🏠 Dashboard (Direct Link - Pure Read-only Monitoring Portal)
+- 📁 Quản lý Dự án (Expandable Submenu)
+- ✅ Quản lý Công việc (Expandable Submenu)
+- 👥 Quản lý Nhân sự (Expandable Submenu)
+- 📝 Quy trình Công việc (Expandable Submenu)
+- 📊 Báo cáo & Thống kê (Expandable Submenu)
+- 👤 Hồ sơ cá nhân (Expandable Submenu)
+
+---
+
+## 5. ĐẶC TẢ CHI TIẾT TỪNG TRANG (PAGE SPECIFICATIONS)
+
+### 🏠 5.1. Dashboard (Trang chủ)
+**Mục đích:** Màn hình giám sát và cảnh báo thời gian thực. HOÀN TOÀN KHÔNG CÓ ACTION/NÚT TẠO MỚI.
+**Layout:** Breadcrumb → KPI Summary Grid → Main Monitoring Grid
+**Nội dung hiển thị:**
+- **KPI Cards Grid (4 Cards):** Total Projects, Total Tasks (Open/Closed), Total Employees, Company On-Time Rate %.
+- **Thanh Cảnh báo Sức tải WSI (Capacity Alert List):** Danh sách nhân sự kèm thanh Progress Bar đổi màu (Xanh <100%, Vàng 100%, Đỏ >100%).
+- **Công việc của tôi Table:** Task Title, Project, Status, Priority Badge, Due Date, DoR Status.
+- **Hòm thư Yêu cầu & Cảnh báo (Pending Approvals Inbox):** Danh sách đơn chờ duyệt. Click vào item sẽ Navigate sang trang xử lý tương ứng.
