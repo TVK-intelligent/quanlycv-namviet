@@ -1,0 +1,46 @@
+<div id="global-modal" class="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title" id="modal-title">Tiêu đề Modal</div>
+            <button class="modal-close" onclick="closeModal()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="modal-body" id="modal-body">
+            <!-- Nội dung động của modal sẽ được chèn vào đây qua JS -->
+            <p>Nội dung mô tả hoặc form nhập liệu...</p>
+        </div>
+        <div class="modal-footer" id="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()">Hủy</button>
+            <button class="btn btn-primary" id="modal-confirm-btn">Xác nhận</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Các hàm helper dùng chung để mở/đóng Modal từ mọi nơi
+    function openModal(title, contentHtml, onConfirmCallback) {
+        document.getElementById('modal-title').innerText = title || 'Xác nhận';
+        if (contentHtml) {
+            document.getElementById('modal-body').innerHTML = contentHtml;
+        }
+        
+        const confirmBtn = document.getElementById('modal-confirm-btn');
+        // Xóa event cũ
+        const newConfirmBtn = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+        
+        if (typeof onConfirmCallback === 'function') {
+            newConfirmBtn.addEventListener('click', onConfirmCallback);
+        }
+
+        document.getElementById('global-modal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('global-modal').classList.remove('active');
+    }
+</script>
