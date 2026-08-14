@@ -1,4 +1,7 @@
-/* Dashboard Specific Styles */
+/* ==========================================================================
+   DASHBOARD OVERHAUL STYLES (PURE HTML/CSS DESIGN)
+   ========================================================================== */
+
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
@@ -6,152 +9,338 @@
     margin-bottom: 24px;
 }
 
+/* KPI Cards Section */
 .kpi-cards {
     grid-column: span 12;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 24px;
 }
 
 .kpi-card {
-    background: var(--bg-surface);
-    padding: 24px;
+    background: linear-gradient(135deg, var(--bg-surface) 0%, #f8fafc 100%);
+    padding: 20px;
     border-radius: var(--border-radius-lg);
     border: 1px solid var(--border-color);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03), 0 2px 4px -1px rgba(0,0,0,0.02);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+}
+
+.kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background-color: #f1f5f9;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+.kpi-icon.icon-blue { background-color: #eff6ff; color: #3b82f6; }
+.kpi-icon.icon-red { background-color: #fef2f2; color: #ef4444; }
+.kpi-icon.icon-green { background-color: #f0fdf4; color: #22c55e; }
+
+.kpi-content {
+    flex: 1;
     display: flex;
     flex-direction: column;
 }
 
 .kpi-title {
     color: var(--text-muted);
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .kpi-value {
-    font-size: 32px;
+    font-size: 24px;
     font-weight: 700;
     color: var(--text-main);
-}
-
-.kpi-subtext {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: 4px;
-}
-
-.dashboard-row-2 {
-    grid-column: span 12;
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 24px;
-}
-
-/* WSI Progress Bar */
-.wsi-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.wsi-item {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.wsi-header {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.wsi-bar-bg {
-    width: 100%;
-    height: 8px;
-    background-color: var(--border-color);
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.wsi-bar-fill {
-    height: 100%;
-    border-radius: 4px;
-    transition: width 0.3s ease;
-}
-
-.wsi-safe { background-color: var(--success-color); }
-.wsi-warn { background-color: var(--warning-color); }
-.wsi-danger { background-color: var(--danger-color); }
-
-/* Table overrides */
-.table-responsive {
-    width: 100%;
-    overflow-x: auto;
-}
-
-.dashboard-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.dashboard-table th,
-.dashboard-table td {
-    padding: 12px 16px;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.dashboard-table th {
-    background-color: #FAFAFA;
-    font-weight: 600;
-    color: var(--text-muted);
-}
-
-.dashboard-table tr:hover {
-    background-color: #E6F7FF;
-}
-
-.inbox-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.inbox-item {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.inbox-item:hover {
-    background-color: #f8fafc;
-}
-
-.inbox-item:last-child {
-    border-bottom: none;
-}
-
-.inbox-title {
-    font-weight: 500;
-    color: var(--text-main);
+    line-height: 1.2;
     margin-bottom: 4px;
 }
 
-.inbox-desc {
-    font-size: 12px;
+.kpi-trend {
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.kpi-trend.trend-up { color: var(--success-color); }
+.kpi-trend.trend-down { color: var(--danger-color); }
+
+/* Layout adjustments */
+.table-card {
+    background-color: var(--bg-surface);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.table-toolbar {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.table-toolbar h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+/* --------------------------------------------------------------------------
+   TIMELINE COMPONENTS (Recent Activity)
+   -------------------------------------------------------------------------- */
+.timeline-container {
+    position: relative;
+    padding-left: 24px;
+    margin-left: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.timeline-container::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: #e2e8f0;
+}
+
+.timeline-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+}
+
+.timeline-badge-node {
+    position: absolute;
+    left: -32px;
+    top: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--success-color);
+    border: 3px solid #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 8px;
+    box-shadow: 0 0 0 2px #e2e8f0;
+}
+
+.timeline-badge-node.badge-node-blue { background-color: var(--primary-color); }
+.timeline-badge-node.badge-node-yellow { background-color: var(--warning-color); }
+
+.timeline-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.timeline-header {
+    font-size: 13px;
+    color: var(--text-main);
+    line-height: 1.4;
+}
+
+.timeline-time {
+    font-size: 11px;
     color: var(--text-muted);
 }
 
+/* --------------------------------------------------------------------------
+   HOTSPOT ITEMS (Alert Center)
+   -------------------------------------------------------------------------- */
+.hotspot-item {
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.hotspot-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+/* Checklist Items */
+.checklist-item {
+    transition: background-color var(--transition-fast);
+}
+
+.checklist-item:hover {
+    background-color: #f1f5f9 !important;
+}
+
+/* Card Header Select Filters */
+.card-header-select {
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    background-color: #ffffff;
+    color: var(--text-main);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+}
+
+.card-header-select:hover {
+    border-color: var(--primary-hover);
+}
+
+.card-header-select:focus {
+    border-color: var(--primary-hover);
+}
+
+/* --------------------------------------------------------------------------
+   EXCEL-LIKE PINNED COLUMNS & RESIZING STYLE
+   -------------------------------------------------------------------------- */
+.data-table th {
+    position: relative;
+}
+
+/* Thanh kéo rộng cột (Excel-like handle) */
+.resizer {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 10px; /* Tăng độ rộng nhạy click */
+    cursor: col-resize;
+    user-select: none;
+    z-index: 10;
+}
+
+/* Đường kẻ phân chia dọc trực tiếp */
+.resizer::before {
+    content: '';
+    position: absolute;
+    right: 4px;
+    top: 15%;
+    height: 70%;
+    width: 2px;
+    background-color: #cbd5e1;
+    transition: background-color var(--transition-fast), width var(--transition-fast);
+}
+
+/* Icon nút co giãn (↔) hiển thị trực tiếp ở giữa biên cột */
+.resizer::after {
+    content: '↔';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 9px;
+    font-weight: 800;
+    color: #64748b;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    opacity: 0.95;
+    transition: all var(--transition-fast);
+}
+
+.resizer:hover::before,
+.resizer.resizing::before {
+    background-color: var(--primary-color) !important;
+    width: 3px !important;
+}
+
+.resizer:hover::after,
+.resizer.resizing::after {
+    background-color: var(--primary-color) !important;
+    color: #ffffff !important;
+    border-color: var(--primary-color) !important;
+    transform: translate(-50%, -50%) scale(1.15) !important;
+}
+
+/* Pinned columns logic */
+.data-table th.pin-left,
+.data-table td.pin-left {
+    position: sticky;
+    left: 0;
+    background-color: #ffffff !important;
+    z-index: 5;
+    box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.12);
+}
+
+.data-table th.pin-left {
+    z-index: 6;
+    background-color: #f8fafc !important;
+}
+
+.data-table th.pin-right,
+.data-table td.pin-right {
+    position: sticky;
+    right: 0;
+    background-color: #ffffff !important;
+    z-index: 5;
+    box-shadow: -2px 0 5px -2px rgba(0, 0, 0, 0.12);
+}
+
+.data-table th.pin-right {
+    z-index: 6;
+    background-color: #f8fafc !important;
+}
+
+/* Ensure data-table rows on hover don't overlay backgrounds of sticky cells incorrectly */
+.data-table tr:hover td.pin-left,
+.data-table tr:hover td.pin-right {
+    background-color: #f1f5f9 !important;
+}
+
 @media (max-width: 1024px) {
-    .dashboard-row-2 {
-        grid-template-columns: 1fr;
+    .dashboard-columns-layout,
+    .actor-section-wrapper,
+    .shared-section-wrapper {
+        grid-template-columns: 1fr !important;
     }
+}
+
+/* Nét chia cột và phân hàng rõ ràng kiểu Excel */
+.data-table {
+    border: 1px solid #cbd5e1 !important;
+}
+
+.data-table th,
+.data-table td {
+    border-right: 1px solid #cbd5e1 !important;
+    border-bottom: 1px solid #cbd5e1 !important;
+}
+
+.data-table th:last-child,
+.data-table td:last-child {
+    border-right: none !important;
+}
+
+.data-table thead th {
+    border-bottom: 2px solid #94a3b8 !important; /* Viền ngang dưới header dày và đậm hơn */
 }

@@ -1,8 +1,8 @@
-# 🚀 ETRMS - Enterprise Task & Resource Management System
+# 🚀 Work Management - Enterprise Task & Resource Management System
 
-![ETRMS Cover](https://img.shields.io/badge/Status-In%20Development-blue?style=for-the-badge) ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white) ![JS](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Work Management Cover](https://img.shields.io/badge/Status-In%20Development-blue?style=for-the-badge) ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white) ![JS](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
-**ETRMS** là hệ thống Quản trị Dự án và Vận hành Phòng ban doanh nghiệp được thiết kế theo chuẩn giao diện Enterprise hiện đại (lấy cảm hứng từ Jira, Redmine, ClickUp).
+**Work Management** là hệ thống Quản trị Dự án và Vận hành Phòng ban doanh nghiệp được thiết kế theo chuẩn giao diện Enterprise hiện đại (lấy cảm hứng từ Jira, Redmine, ClickUp).
 
 Hệ thống hoạt động hoàn toàn ở phía Client-side (Frontend Only) dưới dạng một Single Page Application giả lập, sử dụng **LocalStorage** để mô phỏng cơ sở dữ liệu. Không yêu cầu Backend, API hay Database bên ngoài.
 
@@ -39,7 +39,7 @@ Dự án được tổ chức khoa học để dễ dàng bảo trì và mở r�
 │
 ├── 📂 pages/                 # Thư mục chứa các module chức năng chính
 │   ├── project/              # Quản lý Dự án
-│   ├── task/                 # Quản lý Công việc
+│   ├── task/                 # Work Management
 │   ├── employee/             # Quản lý Nhân sự & Phòng ban
 │   ├── workflow/             # Quy trình công việc
 │   ├── report/               # Báo cáo & Thống kê
@@ -61,13 +61,13 @@ Vì dự án thuần HTML/CSS/JS nên việc chạy cực kỳ đơn giản:
 *(Lưu ý: Bạn bắt buộc phải chạy qua một local server như Live Server để Javascript có thể sử dụng hàm `fetch()` lấy các file HTML trong thư mục `components/`. Nếu click đúp mở trực tiếp file `index.html` dưới dạng `file://`, tính năng nhúng giao diện sẽ bị lỗi bảo mật CORS của trình duyệt).*
 
 ## 🧩 Các Module Chính (Theo Đặc tả)
-1. **🏠 Dashboard:** Bảng điều khiển giám sát tổng quan, cảnh báo WSI (Sức tải).
+1. **🏠 Dashboard:** Bảng điều hành tổng hợp cấp cao, giám sát sức khỏe dự án (Project Health), trung tâm cảnh báo rủi ro (Alerts), tiêu điểm công việc cá nhân trong ngày (My Focus) và dòng thời gian hoạt động nhóm (Activity Timeline). Thiết kế tối giản, loại bỏ bảng dữ liệu trùng lặp.
 2. **📁 Quản lý Dự án:** Danh sách dự án, yêu cầu nhân lực.
-3. **✅ Quản lý Công việc:** Task list, bảng Kanban, công việc con (Sub-task).
+3. **✅ Work Management:** Task list, bảng Kanban, công việc con (Sub-task).
 4. **👥 Quản lý Nhân sự:** Danh sách nhân viên, cơ cấu phòng ban, phân quyền (RBAC).
 5. **📝 Quy trình:** Chất lượng công việc (DoR/DoD checklist), Timesheet, Review.
 6. **📊 Báo cáo:** Thống kê biểu đồ, hiệu suất, tính điểm KPI tự động.
 7. **👤 Hồ sơ cá nhân:** Trang thông tin và đổi mật khẩu.
 
 ---
-*© 2026 ETRMS System - Phát triển theo chuẩn Enterprise.*
+*© 2026 Work Management System - Phát triển theo chuẩn Enterprise.*
