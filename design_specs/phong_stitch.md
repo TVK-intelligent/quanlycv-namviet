@@ -2,7 +2,7 @@
 ## Phụ trách: Phong (Quản lý Dự án)
 
 ## 1. TỔNG QUAN DỰ ÁN (PROJECT OVERVIEW)
-- Tên dự án: ETRMS (Enterprise Task & Resource Management System).
+- Tên dự án: Work Management (Enterprise Task & Resource Management System).
 - Công nghệ: HTML5 + CSS3 + JavaScript (ES6) (Frontend Single Page Application / Static HTML). Không Backend, Không API, Không Database.
 - Lưu trữ dữ liệu: Mô phỏng hoàn toàn bằng LocalStorage (Mock Data & Client-side State Management).
 - Phong cách thiết kế: Enterprise, hiện đại, tối giản, chuyên nghiệp, lấy cảm hứng từ Jira, Redmine và ClickUp.

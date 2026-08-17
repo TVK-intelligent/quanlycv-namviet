@@ -95,6 +95,70 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Bộ lọc vai trò giả lập toàn hệ thống (Global Role Switcher)
+    function initGlobalRoleSwitcher() {
+        const roleSelector = document.getElementById('role-selector');
+        if (!roleSelector) return;
+
+        // Đọc vai trò giả lập được lưu trong localStorage để đồng bộ khi chuyển trang
+        const savedRole = localStorage.getItem('etrms-simulated-role') || 'all';
+        roleSelector.value = savedRole;
+        applyRoleFiltering(savedRole);
+
+        roleSelector.addEventListener('change', function(e) {
+            const selectedRole = e.target.value;
+            localStorage.setItem('etrms-simulated-role', selectedRole);
+            applyRoleFiltering(selectedRole);
+        });
+    }
+
+    // Hàm thực hiện ẩn/hiện các phần tử theo vai trò được chọn
+    function applyRoleFiltering(selectedRole) {
+        // 1. Lọc các thẻ KPI Cards
+        document.querySelectorAll('.kpi-card[data-roles]').forEach(el => {
+            const rolesAllowed = el.getAttribute('data-roles').split(',');
+            if (selectedRole === 'all' || rolesAllowed.includes(selectedRole)) {
+                el.style.display = 'flex';
+            } else {
+                el.style.display = 'none';
+            }
+        });
+
+        // 2. Lọc các khu vực Widget riêng của từng Actor (.actor-section-wrapper)
+        document.querySelectorAll('.actor-section-wrapper[data-roles]').forEach(el => {
+            const rolesAllowed = el.getAttribute('data-roles').split(',');
+            if (selectedRole === 'all' || rolesAllowed.includes(selectedRole)) {
+                el.style.display = 'grid';
+            } else {
+                el.style.display = 'none';
+            }
+        });
+
+        // 3. Lọc các widget dùng chung có data-roles
+        document.querySelectorAll('[data-roles]:not(.kpi-card):not(.actor-section-wrapper):not(.sidebar *):not(.sidebar-menu *)').forEach(el => {
+            const rolesAllowed = el.getAttribute('data-roles').split(',');
+            if (selectedRole === 'all' || rolesAllowed.includes(selectedRole)) {
+                if (el.id === 'inbox-section' || el.id === 'timeline-section') {
+                    el.style.display = 'block';
+                } else {
+                    el.style.display = '';
+                }
+            } else {
+                el.style.display = 'none';
+            }
+        });
+
+        // 4. Lọc các mục menu và submenu trong Sidebar
+        document.querySelectorAll('.sidebar [data-roles], .sidebar-menu [data-roles]').forEach(el => {
+            const rolesAllowed = el.getAttribute('data-roles').split(',');
+            if (selectedRole === 'all' || rolesAllowed.includes(selectedRole)) {
+                el.style.display = '';
+            } else {
+                el.style.display = 'none';
+            }
+        });
+    }
+
     // Load các component layout chung
     Promise.all([
         loadComponent('sidebar-container', '/components/sidebar.html'),
@@ -104,5 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadComponent('loading-container', '/components/loading.html')
     ]).then(() => {
         console.log("All components loaded successfully!");
+        // Khởi chạy bộ chuyển đổi vai trò toàn cục
+        initGlobalRoleSwitcher();
     });
 });

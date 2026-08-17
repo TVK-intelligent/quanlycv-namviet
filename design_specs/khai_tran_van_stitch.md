@@ -2,7 +2,7 @@
 ## Phụ trách: Khai Trần Văn (Dashboard)
 
 ## 1. TỔNG QUAN DỰ ÁN (PROJECT OVERVIEW)
-- Tên dự án: ETRMS (Enterprise Task & Resource Management System).
+- Tên dự án: Work Management (Enterprise Task & Resource Management System).
 - Mục tiêu: Hệ thống Quản trị Dự án và Vận hành Phòng ban doanh nghiệp.
 - Công nghệ: HTML5 + CSS3 + JavaScript (ES6) (Frontend Single Page Application / Static HTML). Không Backend, Không API, Không Database.
 - Lưu trữ dữ liệu: Mô phỏng hoàn toàn bằng LocalStorage (Mock Data & Client-side State Management).
@@ -35,7 +35,7 @@
 ```text
 +-----------------------------------------------------------------------------+
 |                                    HEADER                                   |
-| Logo ETRMS | Page Title | Global Search | Notifications | User Avatar Dropdown |
+| Logo Work Management | Page Title | Global Search | Notifications | User Avatar Dropdown |
 +--------------+--------------------------------------------------------------+
 |              | BREADCRUMB: Home / Module / Current Page                      |
 |              +--------------------------------------------------------------+
@@ -46,14 +46,14 @@
 |              |          (Data Tables / Cards / Kanban / Analytics)          |
 |              |                                                              |
 |              +--------------------------------------------------------------+
-|              | FOOTER: © 2026 ETRMS System - LocalStorage Mode              |
+|              | FOOTER: © 2026 Work Management System - LocalStorage Mode              |
 +--------------+--------------------------------------------------------------+
 ```
 
 ## 4. CÂY MENU ĐẦY ĐỦ (SIDEBAR ACCORDION NAVIGATION)
 - 🏠 Dashboard (Direct Link - Pure Read-only Monitoring Portal)
 - 📁 Quản lý Dự án (Expandable Submenu)
-- ✅ Quản lý Công việc (Expandable Submenu)
+- ✅ Work Management (Expandable Submenu)
 - 👥 Quản lý Nhân sự (Expandable Submenu)
 - 📝 Quy trình Công việc (Expandable Submenu)
 - 📊 Báo cáo & Thống kê (Expandable Submenu)

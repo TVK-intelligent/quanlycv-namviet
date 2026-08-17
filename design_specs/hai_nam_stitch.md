@@ -1,8 +1,8 @@
 # 🎨 Bản Đặc Tả Thiết Kế Giao Diện (Stitch UI Design Spec)
-## Phụ trách: Hải Nam (Quản lý Công việc)
+## Phụ trách: Hải Nam (Work Management)
 
 ## 1. TỔNG QUAN DỰ ÁN (PROJECT OVERVIEW)
-- Tên dự án: ETRMS (Enterprise Task & Resource Management System).
+- Tên dự án: Work Management (Enterprise Task & Resource Management System).
 - Công nghệ: HTML5 + CSS3 + JavaScript (ES6) (Frontend Single Page Application / Static HTML). Không Backend, Không API, Không Database.
 - Lưu trữ dữ liệu: Mô phỏng hoàn toàn bằng LocalStorage (Mock Data & Client-side State Management).
 - Phong cách thiết kế: Enterprise, hiện đại, tối giản, chuyên nghiệp, lấy cảm hứng từ Jira, Redmine và ClickUp.
@@ -17,7 +17,7 @@
 
 ## 5. ĐẶC TẢ CHI TIẾT TỪNG TRANG (PAGE SPECIFICATIONS)
 
-### ✅ 5.3. Quản lý Công việc
+### ✅ 5.3. Work Management
 
 **📋 5.3.1. Danh sách Công việc (Task List)**
 - **Layout:** Breadcrumb → Toolbar → Data Table → Pagination

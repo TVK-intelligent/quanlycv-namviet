@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ETRMS - Dashboard Tổng quan</title>
+    <title>Work Management - Dashboard Tổng quan</title>
     <!-- Base CSS -->
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/layout.css">
     <!-- Dashboard Specific CSS -->
     <link rel="stylesheet" href="/css/dashboard.css">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="app-container">
@@ -21,79 +23,420 @@
 
             <!-- Nội dung thay đổi từng trang -->
             <main class="main-content">
-                <h1 class="page-title">Dashboard Tổng quan</h1>
+                <!-- Welcome Banner -->
+                <div class="welcome-banner" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding: 20px; background: linear-gradient(135deg, var(--sidebar-bg) 0%, #1e293b 100%); color: white; border-radius: var(--border-radius-lg); box-shadow: var(--shadow-md);">
+                    <div>
+                        <h1 id="user-welcome-name" style="color: white; font-size: 22px; margin-bottom: 4px;">Xin chào, [Họ và Tên] 👋</h1>
+                        <p id="user-welcome-dept" style="color: rgba(255, 255, 255, 0.7); font-size: 13px; margin: 0;">Chúc bạn một ngày làm việc hiệu quả!</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span id="current-date-badge" style="font-size: 13px; color: rgba(255, 255, 255, 0.8); background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: var(--border-radius-pill);"><i class="fa-solid fa-calendar-days"></i> Hôm nay</span>
+                    </div>
+                </div>
                 
                 <div class="dashboard-grid">
                     <!-- KPI Cards Row -->
-                    <div class="kpi-cards">
-                        <div class="kpi-card">
-                            <div class="kpi-title">Tổng Dự án</div>
-                            <div class="kpi-value" id="kpi-total-projects">0</div>
-                            <div class="kpi-subtext">Đang triển khai</div>
+                    <div class="kpi-cards" style="grid-column: span 12; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-bottom: 24px;">
+                        <!-- 1. Tổng Dự án (PM / Head) -->
+                        <div class="kpi-card" data-roles="pm,head">
+                            <div class="kpi-icon"><i class="fa-solid fa-briefcase"></i></div>
+                            <div class="kpi-content">
+                                <div class="kpi-title">Tổng Dự án</div>
+                                <div class="kpi-value" id="kpi-total-projects">-</div>
+                                <div class="kpi-trend" id="kpi-projects-trend" style="font-size: 11px; color: var(--text-muted);">-</div>
+                            </div>
                         </div>
-                        <div class="kpi-card">
-                            <div class="kpi-title">Task đang chạy</div>
-                            <div class="kpi-value" id="kpi-active-tasks">0</div>
-                            <div class="kpi-subtext">Cần xử lý</div>
+                        <!-- 2. Tổng Công việc (Employee / PM / Head) -->
+                        <div class="kpi-card" data-roles="employee,pm,head">
+                            <div class="kpi-icon icon-blue"><i class="fa-solid fa-list-check"></i></div>
+                            <div class="kpi-content">
+                                <div class="kpi-title">Tổng Công việc</div>
+                                <div class="kpi-value" id="kpi-total-tasks">-</div>
+                                <div class="kpi-trend" id="kpi-tasks-trend" style="font-size: 11px; color: var(--text-muted);">-</div>
+                            </div>
                         </div>
-                        <div class="kpi-card">
-                            <div class="kpi-title">Tổng Nhân sự</div>
-                            <div class="kpi-value" id="kpi-total-employees">0</div>
-                            <div class="kpi-subtext">Đang làm việc</div>
+                        <!-- 3. Cảnh báo Sức tải (Head) -->
+                        <div class="kpi-card" data-roles="head">
+                            <div class="kpi-icon icon-red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div class="kpi-content">
+                                <div class="kpi-title">Cảnh báo Sức tải</div>
+                                <div class="kpi-value" id="kpi-capacity-alerts">-</div>
+                                <div class="kpi-trend trend-down" id="kpi-capacity-trend">-</div>
+                            </div>
                         </div>
-                        <div class="kpi-card">
-                            <div class="kpi-title">Tỷ lệ đúng hạn</div>
-                            <div class="kpi-value" style="color: var(--success-color);" id="kpi-ontime-rate">0%</div>
-                            <div class="kpi-subtext">Trung bình công ty</div>
+                        <!-- 4. Yêu cầu chờ duyệt (PM) -->
+                        <div class="kpi-card" data-roles="pm">
+                            <div class="kpi-icon icon-red"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                            <div class="kpi-content">
+                                <div class="kpi-title">Chờ phê duyệt</div>
+                                <div class="kpi-value" id="kpi-pending-approvals">-</div>
+                                <div class="kpi-trend" id="kpi-approvals-trend" style="font-size: 11px; color: var(--text-muted);">-</div>
+                            </div>
+                        </div>
+                        <!-- 5. Tỷ lệ đúng hạn (Tất cả) -->
+                        <div class="kpi-card" data-roles="employee,pm,head">
+                            <div class="kpi-icon icon-green"><i class="fa-solid fa-bullseye"></i></div>
+                            <div class="kpi-content">
+                                <div class="kpi-title">Tỷ lệ đúng hạn</div>
+                                <div class="kpi-value" id="kpi-ontime-rate" style="color: var(--success-color);">-%</div>
+                                <div class="kpi-trend trend-up" id="kpi-ontime-trend">-</div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Row 2: WSI and Inbox -->
-                    <div class="dashboard-row-2">
-                        <!-- WSI Alert List -->
-                        <div class="table-card">
-                            <div class="table-toolbar">
-                                <h3>Cảnh báo Sức tải (WSI)</h3>
+                    <!-- ---------------------------------------------------------------------- -->
+                    <!-- SECTION 1: ACTOR - NHÂN VIÊN (DEV/TESTER)                              -->
+                    <!-- ---------------------------------------------------------------------- -->
+                    <div class="actor-section-wrapper" data-roles="employee" style="grid-column: span 12; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                        
+                        <!-- Widget 1: Tiêu điểm hôm nay (To-Do List cá nhân) -->
+                        <div class="table-card" style="padding: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <h3 style="font-size: 15px; font-weight:600; display: flex; align-items: center; gap: 8px; margin: 0;">
+                                    <i class="fa-solid fa-bullseye" style="color: var(--primary-color);"></i> Việc tôi cần làm hôm nay
+                                </h3>
+                                <!-- Dropmenu cho Nhân viên -->
+                                <select class="card-header-select" id="filter-my-tasks">
+                                    <option value="all">Tất cả việc</option>
+                                    <option value="today">Việc cần làm hôm nay</option>
+                                    <option value="p1">Việc khẩn cấp (P1)</option>
+                                    <option value="overdue">Việc đã trễ hạn</option>
+                                </select>
                             </div>
-                            <div style="padding: 20px;">
-                                <div class="wsi-list" id="wsi-list-container">
-                                    <!-- WSI items rendered by JS -->
+                            
+                            <div class="my-progress-section" style="margin-bottom: 20px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">
+                                    <span>TIẾN ĐỘ THÁNG NÀY</span>
+                                    <span id="focus-progress-text">-% (Đã hoàn thành 0/0)</span>
+                                </div>
+                                <div style="width: 100%; height: 10px; background: #e2e8f0; border-radius: 5px; overflow:hidden;">
+                                    <div id="focus-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-hover) 100%); border-radius: 5px;"></div>
+                                </div>
+                            </div>
+
+                            <div class="task-checklist" id="task-checklist-container" style="display: flex; flex-direction: column; gap: 10px;">
+                                <!-- Dữ liệu Checklist công việc cá nhân sẽ được render động bằng JS -->
+                            </div>
+                        </div>
+
+                        <!-- Widget 2: Dev Bugs Queue / Tester Test Queue -->
+                        <div class="table-card" style="padding: 20px;">
+                            <!-- Dev View -->
+                            <div id="dev-focus-queue" style="margin-bottom: 24px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                    <h3 style="font-size: 15px; font-weight:600; display: flex; align-items: center; gap: 8px; margin: 0;">
+                                        <i class="fa-solid fa-bug" style="color: var(--danger-color);"></i> Bugs cần sửa gấp (Dev)
+                                    </h3>
+                                    <!-- Dropmenu lọc Bug của Dev -->
+                                    <select class="card-header-select" id="filter-dev-bugs">
+                                        <option value="all">Tất cả Bug</option>
+                                        <option value="p1">Bug P1 (Gấp)</option>
+                                        <option value="reopened">Bug bị Re-open</option>
+                                    </select>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th class="pin-left">Mã Task</th>
+                                                <th>Tên Bug</th>
+                                                <th>Dự án</th>
+                                                <th>Tester phát hiện</th>
+                                                <th>Độ ưu tiên</th>
+                                                <th class="pin-right no-resize">Hành động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dev-bug-queue-tbody">
+                                            <!-- Dữ liệu Bugs gán cho Dev sẽ được render động bằng JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <!-- Tester View -->
+                            <div id="tester-focus-queue">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                    <h3 style="font-size: 15px; font-weight:600; display: flex; align-items: center; gap: 8px; margin: 0;">
+                                        <i class="fa-solid fa-vial" style="color: var(--success-color);"></i> Tasks cần kiểm thử (Tester)
+                                    </h3>
+                                    <!-- Dropmenu lọc Task chờ test của Tester -->
+                                    <select class="card-header-select" id="filter-tester-tasks">
+                                        <option value="all">Tất cả việc chờ test</option>
+                                        <option value="p1">Task ưu tiên cao (P1)</option>
+                                        <option value="retest">Kiểm thử lại (Failed)</option>
+                                    </select>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th class="pin-left">Mã Task</th>
+                                                <th>Tên Task</th>
+                                                <th>Dự án</th>
+                                                <th>Dev thực hiện</th>
+                                                <th>Độ ưu tiên</th>
+                                                <th class="pin-right no-resize">Hành động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tester-test-queue-tbody">
+                                            <!-- Dữ liệu Tasks cần test sẽ được render động bằng JS -->
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Pending Approvals Inbox -->
-                        <div class="table-card">
-                            <div class="table-toolbar">
-                                <h3>Hòm thư Yêu cầu & Cảnh báo</h3>
+                    <!-- ---------------------------------------------------------------------- -->
+                    <!-- SECTION 2: ACTOR - QUẢN LÝ DỰ ÁN (PM)                                 -->
+                    <!-- ---------------------------------------------------------------------- -->
+                    <div class="actor-section-wrapper" data-roles="pm" style="grid-column: span 12; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                        
+                        <!-- Widget 1: Sức khỏe & Cảnh báo Dự án -->
+                        <div class="table-card" style="padding: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <h3 style="font-size: 15px; font-weight:600; display: flex; align-items: center; gap: 8px; margin: 0;">
+                                    <i class="fa-solid fa-heart-pulse" style="color: var(--danger-color);"></i> Giám sát tiến độ & Sức khỏe dự án
+                                </h3>
+                                <!-- Dropmenu lọc dự án của PM -->
+                                <select class="card-header-select" id="filter-pm-projects">
+                                    <option value="all">Tất cả dự án quản lý</option>
+                                    <option value="crm">Dự án CRM</option>
+                                    <option value="Work Management">Dự án Work Management</option>
+                                    <option value="mobile">Xây dựng Mobile App</option>
+                                </select>
                             </div>
-                            <ul class="inbox-list" id="inbox-container">
-                                <!-- Inbox items rendered by JS -->
-                            </ul>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="pin-left">Tên Dự án</th>
+                                            <th>Tiến độ</th>
+                                            <th>Ngày bắt đầu</th>
+                                            <th>Hạn chót</th>
+                                            <th>SLA đúng hạn</th>
+                                            <th class="pin-right no-resize">Trạng thái</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="project-health-tbody">
+                                        <!-- Dữ liệu phân bổ sức khỏe dự án sẽ được render động bằng JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Widget 2: Mốc dự án (Milestones/Sprint Tracker) -->
+                        <div class="table-card" style="padding: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <h3 style="font-size: 15px; font-weight:600; display: flex; align-items: center; gap: 8px; margin: 0;">
+                                    <i class="fa-solid fa-flag" style="color: var(--primary-color);"></i> Tiến độ Sprint & Milestone mốc
+                                </h3>
+                                <!-- Dropmenu lọc Sprint/Milestone của PM -->
+                                <select class="card-header-select" id="filter-pm-milestones">
+                                    <option value="all">Tất cả mốc/Sprint</option>
+                                    <option value="sprint1">Sprint 1 (Hoàn thành)</option>
+                                    <option value="sprint2">Sprint 2 (Đang chạy)</option>
+                                    <option value="release">Release v1.0 (Mốc cuối)</option>
+                                </select>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="pin-left">Tên Sprint/Mốc</th>
+                                            <th>Dự án</th>
+                                            <th>Hạn hoàn thành</th>
+                                            <th>Tiến độ</th>
+                                            <th class="pin-right no-resize">Trạng thái</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pm-milestone-tbody">
+                                        <!-- Dữ liệu Milestone/Sprint của dự án sẽ được render động bằng JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Widget 3: Tải nhân sự trong dự án (Project Team Workload) -->
+                        <div class="table-card" style="padding: 20px; grid-column: span 2;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <h3 style="font-size: 15px; font-weight:600; display: flex; align-items: center; gap: 8px; margin: 0;">
+                                    <i class="fa-solid fa-users-viewfinder" style="color: var(--primary-color);"></i> Tải công việc nhân sự trong dự án phụ trách
+                                </h3>
+                                <!-- Dropmenu lọc nhân sự theo dự án của PM -->
+                                <select class="card-header-select" id="filter-pm-team-project">
+                                    <option value="all">Lọc theo Dự án: Tất cả</option>
+                                    <option value="crm">Dự án CRM</option>
+                                    <option value="Work Management">Dự án Work Management</option>
+                                </select>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="pin-left">Nhân sự</th>
+                                            <th>Vai trò</th>
+                                            <th>Dự án tham gia</th>
+                                            <th>Số Task đang xử lý</th>
+                                            <th>Chỉ số tải WSI (%)</th>
+                                            <th>Trạng thái tải</th>
+                                            <th class="pin-right no-resize">Hành động nhanh</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pm-team-workload-tbody">
+                                        <!-- Dữ liệu WSI nhân sự của dự án cụ thể sẽ được render động bằng JS -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Row 3: My Tasks Table -->
-                    <div class="table-card" style="grid-column: span 12;">
-                        <div class="table-toolbar">
-                            <h3>Công việc của tôi</h3>
-                            <!-- LƯU Ý: KHÔNG CÓ NÚT TẠO MỚI Ở ĐÂY -->
+                    <!-- ---------------------------------------------------------------------- -->
+                    <!-- SECTION 3: ACTOR - TRƯỞNG PHÒNG (HEAD OF DEPT)                         -->
+                    <!-- ---------------------------------------------------------------------- -->
+                    <div class="actor-section-wrapper" data-roles="head" style="grid-column: span 12; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                        
+                        <!-- Widget 1: Cảnh báo Sức tải nhân sự toàn phòng (WSI Alerts) -->
+                        <div class="table-card" id="wsi-section" style="padding: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <h3 style="font-size: 15px; font-weight:600; display: flex; align-items: center; gap: 8px; margin: 0;">
+                                    <i class="fa-solid fa-users-gear" style="color: var(--primary-color);"></i> Điểm nóng nhân sự toàn phòng ban (WSI)
+                                </h3>
+                                <!-- Dropmenu lọc bộ phận/tổ của Trưởng phòng -->
+                                <select class="card-header-select" id="filter-head-wsi-dept">
+                                    <option value="all">Tất cả tổ đội</option>
+                                    <option value="dev">Tổ Phát triển (Dev)</option>
+                                    <option value="qa">Tổ Kiểm thử (Tester)</option>
+                                    <option value="design">Tổ UI/UX Design</option>
+                                </select>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="pin-left">Nhân sự</th>
+                                            <th>Vai trò</th>
+                                            <th>Tổ / Bộ phận</th>
+                                            <th>WSI Hiện tại</th>
+                                            <th>Cảnh báo sức tải</th>
+                                            <th class="pin-right no-resize">Hành động điều phối</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="wsi-list-tbody">
+                                        <!-- Dữ liệu WSI nhân sự sẽ được render động bằng JS -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Tên Task</th>
-                                        <th>Dự án</th>
-                                        <th>Trạng thái</th>
-                                        <th>Độ ưu tiên</th>
-                                        <th>Ngày hết hạn</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="my-tasks-tbody">
-                                    <!-- Task items rendered by JS -->
-                                </tbody>
-                            </table>
+
+                        <!-- Widget 2: Báo cáo hiệu suất chung phòng ban (Performance Summary) -->
+                        <div class="table-card" style="padding: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <h3 style="font-size: 15px; font-weight:600; display: flex; align-items: center; gap: 8px; margin: 0;">
+                                    <i class="fa-solid fa-chart-line" style="color: var(--success-color);"></i> Đánh giá Hiệu suất Phòng ban
+                                </h3>
+                                <!-- Dropmenu lọc thời gian báo cáo của Trưởng phòng -->
+                                <select class="card-header-select" id="filter-head-performance-time">
+                                    <option value="month">Thời gian: Tháng này</option>
+                                    <option value="prev-month">Thời gian: Tháng trước</option>
+                                    <option value="quarter">Thời gian: Quý này</option>
+                                    <option value="year">Thời gian: Năm nay</option>
+                                </select>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="pin-left">Nhân sự</th>
+                                            <th>Vai trò</th>
+                                            <th>Task hoàn thành</th>
+                                            <th>Bugs phát sinh (Dev)</th>
+                                            <th>Cases thực thi (Tester)</th>
+                                            <th>Chỉ số đúng hạn (SLA %)</th>
+                                            <th class="pin-right no-resize">Điểm KPI tính toán</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="head-performance-summary-tbody">
+                                        <!-- Dữ liệu tổng hợp hiệu suất (Dev bugs, tester cases) sẽ được render bằng JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Widget 3: Ma trận phân bổ nhân sự (Resource Allocation Matrix) -->
+                        <div class="table-card" style="padding: 20px; grid-column: span 2;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <h3 style="font-size: 15px; font-weight:600; display: flex; align-items: center; gap: 8px; margin: 0;">
+                                    <i class="fa-solid fa-network-wired" style="color: var(--primary-color);"></i> Ma trận Phân bổ nguồn lực giữa các Dự án
+                                </h3>
+                                <!-- Dropmenu lọc ma trận dự án của Trưởng phòng -->
+                                <select class="card-header-select" id="filter-head-matrix-project">
+                                    <option value="all">Dự án phân bổ: Tất cả</option>
+                                    <option value="crm">Chỉ dự án CRM</option>
+                                    <option value="Work Management">Chỉ dự án Work Management</option>
+                                    <option value="mobile">Chỉ dự án Mobile App</option>
+                                </select>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="pin-left">Nhân viên</th>
+                                            <th>Dự án CRM (% time)</th>
+                                            <th>Dự án Work Management (% time)</th>
+                                            <th>Mobile App (% time)</th>
+                                            <th>Công việc khác (% time)</th>
+                                            <th class="pin-right no-resize">Tổng tải phân bổ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="head-resource-matrix-tbody">
+                                        <!-- Bảng ma trận nhân sự vs dự án (% time) sẽ được render động bằng JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ---------------------------------------------------------------------- -->
+                    <!-- SHARED WIDGETS: ALERTS & TIMELINE (PM & HEAD & EMPLOYEE)               -->
+                    <!-- ---------------------------------------------------------------------- -->
+                    <div class="shared-section-wrapper" style="grid-column: span 12; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                        
+                        <!-- Widget 1: Inbox Yêu cầu chờ duyệt / Cảnh báo -->
+                        <div class="table-card" id="inbox-section" data-roles="pm,head">
+                            <div class="table-toolbar" style="display: flex; justify-content: space-between; align-items: center;">
+                                <h3 style="margin: 0;"><i class="fa-solid fa-envelope-open-text" style="color: var(--primary-color); margin-right: 8px;"></i>Hòm thư Chờ phê duyệt & Cảnh báo</h3>
+                                <!-- Dropmenu lọc hòm thư -->
+                                <select class="card-header-select" id="filter-inbox-type">
+                                    <option value="all">Tất cả yêu cầu/cảnh báo</option>
+                                    <option value="extension">Yêu cầu gia hạn</option>
+                                    <option value="qa">Duyệt hoàn thành (QA)</option>
+                                    <option value="timesheet">Duyệt Timesheet</option>
+                                </select>
+                            </div>
+                            <ul class="inbox-list" id="inbox-container">
+                                <!-- Danh sách yêu cầu chờ duyệt sẽ được render động bằng JS -->
+                            </ul>
+                        </div>
+
+                        <!-- Widget 2: Timeline Hoạt động gần đây -->
+                        <div class="table-card" id="timeline-section" data-roles="pm,head">
+                            <div class="table-toolbar" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light);">
+                                <h3 style="font-size: 15px; font-weight:600; display: flex; align-items: center; gap: 8px; margin: 0;">
+                                    <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-color);"></i> Hoạt động gần đây của phòng ban
+                                </h3>
+                                <!-- Dropmenu lọc hoạt động gần đây -->
+                                <select class="card-header-select" id="filter-timeline-actor">
+                                    <option value="all">Tất cả thành viên</option>
+                                    <option value="dev">Chỉ hoạt động của Dev</option>
+                                    <option value="tester">Chỉ hoạt động của Tester</option>
+                                </select>
+                            </div>
+                            <div style="padding: 20px;">
+                                <div class="timeline-container" id="timeline-container">
+                                    <!-- Dòng thời gian hoạt động của nhóm sẽ được render động bằng JS -->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -108,9 +451,9 @@
     <div id="modal-container"></div>
     <div id="loading-container"></div>
 
-    <!-- Base JS -->
+    <!-- Base JS (Chỉ dùng common.js để render sidebar/header nếu có) -->
     <script src="/js/common.js"></script>
-    <!-- Dashboard JS -->
+    <!-- Gắn file JS xử lý ẩn hiện và render dữ liệu nếu có -->
     <script src="/js/dashboard.js"></script>
 </body>
 </html>
