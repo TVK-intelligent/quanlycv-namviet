@@ -221,64 +221,63 @@
     position: relative;
 }
 
-/* Thanh kéo rộng cột (Excel-like handle) */
+/* Thanh kéo rộng cột (Excel-like handle) - Cân giữa ngay trên đường biên */
 .resizer {
     position: absolute;
-    right: 0;
+    right: -5px; /* Đặt lùi 1/2 chiều rộng ra ngoài biên th để căn giữa */
     top: 0;
     height: 100%;
-    width: 10px; /* Tăng độ rộng nhạy click */
+    width: 10px; /* Độ rộng nhạy click xung quanh đường biên */
     cursor: col-resize;
     user-select: none;
     z-index: 10;
 }
 
-/* Đường kẻ phân chia dọc trực tiếp */
+/* Đường kẻ phân chia dọc trực tiếp (Mặc định ẩn, hiện khi hover) */
 .resizer::before {
     content: '';
     position: absolute;
-    right: 4px;
-    top: 15%;
-    height: 70%;
+    left: 4px; /* Căn giữa: (10px container - 2px line) / 2 = 4px */
+    top: 0;
+    height: 100%;
     width: 2px;
-    background-color: #cbd5e1;
-    transition: background-color var(--transition-fast), width var(--transition-fast);
+    background-color: var(--primary-color); /* Sử dụng màu xanh nổi bật */
+    opacity: 0; /* Mặc định ẩn */
+    transition: opacity var(--transition-fast);
 }
 
-/* Icon nút co giãn (↔) hiển thị trực tiếp ở giữa biên cột */
+/* Icon nút co giãn (↔) (Mặc định ẩn, hiện khi hover) */
 .resizer::after {
     content: '↔';
     position: absolute;
     top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    left: 50%; /* Căn giữa hoàn hảo */
+    transform: translate(-50%, -50%) scale(0.8);
     font-size: 9px;
     font-weight: 800;
-    color: #64748b;
-    background-color: #ffffff;
-    border: 1px solid #cbd5e1;
+    color: #ffffff;
+    background-color: var(--primary-color); /* Màu nền xanh */
+    border: 1px solid var(--primary-color);
     border-radius: 3px;
     width: 14px;
     height: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    opacity: 0.95;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    opacity: 0; /* Mặc định ẩn */
     transition: all var(--transition-fast);
 }
 
+/* Hiệu ứng HOVER: Hiện cả vạch kẻ và nút co giãn */
 .resizer:hover::before,
 .resizer.resizing::before {
-    background-color: var(--primary-color) !important;
-    width: 3px !important;
+    opacity: 1 !important;
 }
 
 .resizer:hover::after,
 .resizer.resizing::after {
-    background-color: var(--primary-color) !important;
-    color: #ffffff !important;
-    border-color: var(--primary-color) !important;
+    opacity: 1 !important;
     transform: translate(-50%, -50%) scale(1.15) !important;
 }
 

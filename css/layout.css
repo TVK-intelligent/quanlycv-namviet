@@ -1,6 +1,7 @@
 /* =========================================
    LAYOUT (CSS Grid & Flexbox)
    ========================================= */
+/* Trigger compiler re-lint */
 
 .app-container {
     display: flex;
