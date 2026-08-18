@@ -252,7 +252,7 @@ function isProjectInPeriod(project, range) {
 
     const dateValue = project.startDate || project.createdAt || project.createdDate;
 
-    // Data contract hiện tại chưa bắt buộc ngày dự án, nên không loại dữ liệu thiếu ngày.
+    
     if (!dateValue) return true;
 
     const projectDate = new Date(dateValue);
