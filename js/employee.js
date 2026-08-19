@@ -1,12 +1,12 @@
-// Khởi tạo danh sách Phòng ban mẫu (Task 57)
+// ==========================================
+// 1. KHỞI TẠO DỮ LIỆU MẪU (MOCK DATA)
+// ==========================================
 const defaultDepartments = [
     { id: "DEPT_DEV", code: "DEV", name: "Phòng Phát triển", parentId: null },
     { id: "DEPT_QA", code: "QA", name: "Phòng Kiểm thử", parentId: null },
     { id: "DEPT_HR", code: "HR", name: "Phòng Nhân sự", parentId: null }
 ];
 
-// Khởi tạo danh sách Nhân viên mẫu (Task 50)
-// Chú ý: deptId được liên kết với id của bảng Phòng ban ở trên
 const defaultEmployees = [
     {
         id: "EMP_001",
@@ -43,7 +43,6 @@ const defaultEmployees = [
     }
 ];
 
-// Hàm nạp dữ liệu vào LocalStorage khi trang web vừa chạy
 function initMockData() {
     if (!localStorage.getItem('etrms_departments')) {
         localStorage.setItem('etrms_departments', JSON.stringify(defaultDepartments));
@@ -51,36 +50,31 @@ function initMockData() {
     if (!localStorage.getItem('etrms_employees')) {
         localStorage.setItem('etrms_employees', JSON.stringify(defaultEmployees));
     }
-    console.log("Đã khởi tạo Database ảo thành công!");
 }
-
-// Chạy hàm
 initMockData();
 
 // ==========================================
-// PHẦN LOGIC XỬ LÝ GIAO DIỆN & TƯƠNG TÁC
+// 2. BIẾN TOÀN CỤC & LẤY DỮ LIỆU
 // ==========================================
-
-// 1. Lấy dữ liệu từ LocalStorage ra để sử dụng
 let currentEmployees = JSON.parse(localStorage.getItem('etrms_employees')) || [];
 let currentDepartments = JSON.parse(localStorage.getItem('etrms_departments')) || [];
+let currentEditId = null; 
 
-// Hàm phụ trợ: Lấy tên phòng ban từ bảng Departments dựa vào deptId
 function getDeptName(deptId) {
     const dept = currentDepartments.find(d => d.id === deptId);
     return dept ? dept.name : "Chưa phân bổ";
 }
 
-// 2. Hàm Render danh sách nhân viên (Task 50)
+// ==========================================
+// 3. HÀM RENDER & TÌM KIẾM
+// ==========================================
 function renderEmployeeList(dataToRender) {
     const tbody = document.getElementById('employee-table-body');
     if (!tbody) return;
-
-    tbody.innerHTML = ''; // Xóa dữ liệu cũ trên bảng
+    tbody.innerHTML = ''; 
 
     dataToRender.forEach(emp => {
-        // Xử lý Logic hiển thị WSI Capacity
-        let wsiColorClass = 'bg-[#52C41A]'; // Xanh mặc định
+        let wsiColorClass = 'bg-[#52C41A]'; 
         let wsiTextClass = 'text-on-surface-variant';
         let wsiLabel = 'Tối ưu';
         
@@ -94,9 +88,6 @@ function renderEmployeeList(dataToRender) {
             wsiLabel = '<span class="material-symbols-outlined text-[14px] align-middle">warning</span> Quá tải';
         }
 
-        // Lấy tên phòng ban thực tế
-        const departmentName = getDeptName(emp.deptId);
-
         const tr = document.createElement('tr');
         tr.className = 'group transition-colors hover:bg-surface-bright cursor-pointer border-b border-gray-100 last:border-none';
         
@@ -108,11 +99,9 @@ function renderEmployeeList(dataToRender) {
                 </div>
             </td>
             <td class="p-4 text-on-surface-variant">${emp.email}</td>
-            <td class="p-4">${departmentName}</td>
+            <td class="p-4">${getDeptName(emp.deptId)}</td>
             <td class="p-4">
-                <span class="inline-flex items-center px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-[11px] font-semibold">
-                    ${emp.deptRole}
-                </span>
+                <span class="inline-flex items-center px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-[11px] font-semibold">${emp.deptRole}</span>
             </td>
             <td class="p-4 w-48">
                 <div class="flex flex-col gap-1">
@@ -127,10 +116,10 @@ function renderEmployeeList(dataToRender) {
             </td>
             <td class="p-4 text-right">
                 <div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button class="w-8 h-8 rounded hover:bg-gray-200 flex items-center justify-center text-primary transition-colors" title="Sửa">
+                    <button class="w-8 h-8 rounded hover:bg-gray-200 flex items-center justify-center text-primary transition-colors" onclick="editEmployee('${emp.id}')" title="Sửa">
                         <span class="material-symbols-outlined text-[18px]">edit</span>
                     </button>
-                    <button class="w-8 h-8 rounded hover:bg-red-100 flex items-center justify-center text-[#FF4D4F] transition-colors" title="Xóa">
+                    <button class="w-8 h-8 rounded hover:bg-red-100 flex items-center justify-center text-[#FF4D4F] transition-colors" onclick="deleteEmployee('${emp.id}')" title="Xóa">
                         <span class="material-symbols-outlined text-[18px]">delete</span>
                     </button>
                 </div>
@@ -140,36 +129,129 @@ function renderEmployeeList(dataToRender) {
     });
 }
 
-// 3. Hàm xử lý Tìm kiếm (Task 55) & Lọc (Task 56) kết hợp
 function handleSearchAndFilter() {
     const searchKeyword = document.getElementById('search-emp').value.toLowerCase();
     const selectedDept = document.getElementById('filter-dept').value;
-
-    // Dùng hàm .filter() của Array để lọc dữ liệu
     const filteredEmployees = currentEmployees.filter(emp => {
-        // Kiểm tra xem tên hoặc email có chứa từ khóa không
-        const isMatchKeyword = emp.fullName.toLowerCase().includes(searchKeyword) || 
-                               emp.email.toLowerCase().includes(searchKeyword);
-        
-        // Kiểm tra xem phòng ban có khớp không (Nếu chọn ALL thì luôn đúng)
+        const isMatchKeyword = emp.fullName.toLowerCase().includes(searchKeyword) || emp.email.toLowerCase().includes(searchKeyword);
         const isMatchDept = (selectedDept === 'ALL') || (emp.deptId === selectedDept);
-
-        // Phải thỏa mãn cả 2 điều kiện thì mới giữ lại
         return isMatchKeyword && isMatchDept;
     });
-
-    // Vẽ lại bảng với dữ liệu đã lọc
     renderEmployeeList(filteredEmployees);
 }
 
-// 4. Khởi chạy khi tải trang
+// ==========================================
+// 4. XỬ LÝ MODAL (THÊM / SỬA)
+// ==========================================
+function populateDeptSelect() {
+    const deptSelect = document.getElementById('emp-dept');
+    if (!deptSelect) return;
+    deptSelect.innerHTML = '<option value="">-- Chọn phòng ban --</option>';
+    currentDepartments.forEach(dept => {
+        deptSelect.innerHTML += `<option value="${dept.id}">${dept.name}</option>`;
+    });
+}
+
+const closeModal = () => {
+    document.getElementById('employee-modal')?.classList.add('hidden');
+};
+
+// ==========================================
+// 5. CÁC HÀM TOÀN CỤC (SỬA & XÓA)
+// ==========================================
+window.deleteEmployee = function(id) {
+    if (!confirm("Bạn có chắc chắn muốn xóa nhân viên này không?")) return;
+    currentEmployees = currentEmployees.filter(emp => emp.id !== id);
+    localStorage.setItem('etrms_employees', JSON.stringify(currentEmployees));
+    handleSearchAndFilter(); 
+};
+
+window.editEmployee = function(id) {
+    const empToEdit = currentEmployees.find(emp => emp.id === id);
+    if (!empToEdit) return;
+
+    populateDeptSelect();
+    document.getElementById('modal-title').innerText = "Chỉnh sửa Nhân viên";
+
+    document.getElementById('emp-name').value = empToEdit.fullName;
+    document.getElementById('emp-email').value = empToEdit.email;
+    document.getElementById('emp-phone').value = empToEdit.phone || '';
+    document.getElementById('emp-avatar').value = empToEdit.avatar || '';
+    document.getElementById('emp-dept').value = empToEdit.deptId;
+    document.getElementById('emp-role').value = empToEdit.deptRole || 'MEMBER';
+
+    currentEditId = id;
+    document.getElementById('employee-modal').classList.remove('hidden');
+};
+
+// ==========================================
+// 6. GẮN SỰ KIỆN KHI TRANG LOAD XONG
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Render lần đầu tiên với toàn bộ dữ liệu
+    // 1. Render ban đầu
     renderEmployeeList(currentEmployees);
 
-    // Gắn sự kiện "gõ phím" (input) cho ô Tìm kiếm
+    // 2. Gắn sự kiện Tìm kiếm / Lọc
     document.getElementById('search-emp')?.addEventListener('input', handleSearchAndFilter);
-
-    // Gắn sự kiện "thay đổi" (change) cho dropdown Lọc phòng ban
     document.getElementById('filter-dept')?.addEventListener('change', handleSearchAndFilter);
+
+    // 3. Gắn sự kiện Nút Thêm Mới
+    document.getElementById('btn-add-emp')?.addEventListener('click', () => {
+        populateDeptSelect(); 
+        document.getElementById('employee-form')?.reset();
+        document.getElementById('modal-title').innerText = "Thêm mới Nhân viên";
+        currentEditId = null; 
+        document.getElementById('employee-modal').classList.remove('hidden'); 
+    });
+
+    // 4. Gắn sự kiện Đóng Modal
+    document.getElementById('btn-close-modal')?.addEventListener('click', closeModal);
+    document.getElementById('btn-cancel-modal')?.addEventListener('click', closeModal);
+
+    // 5. Gắn sự kiện Lưu Modal
+    document.getElementById('btn-save-emp')?.addEventListener('click', () => {
+        const name = document.getElementById('emp-name').value.trim();
+        const email = document.getElementById('emp-email').value.trim();
+        const phone = document.getElementById('emp-phone').value.trim();
+        const avatar = document.getElementById('emp-avatar').value.trim();
+        const deptId = document.getElementById('emp-dept').value;
+        const deptRole = document.getElementById('emp-role').value;
+        
+        if(!name || !email || !deptId) {
+            alert("Vui lòng nhập đầy đủ Họ tên, Email và Phòng ban!");
+            return; 
+        }
+
+        if (currentEditId === null) {
+            const newEmp = {
+                id: "EMP_" + new Date().getTime(),
+                avatar: avatar || "https://i.pravatar.cc/150?img=" + Math.floor(Math.random() * 70),
+                fullName: name,
+                email: email,
+                phone: phone,
+                deptId: deptId,
+                deptRole: deptRole,
+                systemRole: "USER",
+                wsiCapacity: 0 
+            };
+            currentEmployees.unshift(newEmp); // Dùng unshift để thêm lên đầu bảng cho dễ nhìn
+            alert("Thêm nhân viên thành công!");
+        } else {
+            const index = currentEmployees.findIndex(emp => emp.id === currentEditId);
+            if (index !== -1) {
+                currentEmployees[index].fullName = name;
+                currentEmployees[index].email = email;
+                currentEmployees[index].phone = phone;
+                if (avatar) currentEmployees[index].avatar = avatar; 
+                currentEmployees[index].deptId = deptId;
+                currentEmployees[index].deptRole = deptRole;
+                alert("Cập nhật thông tin thành công!");
+            }
+        }
+
+        localStorage.setItem('etrms_employees', JSON.stringify(currentEmployees));
+        closeModal();
+        handleSearchAndFilter(); 
+        currentEditId = null; 
+    });
 });

@@ -66,6 +66,69 @@
         </div>
     </div>
 
+    <!-- BẮT ĐẦU: MODAL THÊM/SỬA NHÂN VIÊN (Task 51, 52) -->
+    <!-- Mặc định class 'hidden' để ẩn modal đi -->
+    <div id="employee-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="bg-surface-container-lowest rounded-xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col">
+            
+            <!-- Header Modal -->
+            <div class="flex justify-between items-center p-6 border-b border-surface-variant">
+                <h3 class="text-xl font-semibold text-on-surface" id="modal-title">Thêm mới Nhân viên</h3>
+                <button id="btn-close-modal" class="text-on-surface-variant hover:text-error transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <!-- Body Modal (Form nhập liệu) -->
+            <div class="p-6 overflow-y-auto max-h-[70vh]">
+                <form id="employee-form" class="grid grid-cols-2 gap-4">
+                    <!-- Cột 1 -->
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-sm font-semibold mb-1">Họ và tên <span class="text-red-500">*</span></label>
+                        <input type="text" id="emp-name" class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-primary" required>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-sm font-semibold mb-1">Email <span class="text-red-500">*</span></label>
+                        <input type="email" id="emp-email" class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-primary" required>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-sm font-semibold mb-1">Số điện thoại</label>
+                        <input type="text" id="emp-phone" class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-primary">
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-sm font-semibold mb-1">Link Ảnh Avatar</label>
+                        <input type="text" id="emp-avatar" class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-primary" placeholder="https://...">
+                    </div>
+                    
+                    <!-- Cột 2 -->
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-sm font-semibold mb-1">Phòng ban <span class="text-red-500">*</span></label>
+                        <select id="emp-dept" class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-primary" required>
+                            <!-- JS sẽ tự động đổ danh sách phòng ban vào đây -->
+                        </select>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-sm font-semibold mb-1">Chức vụ trong phòng</label>
+                        <select id="emp-role" class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-primary">
+                            <option value="MEMBER">Member (Thành viên)</option>
+                            <option value="TEAM_LEAD">Team Lead (Trưởng nhóm)</option>
+                            <option value="DEPUTY">Deputy (Phó phòng)</option>
+                            <option value="HEAD">Head (Trưởng phòng)</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Footer Modal (Các nút bấm) -->
+            <div class="p-6 border-t border-surface-variant flex justify-end gap-3 bg-surface-bright">
+                <button id="btn-cancel-modal" class="px-4 py-2 rounded-lg font-semibold border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors">Hủy</button>
+                <button id="btn-save-emp" class="px-4 py-2 rounded-lg font-semibold bg-primary text-white hover:opacity-90 transition-colors shadow-sm">Lưu Nhân viên</button>
+            </div>
+            
+        </div>
+    </div>
+    <!-- KẾT THÚC MODAL -->
+
     <!-- Nhúng file JS người điều phối -->
     <script src="../../js/employee.js"></script>
 </body>
