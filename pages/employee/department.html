@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Phòng ban - ETRMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bg-[#f9f9f9] font-sans text-[#1a1c1c]">
+    
+    <!-- KHU VỰC NỘI DUNG CHÍNH -->
+    <div class="flex flex-col w-full gap-8 p-6">
+        <div class="bg-white rounded-xl shadow-sm p-6 w-full">
+            
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-2xl font-semibold text-gray-800">Danh sách Phòng ban</h1>
+                <button id="btn-add-dept" class="bg-[#005daa] text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-90 transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">add</span>
+                    <span class="font-semibold text-[14px]">Thêm phòng ban</span>
+                </button>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="mb-6 w-full md:w-[320px]">
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                    <input id="search-dept" class="w-full bg-gray-50 border border-gray-200 pl-10 pr-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#005daa] transition-all" placeholder="Tìm kiếm mã, tên phòng ban..." type="text"/>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-600 uppercase text-xs font-semibold tracking-wider">
+                            <th class="py-3 px-4 rounded-tl-lg w-32">Mã Phòng</th>
+                            <th class="py-3 px-4">Tên Phòng ban</th>
+                            <th class="py-3 px-4">Trực thuộc</th>
+                            <th class="py-3 px-4 text-center w-32">Số nhân sự</th>
+                            <th class="py-3 px-4 rounded-tr-lg text-right w-24">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm text-gray-700" id="department-table-body">
+                        <!-- JS sẽ đổ dữ liệu vào đây -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL THÊM/SỬA PHÒNG BAN -->
+    <div id="dept-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col">
+            <div class="flex justify-between items-center p-6 border-b border-gray-100">
+                <h3 class="text-xl font-semibold" id="dept-modal-title">Thêm mới Phòng ban</h3>
+                <button id="btn-close-dept" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <div class="p-6">
+                <form id="dept-form" class="flex flex-col gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Mã phòng ban <span class="text-red-500">*</span></label>
+                        <input type="text" id="dept-code" class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-[#005daa]" placeholder="VD: DEPT_MKT" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Tên phòng ban <span class="text-red-500">*</span></label>
+                        <input type="text" id="dept-name" class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-[#005daa]" placeholder="VD: Phòng Marketing" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Phòng ban trực thuộc (Cấp cha)</label>
+                        <select id="dept-parent" class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-[#005daa]">
+                            <!-- Đổ dữ liệu các phòng ban làm option -->
+                        </select>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="p-6 border-t border-gray-100 flex justify-end gap-3 bg-gray-50">
+                <button id="btn-cancel-dept" class="px-4 py-2 rounded-lg font-semibold border border-gray-300 text-gray-700 hover:bg-gray-100">Hủy</button>
+                <button id="btn-save-dept" class="px-4 py-2 rounded-lg font-semibold bg-[#005daa] text-white hover:opacity-90">Lưu Phòng ban</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nhúng file JS -->
+    <script src="../../js/department.js"></script>
+</body>
+</html>
