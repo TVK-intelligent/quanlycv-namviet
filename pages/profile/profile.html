@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ cá nhân - Work Management</title>
+    <!-- Base CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/profile.css">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Render Sidebar ở đây -->
+        <div id="sidebar-container"></div>
+
+        <div class="main-wrapper">
+            <!-- Render Header ở đây -->
+            <div id="header-container"></div>
+
+            <!-- Nội dung chính -->
+            <main class="main-content">
+                <!-- Breadcrumb -->
+                <div class="breadcrumb" style="margin-bottom: 24px;">
+                    <span class="breadcrumb-item"><a href="/index.html">🏠 Trang chủ</a></span>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-item active">👤 Hồ sơ cá nhân</span>
+                </div>
+
+                <div class="profile-grid">
+                    <!-- CỘT TRÁI: THÔNG TIN CÁ NHÂN & CÔNG VIỆC -->
+                    <div class="profile-left-column">
+                        <div class="profile-card">
+                            <div class="profile-header-section">
+                                <div class="profile-avatar-wrapper">
+                                    <div class="profile-avatar" id="user-avatar-display">--</div>
+                                </div>
+                                <h2 class="profile-name" id="user-name-display">--</h2>
+                                <p class="profile-title" id="user-title-display">--</p>
+                            </div>
+                            
+                            <div class="profile-divider"></div>
+                            
+                            <div class="profile-info-section">
+                                <h3 class="section-title"><i class="fa-solid fa-user"></i> Thông tin cá nhân</h3>
+                                <div class="info-group">
+                                    <span class="info-label">Họ và tên:</span>
+                                    <span class="info-value" id="info-fullname">--</span>
+                                </div>
+                                <div class="info-group">
+                                    <span class="info-label">Ngày sinh:</span>
+                                    <span class="info-value" id="info-dob">--</span>
+                                </div>
+                                <div class="info-group">
+                                    <span class="info-label">Email liên hệ:</span>
+                                    <span class="info-value" id="info-email">--</span>
+                                </div>
+                                <div class="info-group">
+                                    <span class="info-label">Số điện thoại:</span>
+                                    <span class="info-value" id="info-phone">--</span>
+                                </div>
+                            </div>
+                            
+                            <div class="profile-divider"></div>
+                            
+                            <div class="profile-info-section">
+                                <h3 class="section-title"><i class="fa-solid fa-briefcase"></i> Thông tin công việc</h3>
+                                <div class="info-group">
+                                    <span class="info-label">Phòng ban:</span>
+                                    <span class="info-value" id="info-department">--</span>
+                                </div>
+                                <div class="info-group">
+                                    <span class="info-label">Chức danh:</span>
+                                    <span class="info-value" id="info-title">--</span>
+                                </div>
+                                <div class="info-group">
+                                    <span class="info-label">Ngày tham gia:</span>
+                                    <span class="info-value" id="info-joined">--</span>
+                                </div>
+                                <div class="info-group">
+                                    <span class="info-label">Quyền hệ thống:</span>
+                                    <span class="info-value"><span class="badge badge-processing" id="info-sysrole">--</span></span>
+                                </div>
+                            </div>
+                            
+                            <div class="profile-actions">
+                                <button class="btn btn-primary" id="btn-edit-profile" style="width: 100%; margin-bottom: 12px;">
+                                    <i class="fa-solid fa-user-pen"></i> Chỉnh sửa hồ sơ
+                                </button>
+                                <a href="/pages/profile/change-password.html" class="btn btn-secondary" style="width: 100%; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fa-solid fa-key"></i> Đổi mật khẩu
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CỘT PHẢI: HIỆU SUẤT & DỰ ÁN -->
+                    <div class="profile-right-column">
+                        <!-- Mục 4: Thống kê công việc -->
+                        <div class="profile-card" style="margin-bottom: 24px;">
+                            <h3 class="section-title" style="margin-bottom: 16px;"><i class="fa-solid fa-chart-pie"></i> Thống kê công việc tháng này</h3>
+                            <div class="stats-grid">
+                                <div class="stat-box">
+                                    <span class="stat-count" id="stat-total">0</span>
+                                    <span class="stat-label">Tổng công việc</span>
+                                </div>
+                                <div class="stat-box success">
+                                    <span class="stat-count" id="stat-completed">0</span>
+                                    <span class="stat-label">Hoàn thành</span>
+                                </div>
+                                <div class="stat-box warning">
+                                    <span class="stat-count" id="stat-active">0</span>
+                                    <span class="stat-label">Đang thực hiện</span>
+                                </div>
+                                <div class="stat-box danger">
+                                    <span class="stat-count" id="stat-overdue">0</span>
+                                    <span class="stat-label">Quá hạn</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mục 5 & 6: Dự án tham gia & Tiến độ/Phân bổ -->
+                        <div class="profile-card" style="margin-bottom: 24px;">
+                            <h3 class="section-title" style="margin-bottom: 16px;"><i class="fa-solid fa-diagram-project"></i> Dự án tham gia & Sức tải phân bổ</h3>
+                            
+                            <div class="capacity-overall" style="margin-bottom: 20px; padding: 12px 16px; background-color: var(--bg-main); border-radius: var(--border-radius-md);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span style="font-weight: 600; font-size: 13px;">TỔNG TẢI PHÂN BỔ HIỆN TẠI (WSI):</span>
+                                    <span style="font-weight: 700; font-size: 15px;" id="overall-wsi-text">0%</span>
+                                </div>
+                                <div style="width: 100%; height: 12px; background: #e2e8f0; border-radius: 6px; overflow: hidden;">
+                                    <div id="overall-wsi-bar" style="width: 0%; height: 100%; border-radius: 6px; transition: width 0.4s ease;"></div>
+                                </div>
+                                <p style="font-size: 11px; color: var(--text-muted); margin-top: 6px;" id="overall-wsi-desc">Trạng thái sức tải công việc của bạn.</p>
+                            </div>
+
+                            <div id="projects-list-container" style="display: flex; flex-direction: column; gap: 16px;">
+                                <!-- Render danh sách dự án động -->
+                            </div>
+                        </div>
+
+                        <!-- Mục 7: Hoạt động gần đây -->
+                        <div class="profile-card">
+                            <h3 class="section-title" style="margin-bottom: 16px;"><i class="fa-solid fa-clock-rotate-left"></i> Hoạt động gần đây</h3>
+                            <div class="timeline-container" id="profile-timeline" style="margin-top: 10px;">
+                                <!-- Render dòng thời gian động -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Render Footer ở đây -->
+            <div id="footer-container"></div>
+        </div>
+    </div>
+
+    <!-- Modal chỉnh sửa thông tin cá nhân -->
+    <div class="profile-modal-overlay" id="edit-profile-modal">
+        <div class="profile-modal-content">
+            <div class="profile-modal-header">
+                <h3>Chỉnh sửa hồ sơ cá nhân</h3>
+                <button class="modal-close-btn" id="modal-close-x">&times;</button>
+            </div>
+            <form id="edit-profile-form">
+                <div class="profile-modal-body">
+                    <!-- Chọn ảnh đại diện viết tắt hoặc màu nền -->
+                    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+                        <div class="profile-avatar" id="modal-avatar-preview" style="width: 64px; height: 64px; font-size: 24px;">--</div>
+                        <div style="flex: 1;">
+                            <label class="form-label">Màu nền Avatar:</label>
+                            <div class="color-picker-grid">
+                                <div class="color-option active" data-color="#1890FF" style="background-color: #1890FF;"></div>
+                                <div class="color-option" data-color="#52C41A" style="background-color: #52C41A;"></div>
+                                <div class="color-option" data-color="#FA8C16" style="background-color: #FA8C16;"></div>
+                                <div class="color-option" data-color="#F5222D" style="background-color: #F5222D;"></div>
+                                <div class="color-option" data-color="#722ED1" style="background-color: #722ED1;"></div>
+                                <div class="color-option" data-color="#13C2C2" style="background-color: #13C2C2;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required" for="edit-name">Họ và tên</label>
+                        <input type="text" class="form-control" id="edit-name" required placeholder="Nhập họ và tên">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required" for="edit-email">Email liên hệ</label>
+                        <input type="email" class="form-control" id="edit-email" required placeholder="Nhập địa chỉ email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="edit-phone">Số điện thoại</label>
+                        <input type="text" class="form-control" id="edit-phone" placeholder="Nhập số điện thoại">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="edit-dob">Ngày sinh</label>
+                        <input type="date" class="form-control" id="edit-dob">
+                    </div>
+                </div>
+                <div class="profile-modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-edit">Hủy bỏ</button>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Render Modal & Loading ở đây -->
+    <div id="modal-container"></div>
+    <div id="loading-container"></div>
+
+    <!-- Base JS -->
+    <script src="/js/common.js"></script>
+    <script src="/js/profile.js"></script>
+</body>
+</html>

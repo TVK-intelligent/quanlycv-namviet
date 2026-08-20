@@ -7,23 +7,16 @@
                 <line x1="3" y1="18" x2="21" y2="18"></line>
             </svg>
         </button>
-        <div class="breadcrumb">
-            <span class="breadcrumb-item active">🏠 Dashboard </span>
-        </div>
-        <!-- Nút Tạo Mới Nhanh (Quick Create Button) -->
-        <button class="btn btn-primary btn-sm" id="quick-create-btn" style="display: flex; align-items: center; gap: 6px; margin-left: 12px; padding: 6px 12px; font-size: 12px; font-weight: 600; border-radius: var(--border-radius-md); background-color: var(--primary-color); border: none; color: white; cursor: pointer;">
-            <i class="fa-solid fa-plus"></i> Tạo mới
-        </button>
-    </div>
-    
-    <div class="header-right">
         <!-- Tìm kiếm nhanh -->
-        <div class="search-box">
-            <div class="search-input-wrapper" style="position: relative; width: 200px;">
+        <div class="search-box" style="margin-left: 12px;">
+            <div class="search-input-wrapper" style="position: relative; width: 220px;">
                 <i class="fa-solid fa-magnifying-glass search-icon" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 13px;"></i>
                 <input type="text" class="form-control search-input" placeholder="Tìm nhanh... (Ctrl+K)" style="padding-left: 32px; height: 32px; font-size: 13px; border-radius: var(--border-radius-pill); background-color: var(--bg-main); border: 1px solid transparent; width: 100%; outline: none; transition: all var(--transition-fast);">
             </div>
         </div>
+    </div>
+    
+    <div class="header-right">
 
         <!-- Bộ chuyển đổi vai trò giả lập (Global Role Switcher) -->
         <div class="global-role-switcher" style="display: flex; align-items: center; gap: 8px; border-left: 1px solid var(--border-color); padding-left: 16px;">
@@ -58,10 +51,10 @@
         <!-- Thông tin Tài khoản Đăng nhập -->
         <div class="user-profile-dropdown" style="border-left: 1px solid var(--border-color); padding-left: 16px;">
             <div class="user-avatar-trigger" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 8px; border-radius: var(--border-radius-md); transition: background var(--transition-fast);">
-                <div class="avatar-circle" style="width: 32px; height: 32px; border-radius: 50%; background-color: var(--primary-color); color: white; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center;">KT</div>
+                <div class="avatar-circle" id="header-user-avatar" style="width: 32px; height: 32px; border-radius: 50%; background-color: var(--primary-color); color: white; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center;">KT</div>
                 <div class="user-info" style="display: flex; flex-direction: column; text-align: left;">
-                    <span class="user-name" style="font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.2;">Khải Trần</span>
-                    <span class="user-role" style="font-size: 11px; color: var(--text-muted);">Trưởng phòng</span>
+                    <span class="user-name" id="header-user-name" style="font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.2;">Khải Trần</span>
+                    <span class="user-role" id="header-user-role" style="font-size: 11px; color: var(--text-muted);">Trưởng phòng</span>
                 </div>
                 <i class="fa-solid fa-chevron-down dropdown-icon" style="font-size: 10px; color: var(--text-muted); transition: transform var(--transition-fast);"></i>
             </div>
