@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách Dự án | ETRMS</title>
+    <meta name="description"
+        content="Quản lý danh sách dự án theo cấu trúc phân cấp cha-con với chức năng tìm kiếm, lọc và phân trang.">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/project/project.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <div id="sidebar-container"></div>
+        <div class="main-wrapper">
+            <div id="header-container"></div>
+            <main class="main-content">
+
+                <!-- Breadcrumb -->
+                <div class="breadcrumb">
+                    <a href="/index.html">Dashboard</a>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <span>Quản lý Dự án</span>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <span>Danh sách Dự án</span>
+                </div>
+
+                <h1 class="page-title">Danh sách Dự án</h1>
+
+                <!-- Table Card -->
+                <div class="table-card">
+
+                    <!-- Toolbar -->
+                    <div class="project-toolbar table-toolbar">
+                        <div class="project-toolbar-left">
+                            <div class="project-search-box">
+                                <i class="fa fa-search"></i>
+                                <input type="text" id="project-search" class="form-control"
+                                    placeholder="Tìm theo mã hoặc tên dự án..." autocomplete="off">
+                            </div>
+                            <select id="project-status-filter" class="project-filter-select">
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="NOT_STARTED">Chưa bắt đầu</option>
+                                <option value="IN_PROGRESS">Đang thực hiện</option>
+                                <option value="COMPLETED">Hoàn thành</option>
+                                <option value="ON_HOLD">Tạm dừng</option>
+                                <option value="CANCELLED">Đã hủy</option>
+                            </select>
+                        </div>
+                        <div class="project-toolbar-right">
+                            <button id="btn-add-project" class="btn btn-primary">
+                                <i class="fa fa-plus"></i> Thêm dự án
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div style="overflow-x: auto;">
+                        <table class="data-table" id="project-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:40px;">
+                                        <input type="checkbox" id="select-all-projects">
+                                    </th>
+                                    <th style="min-width:130px;">Mã dự án</th>
+                                    <th style="min-width:220px;">Tên dự án</th>
+                                    <th style="min-width:150px;">PM Phụ trách</th>
+                                    <th style="width:100px; text-align:right;">Trọng số (%)</th>
+                                    <th style="min-width:140px;">Tiến độ (%)</th>
+                                    <th style="min-width:130px;">Trạng thái</th>
+                                    <th style="min-width:110px;">Ngày bắt đầu</th>
+                                    <th style="min-width:110px;">Ngày kết thúc</th>
+                                    <th style="width:120px; text-align:center;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="project-table-body">
+                                <!-- Rows injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="empty-state" id="project-empty-state" style="display:none;">
+                        <div class="empty-state-icon"><i class="fa fa-folder-open"></i></div>
+                        <div class="empty-state-text">Chưa có dự án nào</div>
+                        <div class="empty-state-sub">Nhấn "+ Thêm dự án" để tạo dự án đầu tiên.</div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination" id="project-pagination"></div>
+
+                </div><!-- /.table-card -->
+
+            </main>
+            <div id="footer-container"></div>
+        </div>
+    </div>
+
+    <!-- Global components injected by common.js -->
+    <div id="modal-container"></div>
+    <div id="loading-container"></div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/project/project-data.js"></script>
+    <script src="/js/project/project-list.js"></script>
+</body>
+
+</html>
