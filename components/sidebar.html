@@ -8,9 +8,9 @@
         <span>Work Management</span>
     </div>
     <ul class="sidebar-menu">
-        <!-- 1. Dashboard (Tất cả) -->
+        <!-- 1. Dashboard -->
         <li data-roles="employee,pm,head">
-            <a href="/index.html" class="active">
+            <a href="/index.html">
                 <div class="left-section">
                     <span class="icon"><i class="fa-solid fa-chart-line"></i></span> 
                     <span class="text">Dashboard</span>
@@ -18,7 +18,7 @@
             </a>
         </li>
         
-        <!-- 2. Quản lý Dự án (PM / Trưởng phòng) -->
+        <!-- 2. Quản lý Dự án (PM) -->
         <li class="has-submenu" data-roles="pm,head">
             <a href="#" class="submenu-toggle">
                 <div class="left-section">
@@ -33,7 +33,7 @@
             </ul>
         </li>
 
-        <!-- 3. Work Management (Tất cả, phân chia mục con) -->
+        <!-- 3. Work Management -->
         <li class="has-submenu" data-roles="employee,pm,head">
             <a href="#" class="submenu-toggle">
                 <div class="left-section">
@@ -43,13 +43,13 @@
                 <span class="arrow">▾</span>
             </a>
             <ul class="submenu">
-                <li data-roles="pm,head"><a href="/pages/task/task-list.html">Danh sách công việc</a></li>
-                <li data-roles="employee"><a href="/pages/task/my-task.html">Công việc của tôi</a></li>
-                <li data-roles="employee"><a href="/pages/task/subtask.html">Sub Task</a></li>
+                <li data-roles="employee,pm,head"><a href="/pages/task/task-list.html">Danh sách công việc</a></li>
+                <li data-roles="employee,pm,head"><a href="/pages/task/my-task.html">Công việc của tôi</a></li>
+                <li data-roles="employee,pm,head"><a href="/pages/task/subtask.html">Sub Task</a></li>
             </ul>
         </li>
 
-        <!-- 4. Quản lý Nhân sự (Chỉ Trưởng phòng) -->
+        <!-- 4. Quản lý Nhân sự (Trưởng phòng) -->
         <li class="has-submenu" data-roles="head">
             <a href="#" class="submenu-toggle">
                 <div class="left-section">
@@ -64,7 +64,7 @@
             </ul>
         </li>
 
-        <!-- 5. Quy trình (Tất cả, phân chia mục con) -->
+        <!-- 5. Quy trình -->
         <li class="has-submenu" data-roles="employee,pm,head">
             <a href="#" class="submenu-toggle">
                 <div class="left-section">
@@ -81,7 +81,7 @@
             </ul>
         </li>
 
-        <!-- 6. Báo cáo & Thống kê (PM / Trưởng phòng) -->
+        <!-- 6. Báo cáo & Thống kê -->
         <li class="has-submenu" data-roles="pm,head">
             <a href="#" class="submenu-toggle">
                 <div class="left-section">
