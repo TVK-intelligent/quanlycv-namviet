@@ -7,7 +7,9 @@
 
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/report/employee-kpi-report.css">
 </head>
+
 <body
     data-breadcrumb-parent="Báo cáo"
     data-breadcrumb-current="KPI Nhân sự"
@@ -18,13 +20,301 @@
         <div class="main-wrapper">
             <div id="header-container"></div>
 
-            <main class="main-content">
-                <h1 class="page-title">Báo cáo KPI Nhân sự</h1>
-                <p>Trang đang được triển khai.</p>
+            <main class="main-content employee-kpi-page">
+                <section class="employee-kpi-toolbar">
+                    <p class="employee-kpi-context">
+                        Báo cáo <span>›</span> KPI Nhân sự
+                    </p>
+
+                    <div class="employee-kpi-toolbar-actions">
+                        <select
+                            id="employee-kpi-period-filter"
+                            aria-label="Kỳ đánh giá KPI"
+                        >
+                            <option value="current-month">▣ Tháng hiện tại</option>
+                            <option value="current-quarter">▣ Quý hiện tại</option>
+                            <option value="current-year">▣ Năm hiện tại</option>
+                        </select>
+
+                        <button
+                            id="employee-kpi-snapshot-button"
+                            class="btn btn-primary"
+                            type="button"
+                        >
+                            ◉ Snapshot KPI Month
+                        </button>
+                    </div>
+                </section>
+
+                <section class="employee-kpi-overview">
+                    <div class="employee-kpi-intro">
+                        <h1>KPI Engine</h1>
+                        <p>
+                            Đánh giá hệ thống hiệu suất nhân sự dựa trên tiến độ
+                            hoàn thành công việc và các chỉ số hiệu quả theo thời gian thực.
+                        </p>
+                    </div>
+
+                    <div class="employee-kpi-summary-grid">
+                        <article class="employee-kpi-summary-card">
+                            <span class="employee-kpi-summary-label">
+                                Total evaluated
+                            </span>
+                            <strong id="employee-kpi-total-evaluated">142</strong>
+                            <p class="employee-kpi-summary-change is-positive">
+                                ↗ +12 so với tháng trước
+                            </p>
+                        </article>
+
+                        <article class="employee-kpi-summary-card">
+                            <span class="employee-kpi-summary-label">
+                                Avg. on-time rate
+                            </span>
+                            <strong id="employee-kpi-average-on-time">
+                                92.4<span>%</span>
+                            </strong>
+                            <p class="employee-kpi-summary-change is-stable">
+                                → Hiệu suất ổn định
+                            </p>
+                        </article>
+
+                        <article class="employee-kpi-summary-card">
+                            <span class="employee-kpi-summary-label">
+                                Avg. FTPR
+                            </span>
+                            <strong id="employee-kpi-average-ftpr">
+                                88.7<span>%</span>
+                            </strong>
+                            <p class="employee-kpi-summary-change is-positive">
+                                ↗ +2.1% cải thiện
+                            </p>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="employee-kpi-table-card">
+                    <header class="employee-kpi-table-toolbar">
+                        <label class="employee-kpi-search-box">
+                            <span aria-hidden="true">⌕</span>
+                            <input
+                                id="employee-kpi-search-input"
+                                type="search"
+                                placeholder="Tìm kiếm nhân sự..."
+                                aria-label="Tìm kiếm nhân sự"
+                            >
+                        </label>
+
+                        <div class="employee-kpi-table-actions">
+                            <button
+                                id="employee-kpi-advanced-filter-button"
+                                class="btn-icon"
+                                type="button"
+                                title="Lọc nâng cao"
+                            >
+                                ☰
+                            </button>
+
+                            <button
+                                id="employee-kpi-export-button"
+                                class="btn-icon"
+                                type="button"
+                                title="Xuất CSV"
+                            >
+                                ⇩
+                            </button>
+                        </div>
+                    </header>
+
+                    <div class="employee-kpi-table-scroll">
+                        <table class="data-table employee-kpi-table">
+                            <thead>
+                                <tr>
+                                    <th>Nhân sự</th>
+                                    <th>Phòng ban</th>
+                                    <th>Tháng/năm</th>
+                                    <th>On-time rate</th>
+                                    <th>FTPR</th>
+                                    <th>Logged hours</th>
+                                    <th>Final score</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="employee-kpi-tbody">
+                                <tr>
+                                    <td>
+                                        <div class="employee-kpi-person">
+                                            <span class="employee-kpi-avatar">NA</span>
+                                            <span>
+                                                <strong>Nguyễn Văn An</strong>
+                                                <small>Senior Backend Dev</small>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="employee-kpi-department-badge">
+                                            Engineering
+                                        </span>
+                                    </td>
+                                    <td>08/2026</td>
+                                    <td>
+                                        <div class="employee-kpi-rate">
+                                            <span>98.5% ↗</span>
+                                            <div class="employee-kpi-progress">
+                                                <span style="width: 98.5%"></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>95.0%</td>
+                                    <td>164.5h</td>
+                                    <td><span class="employee-kpi-score is-excellent">97</span></td>
+                                    <td>
+                                        <button class="employee-kpi-detail-button" type="button">
+                                            Xem
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="employee-kpi-person">
+                                            <span class="employee-kpi-avatar employee-kpi-avatar--warm">TB</span>
+                                            <span>
+                                                <strong>Trần Thị Bích</strong>
+                                                <small>Product Designer</small>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="employee-kpi-department-badge is-design">
+                                            Design
+                                        </span>
+                                    </td>
+                                    <td>08/2026</td>
+                                    <td>
+                                        <div class="employee-kpi-rate is-warning">
+                                            <span>88.0% →</span>
+                                            <div class="employee-kpi-progress">
+                                                <span style="width: 88%"></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>90.2%</td>
+                                    <td>158.0h</td>
+                                    <td><span class="employee-kpi-score">89</span></td>
+                                    <td>
+                                        <button class="employee-kpi-detail-button" type="button">
+                                            Xem
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="employee-kpi-person">
+                                            <span class="employee-kpi-avatar employee-kpi-avatar--dark">LC</span>
+                                            <span>
+                                                <strong>Lê Minh Cường</strong>
+                                                <small>QA Specialist</small>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="employee-kpi-department-badge">
+                                            Engineering
+                                        </span>
+                                    </td>
+                                    <td>08/2026</td>
+                                    <td>
+                                        <div class="employee-kpi-rate is-danger">
+                                            <span>75.4% ↓</span>
+                                            <div class="employee-kpi-progress">
+                                                <span style="width: 75.4%"></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>82.1%</td>
+                                    <td>160.0h</td>
+                                    <td><span class="employee-kpi-score is-low">78</span></td>
+                                    <td>
+                                        <button class="employee-kpi-detail-button" type="button">
+                                            Xem
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="employee-kpi-person">
+                                            <span class="employee-kpi-avatar employee-kpi-avatar--blue">PD</span>
+                                            <span>
+                                                <strong>Phạm Thu Dung</strong>
+                                                <small>Data Analyst</small>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="employee-kpi-department-badge is-data">
+                                            Data Science
+                                        </span>
+                                    </td>
+                                    <td>08/2026</td>
+                                    <td>
+                                        <div class="employee-kpi-rate">
+                                            <span>96.2% ↗</span>
+                                            <div class="employee-kpi-progress">
+                                                <span style="width: 96.2%"></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>94.5%</td>
+                                    <td>168.0h</td>
+                                    <td><span class="employee-kpi-score">95</span></td>
+                                    <td>
+                                        <button class="employee-kpi-detail-button" type="button">
+                                            Xem
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <footer class="employee-kpi-pagination">
+                        <p id="employee-kpi-summary">
+                            Hiển thị 1 đến 4 của 142 nhân sự
+                        </p>
+
+                        <div class="employee-kpi-pagination-controls">
+                            <button
+                                id="employee-kpi-prev-page"
+                                type="button"
+                                aria-label="Trang trước"
+                            >
+                                ‹
+                            </button>
+
+                            <div id="employee-kpi-page-numbers">
+                                <button class="is-active" type="button">1</button>
+                                <button type="button">2</button>
+                                <button type="button">3</button>
+                            </div>
+
+                            <button
+                                id="employee-kpi-next-page"
+                                type="button"
+                                aria-label="Trang sau"
+                            >
+                                ›
+                            </button>
+                        </div>
+                    </footer>
+                </section>
             </main>
         </div>
     </div>
 
     <script src="/js/common.js"></script>
+    <script src="/js/report/employee-kpi-report.js"></script>
 </body>
 </html>
