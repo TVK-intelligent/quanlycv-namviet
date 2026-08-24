@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Nhân viên - ETRMS</title>
+    <!-- Giữ lại cấu hình Tailwind CSS của Stitch để giao diện không bị vỡ -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script id="tailwind-config">
+        // (Đã thu gọn config màu sắc để code HTML ngắn gọn hơn)
+        tailwind.config={theme:{extend:{"colors":{"surface-bright":"#f9f9f9","error-container":"#ffdad6","on-surface-variant":"#404753","primary":"#005daa","secondary-fixed":"#dce1ff","on-secondary-fixed":"#00164f","tertiary":"#934600","error":"#ba1a1a","surface-container-high":"#e8e8e8","surface-container-lowest":"#ffffff","on-surface":"#1a1c1c"}}}}
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+    
+    <!-- File CSS gốc của dự án -->
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="bg-surface-bright font-body text-on-surface">
+    <!-- NỘI DUNG CHÍNH (Main Content) -->
+    <div class="flex flex-col w-full gap-8 p-6">
+        
+        <!-- Main List Card -->
+        <div class="bg-surface-container-lowest rounded-xl shadow-md p-6 flex flex-col gap-6">
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <h2 class="text-2xl font-semibold text-on-surface">Danh sách Nhân viên</h2>
+                <button id="btn-add-emp" class="bg-primary text-white rounded-lg font-semibold px-4 py-2 flex items-center gap-1 hover:opacity-90 transition-colors shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">add</span>
+                    Thêm nhân viên
+                </button>
+            </div>
+
+            <!-- Toolbar (Task 55, 56) -->
+            <div class="flex flex-col sm:flex-row gap-4 bg-surface-bright p-2 rounded-lg">
+                <div class="flex-1 relative">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+                    <input type="text" id="search-emp" class="w-full bg-surface-container-lowest pl-10 pr-4 py-2 rounded-lg text-on-surface outline-none shadow-sm transition-all" placeholder="Tìm kiếm nhân viên, email...">
+                </div>
+                <div class="flex gap-4">
+                    <select id="filter-dept" class="bg-surface-container-lowest px-4 py-2 rounded-lg text-on-surface outline-none shadow-sm cursor-pointer min-w-[150px]">
+                        <option value="ALL">Tất cả phòng ban</option>
+                        <option value="DEPT_DEV">Phòng Phát triển</option>
+                        <option value="DEPT_QA">Phòng Kiểm thử</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Data Table (Task 50) -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 text-on-surface-variant text-xs font-semibold uppercase tracking-wider">
+                            <th class="p-4 rounded-tl-lg">Nhân viên</th>
+                            <th class="p-4">Email</th>
+                            <th class="p-4">Phòng ban</th>
+                            <th class="p-4">Vai trò</th>
+                            <th class="p-4">Sức tải (WSI)</th>
+                            <th class="p-4 text-right rounded-tr-lg">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <!-- LƯU Ý: Thẻ tbody đã được làm trống và gắn ID để JS đổ dữ liệu vào -->
+                    <tbody id="employee-table-body" class="text-sm text-on-surface">
+                        <!-- JS Render Here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- BẮT ĐẦU: MODAL THÊM/SỬA NHÂN VIÊN (Task 51, 52) -->
+    <!-- Mặc định class 'hidden' để ẩn modal đi -->
+    <div id="employee-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="bg-surface-container-lowest rounded-xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col">
+            
+            <!-- Header Modal -->
+            <div class="flex justify-between items-center p-6 border-b border-surface-variant">
+                <h3 class="text-xl font-semibold text-on-surface" id="modal-title">Thêm mới Nhân viên</h3>
+                <button id="btn-close-modal" class="text-on-surface-variant hover:text-error transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <!-- Body Modal (Form nhập liệu) -->
+            <div class="p-6 overflow-y-auto max-h-[70vh]">
+                <form id="employee-form" class="grid grid-cols-2 gap-4">
+                    <!-- Cột 1 -->
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-sm font-semibold mb-1">Họ và tên <span class="text-red-500">*</span></label>
+                        <input type="text" id="emp-name" class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-primary" required>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-sm font-semibold mb-1">Email <span class="text-red-500">*</span></label>
+                        <input type="email" id="emp-email" class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-primary" required>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-sm font-semibold mb-1">Số điện thoại</label>
+                        <input type="text" id="emp-phone" class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-primary">
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-sm font-semibold mb-1">Link Ảnh Avatar</label>
+                        <input type="text" id="emp-avatar" class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-primary" placeholder="https://...">
+                    </div>
+                    
+                    <!-- Cột 2 -->
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-sm font-semibold mb-1">Phòng ban <span class="text-red-500">*</span></label>
+                        <select id="emp-dept" class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-primary" required>
+                            <!-- JS sẽ tự động đổ danh sách phòng ban vào đây -->
+                        </select>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-sm font-semibold mb-1">Chức vụ trong phòng</label>
+                        <select id="emp-role" class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-primary">
+                            <option value="MEMBER">Member (Thành viên)</option>
+                            <option value="TEAM_LEAD">Team Lead (Trưởng nhóm)</option>
+                            <option value="DEPUTY">Deputy (Phó phòng)</option>
+                            <option value="HEAD">Head (Trưởng phòng)</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Footer Modal (Các nút bấm) -->
+            <div class="p-6 border-t border-surface-variant flex justify-end gap-3 bg-surface-bright">
+                <button id="btn-cancel-modal" class="px-4 py-2 rounded-lg font-semibold border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors">Hủy</button>
+                <button id="btn-save-emp" class="px-4 py-2 rounded-lg font-semibold bg-primary text-white hover:opacity-90 transition-colors shadow-sm">Lưu Nhân viên</button>
+            </div>
+            
+        </div>
+    </div>
+    <!-- KẾT THÚC MODAL -->
+
+    <!-- Nhúng file JS người điều phối -->
+    <script src="../../js/employee.js"></script>
+</body>
+</html>
