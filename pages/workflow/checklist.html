@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Quality Checklist - ETRM</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1;
+        }
+        /* Mobile Safe Area Adjustments */
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+        
+        /* Custom Scrollbar for horizontal lists */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    <style>
+        .bottom-sheet {
+            transform: translateY(100%);
+            animation: slideUp 0.3s ease-out forwards;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        
+        .custom-checkbox {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid theme('colors.outline-variant');
+            border-radius: 4px;
+            outline: none;
+            transition: all 0.2s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .custom-checkbox:checked {
+            background-color: theme('colors.primary');
+            border-color: theme('colors.primary');
+        }
+        
+        .custom-checkbox:checked::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 2px;
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .custom-checkbox:focus-visible {
+            box-shadow: 0 0 0 2px theme('colors.surface'), 0 0 0 4px theme('colors.primary');
+        }
+    </style>
+</style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed": "#82f9be",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-highest": "#d7e2ff",
+                      "on-secondary-container": "#00734c",
+                      "on-primary-container": "#c4d2ff",
+                      "outline-variant": "#c3c6d6",
+                      "primary-fixed-dim": "#b2c5ff",
+                      "on-secondary-fixed": "#002113",
+                      "on-surface-variant": "#434654",
+                      "tertiary-fixed": "#ffddb3",
+                      "primary": "#003d9b",
+                      "on-primary-fixed": "#001848",
+                      "surface-variant": "#d7e2ff",
+                      "error-container": "#ffdad6",
+                      "secondary-fixed-dim": "#65dca4",
+                      "surface-bright": "#f9f9ff",
+                      "error": "#ba1a1a",
+                      "primary-container": "#0052cc",
+                      "surface-container-high": "#e0e8ff",
+                      "on-primary-fixed-variant": "#0040a2",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed-dim": "#ffb950",
+                      "on-tertiary-container": "#ffca81",
+                      "surface-tint": "#0c56d0",
+                      "on-primary": "#ffffff",
+                      "on-tertiary-fixed-variant": "#624000",
+                      "surface-dim": "#cadaff",
+                      "secondary-container": "#82f9be",
+                      "outline": "#737685",
+                      "inverse-primary": "#b2c5ff",
+                      "background": "#f9f9ff",
+                      "on-error-container": "#93000a",
+                      "inverse-on-surface": "#edf0ff",
+                      "on-error": "#ffffff",
+                      "on-tertiary-fixed": "#291800",
+                      "on-tertiary": "#ffffff",
+                      "primary-fixed": "#dae2ff",
+                      "on-secondary-fixed-variant": "#005235",
+                      "inverse-surface": "#1d3052",
+                      "tertiary": "#5e3c00",
+                      "surface-container-low": "#f1f3ff",
+                      "surface": "#f9f9ff",
+                      "secondary": "#006c47",
+                      "on-surface": "#041b3c",
+                      "on-background": "#041b3c",
+                      "surface-container": "#e8edff",
+                      "tertiary-container": "#7d5200"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "stack-md": "16px",
+                      "margin-edge": "16px",
+                      "touch-target": "44px",
+                      "stack-sm": "8px",
+                      "gutter": "12px",
+                      "unit": "4px"
+              },
+              "fontFamily": {
+                      "display": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "label-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "label-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "display": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                      "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                      "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                      "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                      "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+                      "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                      "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+                      "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "500" }]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen font-body-md pt-safe">
+<!-- TopAppBar Semantic Shell Execution -->
+<header class="bg-surface dark:bg-surface-dim docked full-width top-0 sticky z-50 border-b border-outline-variant dark:border-outline flat no shadows flex justify-between items-center h-14 px-margin-edge w-full">
+<div class="flex items-center gap-4">
+<button aria-label="Menu" class="text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors active:opacity-80 transition-opacity p-2 -ml-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim tracking-tight">TaskConnect</h1>
+</div>
+<div class="flex items-center">
+<div aria-label="User profile avatar" class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden cursor-pointer">
+<!-- Placeholder Avatar -->
+<span class="material-symbols-outlined text-primary-container m-1" data-icon="person" data-weight="fill">person</span>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="pb-[76px] md:pb-8 flex flex-col md:flex-row min-h-[calc(100vh-56px)]">
+<!-- NavigationDrawer (Hidden on Mobile, Visible on md+) Semantic Shell Execution -->
+<aside class="hidden md:flex bg-surface-container-low dark:bg-surface-container h-full w-72 rounded-r-xl shadow-md dark:shadow-none transition-all duration-200 ease-in-out fixed inset-y-0 left-0 z-[60] flex-col pt-14 border-r border-outline-variant">
+<div class="p-4 border-b border-outline-variant flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined" data-icon="person" data-weight="fill">person</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-fixed-dim">Alex Rivers</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Project Manager • ETRM Solutions</span>
+</div>
+</div>
+<nav class="flex-1 py-4 flex flex-col gap-1 overflow-y-auto">
+<a class="text-on-surface-variant dark:text-outline-variant mx-2 px-4 py-3 flex items-center gap-3 hover:bg-surface-container-high dark:hover:bg-surface-container-highest rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-label-md text-label-md">Tasks</span>
+</a>
+<a class="text-on-surface-variant dark:text-outline-variant mx-2 px-4 py-3 flex items-center gap-3 hover:bg-surface-container-high dark:hover:bg-surface-container-highest rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<span class="font-label-md text-label-md">Timesheets</span>
+</a>
+<a class="text-on-surface-variant dark:text-outline-variant mx-2 px-4 py-3 flex items-center gap-3 hover:bg-surface-container-high dark:hover:bg-surface-container-highest rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-label-md text-label-md">Approvals</span>
+</a>
+<a class="bg-secondary-container dark:bg-on-secondary-fixed-variant text-on-secondary-container dark:text-secondary-fixed rounded-full mx-2 px-4 py-3 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined" data-icon="settings" data-weight="fill">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Content Area -->
+<div class="flex-1 md:ml-72 flex flex-col w-full max-w-5xl mx-auto">
+<!-- Context Header: Breadcrumbs & Actions -->
+<div class="bg-surface sticky top-14 z-40 px-margin-edge py-stack-md border-b border-outline-variant flex flex-col gap-stack-sm">
+<!-- Breadcrumb -->
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<a class="hover:text-primary transition-colors" href="#">Workflows</a>
+<span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
+<span class="font-semibold text-on-surface">Quality Checklists</span>
+</div>
+<!-- Title & Desktop Action -->
+<div class="flex justify-between items-center">
+<h2 class="font-display text-display text-on-surface">DoR / DoD Templates</h2>
+<button class="hidden md:flex items-center gap-2 bg-primary text-on-primary h-touch-target px-4 rounded-full font-label-md text-label-md hover:bg-on-primary-fixed-variant transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                        Create Template
+                    </button>
+</div>
+<!-- Toolbar: Search & Filters -->
+<div class="flex flex-col gap-stack-md mt-2">
+<!-- Search Field -->
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full h-10 pl-10 pr-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary transition-shadow placeholder:text-outline" placeholder="Search templates..." type="text"/>
+</div>
+<!-- Scrollable Filter Chips -->
+<div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1 -mx-margin-edge px-margin-edge md:mx-0 md:px-0">
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full border border-outline-variant bg-surface-container-lowest text-on-surface font-label-sm text-label-sm hover:bg-surface-container-low transition-colors flex items-center gap-1">
+                            Type: All
+                            <span class="material-symbols-outlined text-[14px]" data-icon="arrow_drop_down">arrow_drop_down</span>
+</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full border border-outline-variant bg-surface-container-lowest text-on-surface font-label-sm text-label-sm hover:bg-surface-container-low transition-colors flex items-center gap-1">
+                            Dept: All Departments
+                            <span class="material-symbols-outlined text-[14px]" data-icon="arrow_drop_down">arrow_drop_down</span>
+</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full border border-outline-variant bg-surface-container-lowest text-on-surface font-label-sm text-label-sm hover:bg-surface-container-low transition-colors flex items-center gap-1">
+                            Sort: Newest
+                            <span class="material-symbols-outlined text-[14px]" data-icon="swap_vert">swap_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- List View (Mobile Optimized Table/Cards) -->
+<div class="px-margin-edge py-stack-md flex flex-col gap-stack-md">
+<!-- Template Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden group hover:border-primary transition-colors">
+<!-- Status/Type Bar (Left Edge) -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="flex justify-between items-start pl-2">
+<div class="flex flex-col gap-1 pr-8">
+<h3 class="font-headline-sm text-headline-sm text-on-surface line-clamp-1">Software Release DoD</h3><button type="button" onclick="openSubmitTaskModal('Software Release DoD')" class="mt-2 self-start inline-flex items-center gap-1.5 bg-primary text-on-primary px-3 py-2 rounded-lg font-label-sm text-label-sm hover:bg-on-primary-fixed-variant transition-colors"><span class="material-symbols-outlined text-[16px]">send</span>Submit Task</button>
+<div class="flex items-center gap-2">
+<span class="bg-primary-container text-on-primary-container px-2 py-0.5 rounded font-label-sm text-label-sm uppercase tracking-wider">DoD</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">•</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">IT Dept</span>
+</div>
+</div>
+<!-- Action Menu (Ellipsis) -->
+<button aria-label="Options" class="text-on-surface-variant hover:text-primary transition-colors p-1 -mr-1 rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined text-[20px]" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<div class="flex justify-between items-end pl-2 pt-2 border-t border-outline-variant/50 mt-1">
+<div class="flex flex-col">
+<span class="text-outline font-label-sm text-label-sm uppercase">Items</span>
+<span class="text-on-surface font-body-md text-body-md font-medium">12 checks</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-outline font-label-sm text-label-sm uppercase">Created</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">20 Oct 2023</span>
+</div>
+</div>
+<!-- Quick Actions Overlay (Appears on Hover/Focus for Desktop, Swipe for Mobile conceptually) -->
+<div class="absolute top-2 right-10 hidden md:group-hover:flex gap-1 bg-surface-container-lowest p-1 rounded-lg border border-outline-variant shadow-sm">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container rounded transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<!-- Template Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden group hover:border-secondary transition-colors">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<div class="flex justify-between items-start pl-2">
+<div class="flex flex-col gap-1 pr-8">
+<h3 class="font-headline-sm text-headline-sm text-on-surface line-clamp-1">Marketing Campaign Launch</h3><button type="button" onclick="openSubmitTaskModal('Marketing Campaign Launch')" class="mt-2 self-start inline-flex items-center gap-1.5 bg-primary text-on-primary px-3 py-2 rounded-lg font-label-sm text-label-sm hover:bg-on-primary-fixed-variant transition-colors"><span class="material-symbols-outlined text-[16px]">send</span>Submit Task</button>
+<div class="flex items-center gap-2">
+<span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded font-label-sm text-label-sm uppercase tracking-wider">DoR</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">•</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">Marketing</span>
+</div>
+</div>
+<button aria-label="Options" class="text-on-surface-variant hover:text-primary transition-colors p-1 -mr-1 rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined text-[20px]" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<div class="flex justify-between items-end pl-2 pt-2 border-t border-outline-variant/50 mt-1">
+<div class="flex flex-col">
+<span class="text-outline font-label-sm text-label-sm uppercase">Items</span>
+<span class="text-on-surface font-body-md text-body-md font-medium">8 checks</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-outline font-label-sm text-label-sm uppercase">Created</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">15 Nov 2023</span>
+</div>
+</div>
+</div>
+<!-- Template Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden group hover:border-primary transition-colors opacity-75">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-outline"></div>
+<div class="flex justify-between items-start pl-2">
+<div class="flex flex-col gap-1 pr-8">
+<h3 class="font-headline-sm text-headline-sm text-on-surface line-clamp-1">New Hire Onboarding</h3><button type="button" onclick="openSubmitTaskModal('New Hire Onboarding')" class="mt-2 self-start inline-flex items-center gap-1.5 bg-primary text-on-primary px-3 py-2 rounded-lg font-label-sm text-label-sm hover:bg-on-primary-fixed-variant transition-colors"><span class="material-symbols-outlined text-[16px]">send</span>Submit Task</button>
+<div class="flex items-center gap-2">
+<span class="bg-surface-container-high text-on-surface px-2 py-0.5 rounded font-label-sm text-label-sm uppercase tracking-wider border border-outline-variant">Draft</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">•</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">HR Dept</span>
+</div>
+</div>
+<button aria-label="Options" class="text-on-surface-variant hover:text-primary transition-colors p-1 -mr-1 rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined text-[20px]" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<div class="flex justify-between items-end pl-2 pt-2 border-t border-outline-variant/50 mt-1">
+<div class="flex flex-col">
+<span class="text-outline font-label-sm text-label-sm uppercase">Items</span>
+<span class="text-on-surface font-body-md text-body-md font-medium">24 checks</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-outline font-label-sm text-label-sm uppercase">Updated</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">Yesterday</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Spacer to ensure content isn't hidden behind FAB on mobile -->
+<div class="h-24 md:hidden"></div>
+</div>
+</main>
+<!-- Floating Action Button (Mobile Only, contextual relevance to Settings/Templates list) -->
+<button aria-label="Create Template" class="md:hidden fixed bottom-20 right-margin-edge w-14 h-14 bg-primary text-on-primary rounded-2xl shadow-lg flex items-center justify-center hover:bg-on-primary-fixed-variant transition-colors z-[55]">
+<span class="material-symbols-outlined text-[24px]" data-icon="add">add</span>
+</button>
+<!-- BottomNavBar Semantic Shell Execution (Hidden on md+) -->
+<nav class="md:hidden bg-surface dark:bg-surface-dim docked full-width bottom-0 fixed z-50 h-[56px] border-t border-outline-variant dark:border-outline flat no shadows fixed bottom-0 left-0 w-full flex justify-around items-center px-2 pb-safe">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-1 hover:text-primary dark:hover:text-primary-fixed-dim active:scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-label-sm text-label-sm mt-1">Tasks</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-1 hover:text-primary dark:hover:text-primary-fixed-dim active:scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<span class="font-label-sm text-label-sm mt-1">Sheets</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-1 hover:text-primary dark:hover:text-primary-fixed-dim active:scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-label-sm text-label-sm mt-1">Approvals</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-on-secondary-fixed-variant text-on-secondary-container dark:text-secondary-fixed rounded-full px-5 py-1 hover:text-primary dark:hover:text-primary-fixed-dim active:scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined" data-icon="settings" data-weight="fill">settings</span>
+<span class="font-label-sm text-label-sm mt-1">Settings</span>
+</a>
+</nav>
+
+<!-- Submit Task Modal -->
+<!-- Backdrop -->
+<div id="submitTaskBackdrop" class="hidden fixed inset-0 bg-on-surface/30 z-[80] transition-opacity duration-300"></div>
+<!-- Bottom Sheet Modal -->
+<div id="submitTaskModal" class="hidden bottom-sheet relative z-[90] w-full bg-surface rounded-t-xl shadow-[0_-8px_24px_rgba(4,27,60,0.1)] flex flex-col max-h-[795px]">
+<!-- Drag Handle (Visual only) -->
+<div class="w-full flex justify-center pt-3 pb-1">
+<div class="w-10 h-1 bg-outline-variant rounded-full"></div>
+</div>
+<!-- Header -->
+<div class="flex items-center justify-between px-margin-edge py-stack-md border-b border-outline-variant/30">
+<div class="flex flex-col gap-1"><h2 class="font-headline-sm text-headline-sm text-on-surface">Nộp bài &amp; Đóng Task</h2><span id="submitTaskName" class="font-body-sm text-body-sm text-on-surface-variant">Software Release DoD</span></div>
+<button id="closeSubmitTaskButton" aria-label="Close modal" class="p-2 -mr-2 rounded-full hover:bg-surface-container-high transition-colors active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="close">close</span>
+</button>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto px-margin-edge py-stack-md space-y-stack-md">
+<!-- DoD Section -->
+<section class="bg-surface-container-lowest border border-outline-variant/40 rounded-lg p-margin-edge space-y-stack-sm">
+<div class="flex items-center justify-between mb-2">
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">DoD Checklist</h3>
+<span class="font-label-sm text-label-sm text-primary bg-primary-fixed px-2 py-1 rounded">Yêu cầu (0/4)</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-2 mb-4 bg-surface-container-high p-2 rounded">
+<span class="material-symbols-outlined text-[16px] text-error" data-icon="info">info</span>
+                    Vui lòng tích chọn 100% để nộp bài
+                </p>
+<div class="space-y-3 mt-4">
+<label class="flex items-start gap-3 cursor-pointer group">
+<input class="custom-checkbox mt-0.5" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">Code đã được review</span>
+</label>
+<label class="flex items-start gap-3 cursor-pointer group">
+<input class="custom-checkbox mt-0.5" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">Unit test pass 100%</span>
+</label>
+<label class="flex items-start gap-3 cursor-pointer group">
+<input class="custom-checkbox mt-0.5" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">Tài liệu hướng dẫn đã cập nhật</span>
+</label>
+<label class="flex items-start gap-3 cursor-pointer group">
+<input class="custom-checkbox mt-0.5" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">Không còn lỗi High/Critical</span>
+</label>
+</div>
+</section>
+<!-- Proof URL Field -->
+<section class="space-y-stack-sm">
+<div class="flex items-center gap-1 mb-1">
+<label class="font-label-md text-label-md text-on-surface" for="proof-url">Link minh chứng (Proof URL)</label>
+<span class="text-error">*</span>
+<button class="p-1 rounded-full text-on-surface-variant hover:bg-surface-container-high ml-1" title="Info">
+<span class="material-symbols-outlined text-[14px]" data-icon="help">help</span>
+</button>
+</div>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px]" data-icon="link">link</span>
+<input class="w-full h-touch-target pl-10 pr-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="proof-url" placeholder="https://..." type="url"/>
+</div>
+</section>
+<!-- Submission Note Field -->
+<section class="space-y-stack-sm">
+<label class="block font-label-md text-label-md text-on-surface mb-1" for="submit-note">Ghi chú thêm (Tùy chọn)</label>
+<textarea class="w-full p-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none" id="submit-note" placeholder="Nhập ghi chú cho Reviewer..." rows="3"></textarea>
+</section>
+<!-- Spacer for bottom padding -->
+<div class="h-stack-md"></div>
+</div>
+<!-- Footer Actions -->
+<div class="p-margin-edge border-t border-outline-variant/30 bg-surface flex gap-3 pb-safe">
+<button id="cancelSubmitTaskButton" class="flex-1 h-touch-target flex items-center justify-center border border-outline-variant text-on-surface font-label-md text-label-md rounded-lg bg-surface-container-lowest hover:bg-surface-container-low transition-colors active:bg-surface-container">
+                Hủy
+            </button>
+<button id="submitTaskButton" disabled class="flex-[2] h-touch-target flex items-center justify-center bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:bg-primary-fixed-variant transition-colors active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
+                Nộp bài Review
+            </button>
+</div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('submitTaskModal');
+    const backdrop = document.getElementById('submitTaskBackdrop');
+    const closeButton = document.getElementById('closeSubmitTaskButton');
+    const cancelButton = document.getElementById('cancelSubmitTaskButton');
+    const submitButton = document.getElementById('submitTaskButton');
+    const urlInput = document.getElementById('proof-url');
+    const counterDisplay = modal.querySelector('.bg-primary-fixed');
+    const checkboxes = modal.querySelectorAll('.custom-checkbox');
+    const taskNameDisplay = document.getElementById('submitTaskName');
+
+    function updateSubmitState() {
+        const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+        const total = checkboxes.length;
+
+        counterDisplay.textContent = `Yêu cầu (${checkedCount}/${total})`;
+
+        if (checkedCount === total) {
+            counterDisplay.classList.remove('bg-primary-fixed', 'text-primary');
+            counterDisplay.classList.add('bg-secondary-container', 'text-on-secondary-container');
+        } else {
+            counterDisplay.classList.add('bg-primary-fixed', 'text-primary');
+            counterDisplay.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+        }
+
+        submitButton.disabled = !(checkedCount === total && urlInput.value.trim().length > 0);
+    }
+
+    window.openSubmitTaskModal = function(taskName = 'Software Release DoD') {
+        taskNameDisplay.textContent = taskName;
+        modal.classList.remove('hidden');
+        backdrop.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+        updateSubmitState();
+    };
+
+    function closeSubmitTaskModal() {
+        modal.classList.add('hidden');
+        backdrop.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+    }
+
+    checkboxes.forEach(cb => cb.addEventListener('change', updateSubmitState));
+    urlInput.addEventListener('input', updateSubmitState);
+
+    closeButton.addEventListener('click', closeSubmitTaskModal);
+    cancelButton.addEventListener('click', closeSubmitTaskModal);
+    backdrop.addEventListener('click', closeSubmitTaskModal);
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeSubmitTaskModal();
+        }
+    });
+
+    submitButton.addEventListener('click', () => {
+        if (submitButton.disabled) return;
+
+        submitButton.disabled = true;
+        submitButton.innerHTML = `
+            <span class="material-symbols-outlined text-[18px]">hourglass_top</span>
+            Đang gửi...
+        `;
+
+        setTimeout(() => {
+            submitButton.innerHTML = `
+                <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                Đã gửi Review
+            `;
+
+            setTimeout(() => {
+                closeSubmitTaskModal();
+                submitButton.innerHTML = 'Nộp bài Review';
+                submitButton.disabled = false;
+            }, 900);
+        }, 700);
+    });
+
+    updateSubmitState();
+});
+</script>
+
+</body></html>

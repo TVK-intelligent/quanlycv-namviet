@@ -1,0 +1,986 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TaskConnect - Extension / CR / Recurring</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#003d9b",
+              "primary-container": "#0052cc",
+              background: "#f9f9ff",
+              surface: "#f9f9ff",
+              "surface-container-low": "#f1f3ff",
+              "surface-container": "#e8edff",
+              "surface-container-lowest": "#fff",
+              "surface-container-high": "#e0e8ff",
+              "outline-variant": "#c3c6d6",
+              outline: "#737685",
+              "on-surface": "#041b3c",
+              "on-surface-variant": "#434654",
+              secondary: "#006c47",
+              "secondary-container": "#82f9be",
+              error: "#ba1a1a",
+              "error-container": "#ffdad6",
+              tertiary: "#5e3c00",
+              "tertiary-fixed": "#ffddb3",
+              "tertiary-container": "#7d5200",
+            },
+            fontFamily: { sans: ["Inter"] },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        min-height: 100dvh;
+      }
+      .material-symbols-outlined {
+        font-family: "Material Symbols Outlined";
+        font-size: 22px;
+        line-height: 1;
+      }
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        scrollbar-width: none;
+      }
+      .modal {
+        background: rgba(4, 27, 60, 0.42);
+        backdrop-filter: blur(4px);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background text-on-surface font-sans antialiased pb-16 md:pb-0"
+  >
+    <header
+      class="h-14 bg-surface border-b border-outline-variant sticky top-0 z-50 flex items-center justify-between px-4"
+    >
+      <div class="flex items-center gap-3">
+        <button
+          onclick="toggleDrawer()"
+          class="w-10 h-10 rounded-full flex items-center justify-center text-primary hover:bg-surface-container-low"
+        >
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div>
+          <b class="text-primary text-lg">TaskConnect</b>
+          <div class="text-[11px] text-on-surface-variant">
+            Workflows › <span id="crumb">Extension Requests</span>
+          </div>
+        </div>
+      </div>
+      <div
+        class="w-8 h-8 rounded-full border border-outline-variant flex items-center justify-center text-primary"
+      >
+        <span class="material-symbols-outlined">person</span>
+      </div>
+    </header>
+
+    <aside
+      id="drawer"
+      class="fixed z-[80] top-14 bottom-0 left-0 w-72 bg-surface-container-low border-r border-outline-variant p-4 -translate-x-full transition-transform"
+    >
+      <b class="text-primary">Workflows</b>
+      <button
+        onclick="
+          tab('extensions');
+          toggleDrawer();
+        "
+        class="w-full text-left p-3 mt-3 rounded-lg hover:bg-surface-container flex gap-3"
+      >
+        <span class="material-symbols-outlined">event</span>Extension Requests
+      </button>
+      <button
+        onclick="
+          tab('cr');
+          toggleDrawer();
+        "
+        class="w-full text-left p-3 rounded-lg hover:bg-surface-container flex gap-3"
+      >
+        <span class="material-symbols-outlined">change_history</span>Change
+        Requests
+      </button>
+      <button
+        onclick="
+          tab('recurring');
+          toggleDrawer();
+        "
+        class="w-full text-left p-3 rounded-lg hover:bg-surface-container flex gap-3"
+      >
+        <span class="material-symbols-outlined">event_repeat</span>Recurring
+        Tasks
+      </button>
+      <a
+        href="timesheet.html"
+        class="p-3 rounded-lg hover:bg-surface-container flex gap-3"
+        ><span class="material-symbols-outlined">schedule</span>Timesheets</a
+      >
+      <a
+        href="review.html"
+        class="p-3 rounded-lg hover:bg-surface-container flex gap-3"
+        ><span class="material-symbols-outlined">fact_check</span>Approvals</a
+      >
+    </aside>
+
+    <main class="max-w-5xl mx-auto p-4 w-full">
+      <div class="mb-4">
+        <div class="text-xs text-on-surface-variant">Workflows</div>
+        <h1 id="title" class="text-xl font-bold text-primary">
+          Extension Requests
+        </h1>
+      </div>
+
+      <div
+        class="flex gap-1 p-1 bg-surface-container-low border border-outline-variant rounded-xl mb-4 overflow-x-auto"
+      >
+        <button
+          id="t-extensions"
+          onclick="tab('extensions')"
+          class="tab flex-1 min-w-[145px] px-3 py-2.5 rounded-lg text-sm font-semibold"
+        >
+          Extension Requests
+        </button>
+        <button
+          id="t-cr"
+          onclick="tab('cr')"
+          class="tab flex-1 min-w-[145px] px-3 py-2.5 rounded-lg text-sm font-semibold"
+        >
+          Change Requests
+        </button>
+        <button
+          id="t-recurring"
+          onclick="tab('recurring')"
+          class="tab flex-1 min-w-[145px] px-3 py-2.5 rounded-lg text-sm font-semibold"
+        >
+          Recurring Tasks
+        </button>
+      </div>
+
+      <section id="extensions" class="view">
+        <div
+          class="bg-surface border border-outline-variant rounded-xl p-3 mb-4"
+        >
+          <div class="flex gap-2">
+            <input
+              id="extSearch"
+              oninput="renderExt()"
+              class="flex-1 h-10 rounded-lg border border-outline-variant px-3 text-sm"
+              placeholder="Search requests..."
+            />
+            <button
+              onclick="openExt()"
+              class="bg-primary text-white rounded-lg px-4 text-sm font-semibold flex gap-1 items-center"
+            >
+              <span class="material-symbols-outlined">add</span
+              ><span class="hidden sm:inline">Request Extension</span>
+            </button>
+          </div>
+          <div class="flex gap-2 mt-2 overflow-x-auto hide-scrollbar">
+            <button
+              onclick="
+                extFilter = 'All';
+                renderExt();
+              "
+              class="chip"
+            >
+              All</button
+            ><button
+              onclick="
+                extFilter = 'Pending';
+                renderExt();
+              "
+              class="chip"
+            >
+              Pending</button
+            ><button
+              onclick="
+                extFilter = 'Approved';
+                renderExt();
+              "
+              class="chip"
+            >
+              Approved</button
+            ><button
+              onclick="
+                extFilter = 'Rejected';
+                renderExt();
+              "
+              class="chip"
+            >
+              Rejected
+            </button>
+          </div>
+        </div>
+        <div id="extList" class="space-y-3"></div>
+      </section>
+
+      <section id="cr" class="view hidden">
+        <div
+          class="bg-surface border border-outline-variant rounded-xl p-3 mb-4"
+        >
+          <div class="flex gap-2">
+            <input
+              id="crSearch"
+              oninput="renderCR()"
+              class="flex-1 h-10 rounded-lg border border-outline-variant px-3 text-sm"
+              placeholder="Search CR code or title..."
+            />
+            <button
+              onclick="openCR()"
+              class="bg-primary text-white rounded-lg px-4 text-sm font-semibold flex gap-1 items-center"
+            >
+              <span class="material-symbols-outlined">add</span
+              ><span class="hidden sm:inline">Create CR</span>
+            </button>
+          </div>
+          <div class="flex gap-2 mt-2 overflow-x-auto hide-scrollbar">
+            <button
+              onclick="
+                crFilter = 'All';
+                renderCR();
+              "
+              class="chip"
+            >
+              All</button
+            ><button
+              onclick="
+                crFilter = 'In Review';
+                renderCR();
+              "
+              class="chip"
+            >
+              In Review</button
+            ><button
+              onclick="
+                crFilter = 'Client Action';
+                renderCR();
+              "
+              class="chip"
+            >
+              Client Action</button
+            ><button
+              onclick="
+                crFilter = 'Approved';
+                renderCR();
+              "
+              class="chip"
+            >
+              Approved
+            </button>
+          </div>
+        </div>
+        <div id="crList" class="space-y-3"></div>
+      </section>
+
+      <section id="recurring" class="view hidden">
+        <div
+          class="bg-surface border border-outline-variant rounded-xl p-3 mb-4"
+        >
+          <div class="flex gap-2">
+            <input
+              id="recSearch"
+              oninput="renderRec()"
+              class="flex-1 h-10 rounded-lg border border-outline-variant px-3 text-sm"
+              placeholder="Search recurring task..."
+            />
+            <button
+              onclick="openRec()"
+              class="bg-primary text-white rounded-lg px-4 text-sm font-semibold flex gap-1 items-center"
+            >
+              <span class="material-symbols-outlined">add</span
+              ><span class="hidden sm:inline">Create Task</span>
+            </button>
+          </div>
+          <div class="flex gap-2 mt-2">
+            <button
+              onclick="
+                recFilter = 'All';
+                renderRec();
+              "
+              class="chip"
+            >
+              All</button
+            ><button
+              onclick="
+                recFilter = 'Active';
+                renderRec();
+              "
+              class="chip"
+            >
+              Active</button
+            ><button
+              onclick="
+                recFilter = 'Inactive';
+                renderRec();
+              "
+              class="chip"
+            >
+              Inactive
+            </button>
+          </div>
+        </div>
+        <div id="recList" class="space-y-3"></div>
+      </section>
+    </main>
+
+    <nav
+      class="md:hidden fixed bottom-0 left-0 w-full h-14 bg-surface border-t border-outline-variant z-50 flex justify-around items-center"
+    >
+      <button
+        onclick="tab('extensions')"
+        class="text-xs flex flex-col items-center"
+      >
+        <span class="material-symbols-outlined">event</span>Extension
+      </button>
+      <button onclick="tab('cr')" class="text-xs flex flex-col items-center">
+        <span class="material-symbols-outlined">change_history</span>CR
+      </button>
+      <button
+        onclick="tab('recurring')"
+        class="text-xs flex flex-col items-center"
+      >
+        <span class="material-symbols-outlined">event_repeat</span>Recurring
+      </button>
+      <button
+        onclick="location.href = 'review.html'"
+        class="text-xs flex flex-col items-center"
+      >
+        <span class="material-symbols-outlined">fact_check</span>Review
+      </button>
+    </nav>
+
+    <!-- Extension Modal -->
+    <div
+      id="extModal"
+      class="modal hidden fixed inset-0 z-[100] items-end md:items-center justify-center"
+    >
+      <div
+        class="bg-surface w-full md:max-w-xl max-h-[90vh] rounded-t-2xl md:rounded-2xl p-4 overflow-y-auto"
+      >
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-bold">Request Deadline Extension</h2>
+          <button onclick="closeModal('extModal')">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <form id="extForm" class="space-y-4">
+          <select id="extTask" class="field">
+            <option>Database Migration Phase 2</option>
+            <option>API Documentation Update</option>
+            <option>Q4 Planning Draft</option>
+          </select>
+          <div class="grid grid-cols-2 gap-3">
+            <input
+              id="extCurrent"
+              class="field bg-surface-container-low"
+              value="2026-08-24"
+              disabled
+            /><input id="extNew" class="field" type="date" required />
+          </div>
+          <select id="extReason" class="field">
+            <option>Technical Blockers</option>
+            <option>Resource Unavailability</option>
+            <option>Scope Change</option>
+            <option>External Dependency</option>
+            <option>Other</option>
+          </select>
+          <textarea
+            id="extDetails"
+            class="field"
+            rows="4"
+            required
+            placeholder="Explain why the extension is needed..."
+          ></textarea>
+          <div class="flex gap-3">
+            <button
+              type="button"
+              onclick="closeModal('extModal')"
+              class="flex-1 btn-secondary"
+            >
+              Cancel</button
+            ><button class="flex-1 btn-primary">Submit Request</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- CR Modal -->
+    <div
+      id="crModal"
+      class="modal hidden fixed inset-0 z-[100] items-end md:items-center justify-center"
+    >
+      <div
+        class="bg-surface w-full md:max-w-xl max-h-[90vh] rounded-t-2xl md:rounded-2xl p-4 overflow-y-auto"
+      >
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-bold">Create Change Request</h2>
+          <button onclick="closeModal('crModal')">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <form id="crForm" class="space-y-4">
+          <input id="crTitle" class="field" required placeholder="CR title" />
+          <div class="grid grid-cols-2 gap-3">
+            <input
+              id="crClient"
+              class="field"
+              required
+              placeholder="Client"
+            /><input
+              id="crProject"
+              class="field"
+              required
+              placeholder="Project"
+            />
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <input
+              id="crHours"
+              class="field"
+              type="number"
+              min="0"
+              value="0"
+              placeholder="Hours"
+            /><input
+              id="crCost"
+              class="field"
+              type="number"
+              min="0"
+              value="0"
+              placeholder="Cost"
+            /><input id="crDate" class="field" type="date" required />
+          </div>
+          <textarea
+            id="crDesc"
+            class="field"
+            rows="4"
+            placeholder="Describe requested change..."
+          ></textarea>
+          <div class="flex gap-3">
+            <button
+              type="button"
+              onclick="closeModal('crModal')"
+              class="flex-1 btn-secondary"
+            >
+              Cancel</button
+            ><button class="flex-1 btn-primary">Create CR</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Recurring Modal -->
+    <div
+      id="recModal"
+      class="modal hidden fixed inset-0 z-[100] items-end md:items-center justify-center"
+    >
+      <div
+        class="bg-surface w-full md:max-w-xl max-h-[90vh] rounded-t-2xl md:rounded-2xl p-4 overflow-y-auto"
+      >
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-bold">Recurring Task Config</h2>
+          <button onclick="closeModal('recModal')">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <form id="recForm" class="space-y-4">
+          <input id="recId" type="hidden" /><input
+            id="recTitle"
+            class="field"
+            required
+            placeholder="Task Title"
+          />
+          <div class="grid grid-cols-2 gap-3">
+            <select id="recDept" class="field">
+              <option>IT Operations</option>
+              <option>Finance</option>
+              <option>Engineering</option></select
+            ><select id="recAssignee" class="field">
+              <option>David Ross</option>
+              <option>Sarah Jenkins</option>
+              <option>Mike Chen</option>
+            </select>
+          </div>
+          <select id="recCycle" class="field">
+            <option>Daily</option>
+            <option selected>Weekly</option>
+            <option>Monthly</option>
+          </select>
+          <div class="grid grid-cols-2 gap-3">
+            <input id="recTime" class="field" type="time" value="09:00" /><input
+              id="recHours"
+              class="field"
+              type="number"
+              min="0"
+              step=".5"
+              value="1"
+            />
+          </div>
+          <label
+            class="flex items-center justify-between border-t border-outline-variant pt-3"
+            ><span class="text-sm font-semibold">Initial Status</span
+            ><input id="recActive" type="checkbox" checked class="w-5 h-5"
+          /></label>
+          <div class="flex gap-3">
+            <button
+              type="button"
+              onclick="closeModal('recModal')"
+              class="flex-1 btn-secondary"
+            >
+              Cancel</button
+            ><button class="flex-1 btn-primary">Save Task</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div
+      id="toast"
+      class="hidden fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-[200] bg-on-surface text-white px-4 py-2 rounded-lg text-sm"
+    ></div>
+
+    <script>
+      const K = {
+        ext: "taskconnect_extensions",
+        cr: "taskconnect_crs",
+        rec: "taskconnect_recurring",
+      };
+      let extFilter = "All",
+        crFilter = "All",
+        recFilter = "All";
+      const $ = (id) => document.getElementById(id);
+      const read = (k, d) => {
+        try {
+          return JSON.parse(localStorage.getItem(k)) ?? d;
+        } catch {
+          return d;
+        }
+      };
+      const save = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+      const id = (p) => p + "-" + Date.now();
+      const esc = (s) =>
+        String(s ?? "").replace(
+          /[&<>"']/g,
+          (m) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[m],
+        );
+      function toast(s) {
+        $("toast").textContent = s;
+        $("toast").classList.remove("hidden");
+        setTimeout(() => $("toast").classList.add("hidden"), 2200);
+      }
+      function toggleDrawer() {
+        $("drawer").classList.toggle("-translate-x-full");
+      }
+      function tab(x) {
+        document
+          .querySelectorAll(".view")
+          .forEach((v) => v.classList.add("hidden"));
+        $(x).classList.remove("hidden");
+        document
+          .querySelectorAll(".tab")
+          .forEach((b) => b.classList.remove("bg-primary", "text-white"));
+        $("t-" + x).classList.add("bg-primary", "text-white");
+        let n = {
+          extensions: "Extension Requests",
+          cr: "Change Requests",
+          recurring: "Recurring Tasks",
+        }[x];
+        $("title").textContent = n;
+        $("crumb").textContent = n;
+      }
+      function closeModal(x) {
+        $(x).classList.add("hidden");
+        $(x).classList.remove("flex");
+      }
+      function openModal(x) {
+        $(x).classList.remove("hidden");
+        $(x).classList.add("flex");
+      }
+
+      function seed() {
+        if (!localStorage.getItem(K.ext))
+          save(K.ext, [
+            {
+              id: "EXT-001",
+              task: "Database Migration Phase 2",
+              requester: "Sarah Jenkins",
+              dept: "IT Ops",
+              current: "2026-08-24",
+              proposed: "2026-09-02",
+              reason: "Technical Blockers",
+              details:
+                "Unexpected downtime on staging server delayed initial data dump by 3 days. Need extra time for validation.",
+              status: "Pending",
+            },
+            {
+              id: "EXT-002",
+              task: "Q3 Financial Audit Review",
+              requester: "Marcus Chen",
+              dept: "Finance",
+              current: "2026-08-15",
+              proposed: "2026-08-30",
+              reason: "Resource Unavailability",
+              details:
+                "Finance reviewer is unavailable during the original review window.",
+              status: "Approved",
+            },
+            {
+              id: "EXT-003",
+              task: "Vendor Onboarding Docs",
+              requester: "Elena Rodriguez",
+              dept: "HR",
+              current: "2026-08-18",
+              proposed: "2026-08-18",
+              reason: "Other",
+              details: "Compliance deadline cannot be moved further.",
+              status: "Rejected",
+            },
+          ]);
+        if (!localStorage.getItem(K.cr))
+          save(K.cr, [
+            {
+              id: "CR-102",
+              title: "Scope Expansion: Add Analytics Dashboard",
+              client: "Acme Corp",
+              project: "Q4 Enterprise Rollout",
+              hours: 40,
+              cost: 6500,
+              date: "2026-10-15",
+              status: "In Review",
+            },
+            {
+              id: "CR-098",
+              title: "Design System Revision",
+              client: "Globex Inc",
+              project: "Mobile App Redesign",
+              hours: 15,
+              cost: 2250,
+              date: "2026-10-20",
+              status: "Client Action",
+            },
+            {
+              id: "CR-095",
+              title: "API Integration: Stripe",
+              client: "Stark Ind.",
+              project: "E-commerce Platform",
+              hours: 20,
+              cost: 0,
+              date: "2026-09-30",
+              status: "Approved",
+            },
+          ]);
+        if (!localStorage.getItem(K.rec))
+          save(K.rec, [
+            {
+              id: "REC-001",
+              title: "Weekly Server Maintenance & Patching",
+              dept: "IT Operations",
+              assignee: "David Ross",
+              cycle: "Weekly",
+              time: "02:00",
+              hours: 3,
+              active: true,
+            },
+            {
+              id: "REC-002",
+              title: "End of Month Financial Reconciliation",
+              dept: "Finance",
+              assignee: "Sarah Jenkins",
+              cycle: "Monthly",
+              time: "08:00",
+              hours: 4,
+              active: true,
+            },
+            {
+              id: "REC-003",
+              title: "Daily Standup Prep & Metrics Gather",
+              dept: "Engineering",
+              assignee: "Mike Chen",
+              cycle: "Daily",
+              time: "09:00",
+              hours: 1,
+              active: false,
+            },
+          ]);
+      }
+
+      function renderExt() {
+        let q = ($("extSearch").value || "").toLowerCase();
+        let a = read(K.ext, []).filter(
+          (x) =>
+            (extFilter == "All" || x.status == extFilter) &&
+            JSON.stringify(x).toLowerCase().includes(q),
+        );
+        $("extList").innerHTML =
+          a
+            .map(
+              (x) =>
+                `<article class="card"><div class="flex justify-between gap-3"><div><b>${esc(x.task)}</b><div class="text-xs text-on-surface-variant">Req: ${esc(x.requester)} • ${esc(x.dept)}</div></div><span class="badge">${esc(x.status)}</span></div><div class="grid grid-cols-2 gap-3 bg-surface-container-low p-3 rounded-lg mt-3 text-sm"><div><small>Current Due</small><div>${x.current}</div></div><div><small>Proposed Date</small><div>${x.proposed}</div></div></div><div class="mt-3 text-xs text-on-surface-variant">${esc(x.details)}</div>${x.status == "Pending" ? `<div class="actions"><button onclick="extStatus('${x.id}','Rejected')" class="btn-danger">Reject</button><button onclick="extStatus('${x.id}','Approved')" class="btn-primary">Approve</button></div>` : ""}</article>`,
+            )
+            .join("") || empty();
+      }
+      function extStatus(i, s) {
+        let a = read(K.ext, []);
+        let x = a.find((v) => v.id == i);
+        if (x) x.status = s;
+        save(K.ext, a);
+        renderExt();
+        toast(s);
+      }
+      function openExt() {
+        openModal("extModal");
+      }
+      $("extForm").onsubmit = (e) => {
+        e.preventDefault();
+        let a = read(K.ext, []);
+        a.unshift({
+          id: id("EXT"),
+          task: $("extTask").value,
+          requester: "Alex Rivers",
+          dept: "IT Ops",
+          current: $("extCurrent").value,
+          proposed: $("extNew").value,
+          reason: $("extReason").value,
+          details: $("extDetails").value,
+          status: "Pending",
+        });
+        save(K.ext, a);
+        closeModal("extModal");
+        e.target.reset();
+        $("extCurrent").value = "2026-08-24";
+        renderExt();
+        toast("Extension request submitted");
+      };
+
+      function renderCR() {
+        let q = ($("crSearch").value || "").toLowerCase();
+        let a = read(K.cr, []).filter(
+          (x) =>
+            (crFilter == "All" || x.status == crFilter) &&
+            JSON.stringify(x).toLowerCase().includes(q),
+        );
+        $("crList").innerHTML =
+          a
+            .map(
+              (x) =>
+                `<article class="card"><div class="flex justify-between gap-3"><div><span class="text-xs text-outline font-bold">${x.id}</span><h2 class="font-semibold text-sm">${esc(x.title)}</h2></div><span class="badge">${x.status}</span></div><div class="mt-3 p-3 bg-surface-container-low rounded-lg text-xs">${esc(x.client)} • ${esc(x.project)}</div><div class="flex flex-wrap gap-2 mt-3 text-xs"><span class="tag">+${x.hours} Hrs</span><span class="tag">+$${Number(x.cost).toLocaleString()}</span><span class="tag">${x.date}</span></div>${x.status == "In Review" ? `<div class="actions"><button onclick="assessCR('${x.id}')" class="btn-secondary flex-1">PM Assessment</button></div>` : ""}</article>`,
+            )
+            .join("") || empty();
+      }
+      function assessCR(i) {
+        let a = read(K.cr, []),
+          x = a.find((v) => v.id == i);
+        if (!x) return;
+        let ok = confirm(x.id + "\n\nOK = Approve\nCancel = Reject");
+        x.status = ok ? "Approved" : "Rejected";
+        save(K.cr, a);
+        renderCR();
+        toast(x.status);
+      }
+      function openCR() {
+        openModal("crModal");
+      }
+      $("crForm").onsubmit = (e) => {
+        e.preventDefault();
+        let a = read(K.cr, []);
+        a.unshift({
+          id: id("CR"),
+          title: $("crTitle").value,
+          client: $("crClient").value,
+          project: $("crProject").value,
+          hours: +$("crHours").value || 0,
+          cost: +$("crCost").value || 0,
+          date: $("crDate").value,
+          status: "In Review",
+        });
+        save(K.cr, a);
+        closeModal("crModal");
+        e.target.reset();
+        renderCR();
+        toast("Change Request created");
+      };
+
+      function renderRec() {
+        let q = ($("recSearch").value || "").toLowerCase();
+        let a = read(K.rec, []).filter(
+          (x) =>
+            (recFilter == "All" ||
+              (recFilter == "Active" ? x.active : !x.active)) &&
+            JSON.stringify(x).toLowerCase().includes(q),
+        );
+        $("recList").innerHTML =
+          a
+            .map(
+              (x) =>
+                `<article class="card ${x.active ? "" : "opacity-70"}"><div class="flex justify-between gap-3"><div><h3 class="font-semibold text-sm">${esc(x.title)}</h3><div class="text-xs text-on-surface-variant">${x.dept}</div></div><div><span class="badge">${x.active ? "Active" : "Inactive"}</span><div class="flex gap-1 justify-end mt-2"><button onclick="editRec('${x.id}')"><span class="material-symbols-outlined text-[18px]">edit</span></button><button onclick="deleteRec('${x.id}')"><span class="material-symbols-outlined text-[18px] text-error">delete</span></button></div></div></div><hr class="my-3 border-outline-variant"><div class="grid grid-cols-2 gap-3 text-xs"><div><small>Assignee</small><div>${x.assignee}</div></div><div><small>Schedule</small><div>${x.cycle}</div></div><div><small>Execution</small><div class="font-mono">${x.time}</div></div><div><small>Est. Hours</small><div>${x.hours}h</div></div></div></article>`,
+            )
+            .join("") || empty();
+      }
+      function openRec() {
+        ["recId", "recTitle"].forEach((i) => ($(i).value = ""));
+        $("recDept").value = "IT Operations";
+        $("recAssignee").value = "David Ross";
+        $("recCycle").value = "Weekly";
+        $("recTime").value = "09:00";
+        $("recHours").value = 1;
+        $("recActive").checked = true;
+        openModal("recModal");
+      }
+      function editRec(i) {
+        let x = read(K.rec, []).find((v) => v.id == i);
+        if (!x) return;
+        openRec();
+        $("recId").value = x.id;
+        $("recTitle").value = x.title;
+        $("recDept").value = x.dept;
+        $("recAssignee").value = x.assignee;
+        $("recCycle").value = x.cycle;
+        $("recTime").value = x.time;
+        $("recHours").value = x.hours;
+        $("recActive").checked = x.active;
+      }
+      function deleteRec(i) {
+        if (!confirm("Delete this recurring task?")) return;
+        save(
+          K.rec,
+          read(K.rec, []).filter((x) => x.id != i),
+        );
+        renderRec();
+        toast("Deleted");
+      }
+      $("recForm").onsubmit = (e) => {
+        e.preventDefault();
+        let a = read(K.rec, []),
+          i = $("recId").value,
+          x = {
+            id: i || id("REC"),
+            title: $("recTitle").value,
+            dept: $("recDept").value,
+            assignee: $("recAssignee").value,
+            cycle: $("recCycle").value,
+            time: $("recTime").value,
+            hours: +$("recHours").value || 0,
+            active: $("recActive").checked,
+          };
+        let n = a.findIndex((v) => v.id == i);
+        if (n >= 0) a[n] = x;
+        else a.unshift(x);
+        save(K.rec, a);
+        closeModal("recModal");
+        renderRec();
+        toast(i ? "Updated" : "Created");
+      };
+      function empty() {
+        return '<div class="text-center py-10 text-sm text-on-surface-variant">No data found.</div>';
+      }
+      seed();
+      tab("extensions");
+      renderExt();
+      renderCR();
+      renderRec();
+    </script>
+
+    <style>
+      .field {
+        width: 100%;
+        height: 44px;
+        border: 1px solid #c3c6d6;
+        border-radius: 8px;
+        padding: 0 12px;
+        background: #fff;
+        font-size: 14px;
+      }
+      .btn-primary {
+        height: 44px;
+        background: #003d9b;
+        color: #fff;
+        border-radius: 8px;
+        padding: 0 16px;
+        font-weight: 600;
+      }
+      .btn-secondary {
+        height: 44px;
+        border: 1px solid #737685;
+        border-radius: 8px;
+        padding: 0 16px;
+        font-weight: 600;
+      }
+      .btn-danger {
+        height: 44px;
+        border: 1px solid #ba1a1a;
+        color: #ba1a1a;
+        border-radius: 8px;
+        padding: 0 16px;
+        font-weight: 600;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #c3c6d6;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 1px 3px rgba(4, 27, 60, 0.05);
+      }
+      .badge {
+        display: inline-block;
+        background: #82f9be;
+        color: #006c47;
+        padding: 5px 9px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .tag {
+        background: #e8edff;
+        padding: 6px 9px;
+        border-radius: 6px;
+      }
+      .actions {
+        display: flex;
+        gap: 8px;
+        border-top: 1px solid #e8edff;
+        margin-top: 14px;
+        padding-top: 12px;
+      }
+      .actions .btn-primary,
+      .actions .btn-danger,
+      .actions .btn-secondary {
+        flex: 1;
+      }
+      small {
+        display: block;
+        color: #737685;
+        font-size: 10px;
+        text-transform: uppercase;
+        margin-bottom: 3px;
+      }
+      .chip {
+        padding: 6px 12px;
+        border: 1px solid #c3c6d6;
+        border-radius: 999px;
+        background: #fff;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+    </style>
+  </body>
+</html>

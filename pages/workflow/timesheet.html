@@ -1,0 +1,512 @@
+<!doctype html>
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover"
+    />
+    <title>ETRMS - Timesheet Management</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#003d9b",
+              "primary-container": "#0052cc",
+              background: "#f9f9ff",
+              surface: "#f9f9ff",
+              "surface-container-low": "#f1f3ff",
+              "surface-container": "#e8edff",
+              "surface-container-lowest": "#fff",
+              "outline-variant": "#c3c6d6",
+              "on-surface": "#041b3c",
+              "on-surface-variant": "#434654",
+              secondary: "#006c47",
+              "secondary-container": "#82f9be",
+              error: "#ba1a1a",
+              "error-container": "#ffdad6",
+              tertiary: "#5e3c00",
+              "tertiary-fixed": "#ffddb3",
+              "tertiary-fixed-dim": "#ffb950",
+            },
+            fontFamily: { sans: ["Inter"] },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        -webkit-tap-highlight-color: transparent;
+        min-height: 100dvh;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        scrollbar-width: none;
+      }
+      @keyframes slideUp {
+        from {
+          transform: translateY(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      .slide-up {
+        animation: slideUp 0.25s ease-out;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background text-on-surface font-sans antialiased flex flex-col h-screen overflow-hidden"
+  >
+    <header
+      class="bg-surface border-b border-outline-variant sticky top-0 z-50 flex items-center justify-between h-14 px-4"
+    >
+      <div class="flex items-center gap-3">
+        <button
+          id="menuBtn"
+          class="w-10 h-10 rounded-full flex items-center justify-center text-primary"
+        >
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div>
+          <b class="text-primary">TaskConnect</b>
+          <div class="text-[11px] text-on-surface-variant">
+            Workflows › <span class="text-primary">Timesheet</span>
+          </div>
+        </div>
+      </div>
+      <div
+        class="w-8 h-8 rounded-full border border-outline-variant flex items-center justify-center"
+      >
+        <span class="material-symbols-outlined text-primary">person</span>
+      </div>
+    </header>
+    <aside
+      id="drawer"
+      class="hidden lg:block fixed z-40 left-0 top-14 bottom-0 w-64 bg-surface-container-low border-r border-outline-variant p-4"
+    >
+      <b class="text-primary">Workflows</b>
+      <a
+        href="checklist.html"
+        class="mt-4 flex gap-3 p-3 rounded-lg hover:bg-surface-container"
+        ><span class="material-symbols-outlined">checklist</span>Checklist</a
+      >
+      <a
+        href="timesheet.html"
+        class="flex gap-3 p-3 rounded-lg bg-secondary-container"
+        ><span class="material-symbols-outlined">schedule</span>Timesheet</a
+      >
+      <a
+        href="review.html"
+        class="flex gap-3 p-3 rounded-lg hover:bg-surface-container"
+        ><span class="material-symbols-outlined">fact_check</span>Review</a
+      >
+      <a
+        href="extension-request.html"
+        class="flex gap-3 p-3 rounded-lg hover:bg-surface-container"
+        ><span class="material-symbols-outlined">event_repeat</span>Requests</a
+      >
+    </aside>
+    <main
+      class="flex-1 overflow-y-auto pb-20 lg:pb-4 w-full max-w-4xl mx-auto lg:pl-0"
+    >
+      <section
+        class="sticky top-0 z-30 bg-surface/95 backdrop-blur border-b border-outline-variant p-3 space-y-3"
+      >
+        <div
+          class="flex items-center justify-between border border-outline-variant rounded-lg p-1 bg-surface-container-lowest"
+        >
+          <button id="prevWeek" class="w-10 h-10">
+            <span class="material-symbols-outlined">chevron_left</span>
+          </button>
+          <div class="text-center">
+            <div
+              id="weekRange"
+              class="text-xs font-semibold text-primary uppercase"
+            ></div>
+            <div id="weekNumber" class="text-xs text-on-surface-variant"></div>
+          </div>
+          <button id="nextWeek" class="w-10 h-10">
+            <span class="material-symbols-outlined">chevron_right</span>
+          </button>
+        </div>
+        <div class="flex justify-between gap-2">
+          <div class="flex gap-2 overflow-x-auto no-scrollbar">
+            <span
+              class="px-3 py-1.5 rounded-full bg-surface-container border border-outline-variant text-xs whitespace-nowrap"
+              >👤 Alex Rivers</span
+            ><span
+              id="monthLabel"
+              class="px-3 py-1.5 rounded-full bg-surface-container border border-outline-variant text-xs whitespace-nowrap"
+            ></span>
+          </div>
+          <button
+            id="submitBtn"
+            class="bg-primary text-white px-4 h-9 rounded-full text-xs flex gap-1 items-center"
+          >
+            <span class="material-symbols-outlined text-[18px]">send</span
+            >Submit
+          </button>
+        </div>
+      </section>
+      <section class="p-4 grid grid-cols-3 gap-2">
+        <div
+          class="bg-surface-container-lowest border border-outline-variant rounded-lg p-3 text-center"
+        >
+          <small>Total Logged</small>
+          <div id="total" class="text-xl font-semibold">0h</div>
+        </div>
+        <div
+          class="bg-surface-container-lowest border border-outline-variant rounded-lg p-3 text-center"
+        >
+          <small>Target</small>
+          <div class="text-xl font-semibold">40h</div>
+        </div>
+        <div
+          id="missingBox"
+          class="bg-error-container border border-error/20 rounded-lg p-3 text-center"
+        >
+          <small>Missing</small>
+          <div id="missing" class="text-xl font-semibold text-error">40h</div>
+        </div>
+      </section>
+      <section id="days" class="px-4 space-y-3"></section>
+    </main>
+    <nav
+      class="lg:hidden fixed bottom-0 z-50 h-16 w-full bg-surface border-t border-outline-variant flex justify-around items-center"
+    >
+      <a href="checklist.html" class="text-xs text-center"
+        ><span class="material-symbols-outlined block">assignment</span>Tasks</a
+      ><a
+        href="timesheet.html"
+        class="text-xs text-center bg-secondary-container rounded-full px-5 py-1"
+        ><span class="material-symbols-outlined block">schedule</span>Sheets</a
+      ><a href="review.html" class="text-xs text-center"
+        ><span class="material-symbols-outlined block">fact_check</span
+        >Approvals</a
+      ><a href="extension-request.html" class="text-xs text-center"
+        ><span class="material-symbols-outlined block">settings</span
+        >Requests</a
+      >
+    </nav>
+    <div
+      id="modal"
+      class="hidden fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex items-end md:items-center md:justify-center"
+    >
+      <div
+        class="slide-up bg-surface w-full md:w-[430px] rounded-t-2xl md:rounded-xl overflow-hidden"
+      >
+        <div
+          class="flex justify-between items-center p-4 border-b border-outline-variant bg-surface-container-low"
+        >
+          <div>
+            <h2 class="font-semibold">Log Time</h2>
+            <p id="modalHint" class="text-xs text-on-surface-variant"></p>
+          </div>
+          <button id="close" class="w-8 h-8">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <form id="form" class="p-4 space-y-4">
+          <input id="editId" type="hidden" /><label
+            class="block text-xs font-semibold"
+            >Select Task<select
+              id="task"
+              required
+              class="mt-1 w-full h-11 rounded-lg border-outline-variant"
+            >
+              <option value="">Choose a project/task...</option>
+              <option>PRJ-042: Database Migration</option>
+              <option>PRJ-045: UI Redesign</option>
+              <option>INT-001: Internal Meeting</option>
+            </select></label
+          >
+          <div class="grid grid-cols-2 gap-4">
+            <label class="text-xs font-semibold"
+              >Date<input
+                id="date"
+                required
+                type="date"
+                class="mt-1 w-full h-11 rounded-lg border-outline-variant" /></label
+            ><label class="text-xs font-semibold"
+              >Hours<input
+                id="hours"
+                required
+                type="number"
+                min="0.5"
+                max="16"
+                step="0.5"
+                class="mt-1 w-full h-11 rounded-lg border-outline-variant"
+            /></label>
+          </div>
+          <label class="block text-xs font-semibold"
+            >Description<textarea
+              id="description"
+              rows="3"
+              class="mt-1 w-full rounded-lg border-outline-variant"
+              placeholder="What did you work on?"
+            ></textarea>
+          </label>
+          <p
+            id="error"
+            class="hidden text-sm text-error bg-error-container p-3 rounded-lg"
+          ></p>
+          <div
+            class="flex justify-end gap-3 border-t border-outline-variant pt-4"
+          >
+            <button
+              type="button"
+              id="cancel"
+              class="px-6 h-11 rounded-full border border-outline-variant text-xs"
+            >
+              Cancel</button
+            ><button
+              class="px-6 h-11 rounded-full bg-primary text-white text-xs flex gap-2 items-center"
+            >
+              <span class="material-symbols-outlined text-[18px]">save</span
+              >Save Entry
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div
+      id="toast"
+      class="hidden fixed z-[120] bottom-20 left-1/2 -translate-x-1/2 bg-on-surface text-white px-4 py-3 rounded-lg text-sm"
+    ></div>
+    <script>
+      const KEY = "etrms_timesheet_data",
+        SUB = "etrms_timesheet_submission",
+        TARGET = 40;
+      let week = getMonday(new Date());
+      function monday(d) {
+        return getMonday(d);
+      }
+      function getMonday(d) {
+        d = new Date(d);
+        d.setHours(0, 0, 0, 0);
+        let n = d.getDay();
+        d.setDate(d.getDate() - (n === 0 ? 6 : n - 1));
+        return d;
+      }
+      function add(d, n) {
+        let x = new Date(d);
+        x.setDate(x.getDate() + n);
+        return x;
+      }
+      function iso(d) {
+        return d.toISOString().slice(0, 10);
+      }
+      function esc(s) {
+        return String(s).replace(
+          /[&<>"']/g,
+          (m) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#039;",
+            })[m],
+        );
+      }
+      function seed() {
+        let a = [];
+        [8, 8, 0, 6, 0].forEach((h, i) => {
+          if (h)
+            a.push({
+              id: Date.now() + i,
+              date: iso(add(week, i)),
+              task: "PRJ-042: Database Migration",
+              hours: h,
+              description: "Mock work entry",
+            });
+        });
+        return a;
+      }
+      function data() {
+        let x = localStorage.getItem(KEY);
+        if (!x) {
+          x = seed();
+          save(x);
+          return x;
+        }
+        return JSON.parse(x);
+      }
+      function save(x) {
+        localStorage.setItem(KEY, JSON.stringify(x));
+      }
+      function render() {
+        let x = data(),
+          days = [0, 1, 2, 3, 4].map((i) => add(week, i)),
+          entries = x.filter((e) => days.some((d) => iso(d) === e.date)),
+          total = entries.reduce((s, e) => s + Number(e.hours), 0),
+          missing = Math.max(0, TARGET - total);
+        document.getElementById("weekRange").textContent =
+          week.toLocaleDateString("en-US", { month: "short", day: "numeric" }) +
+          " - " +
+          add(week, 6).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          });
+        document.getElementById("weekNumber").textContent =
+          "Week " +
+          Math.ceil(
+            ((week - new Date(week.getFullYear(), 0, 1)) / 86400000 +
+              new Date(week.getFullYear(), 0, 1).getDay() +
+              1) /
+              7,
+          );
+        document.getElementById("monthLabel").textContent =
+          week.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+        document.getElementById("total").textContent = total.toFixed(1) + "h";
+        document.getElementById("missing").textContent =
+          missing.toFixed(1) + "h";
+        document.getElementById("missingBox").className = missing
+          ? "bg-error-container border border-error/20 rounded-lg p-3 text-center"
+          : "bg-secondary-container border border-secondary/20 rounded-lg p-3 text-center";
+        document.getElementById("missing").className =
+          "text-xl font-semibold " +
+          (missing ? "text-error" : "text-on-secondary-container");
+        document.getElementById("days").innerHTML = days
+          .map((day) =>
+            dayCard(
+              day,
+              x.filter((e) => e.date === iso(day)),
+            ),
+          )
+          .join("");
+      }
+      function dayCard(day, es) {
+        let total = es.reduce((s, e) => s + Number(e.hours), 0),
+          over = total > 16,
+          complete = total >= 8,
+          color = over
+            ? "bg-error"
+            : complete
+              ? "bg-secondary"
+              : "bg-tertiary-fixed-dim",
+          name = day.toLocaleDateString("en-US", {
+            weekday: "long",
+            month: "short",
+            day: "numeric",
+          });
+        return `<article class="relative overflow-hidden bg-surface-container-lowest border ${over ? "border-error" : "border-outline-variant"} rounded-xl p-4 shadow-sm"><i class="absolute left-0 top-0 bottom-0 w-1 ${color}"></i><div class="flex justify-between pl-2"><div><h3 class="font-semibold">${name}</h3><p class="text-xs ${over ? "text-error" : "text-on-surface-variant"}">${over ? "⚠ Exceeds 16h limit" : es.length ? es.length + " Task" + (es.length > 1 ? "s" : "") + " logged" : "No tasks logged"}</p></div><div class="text-right"><b class="text-xl ${over ? "text-error" : complete ? "text-secondary" : "text-on-surface"}">${total.toFixed(1)}h</b>${complete && !over ? '<div class="text-[11px] bg-secondary-container text-on-secondary-container rounded-full px-2 py-0.5">COMPLETE</div>' : total > 0 && !over ? '<div class="text-[11px] bg-tertiary-fixed text-tertiary rounded-full px-2 py-0.5">INCOMPLETE</div>' : ""}</div></div>${es.length ? '<div class="mt-3 pl-2 space-y-2">' + es.map((e) => `<div class="bg-surface-container-low rounded-lg p-2.5 flex justify-between gap-2"><div class="min-w-0"><b class="text-xs block truncate">${esc(e.task)}</b><small class="text-[11px] text-on-surface-variant">${esc(e.description || "No description")}</small></div><div class="flex items-center gap-2 shrink-0"><b class="text-xs">${Number(e.hours).toFixed(1)}h</b><button onclick="edit('${e.id}')" class="text-primary"><span class="material-symbols-outlined text-[18px]">edit</span></button><button onclick="removeEntry('${e.id}')" class="text-error"><span class="material-symbols-outlined text-[18px]">delete</span></button></div></div>`).join("") + "</div>" : ""}<div class="border-t border-outline-variant/50 mt-3 pt-2 text-right"><button onclick="openModal('${iso(day)}')" class="text-primary text-xs font-semibold"><span class="material-symbols-outlined text-[16px] align-middle">add</span>${es.length ? "Log More Time" : "Log Time"}</button></div></article>`;
+      }
+      function openModal(date, entry) {
+        document.getElementById("editId").value = entry?.id || "";
+        document.getElementById("task").value = entry?.task || "";
+        document.getElementById("date").value = entry?.date || date;
+        document.getElementById("hours").value = entry?.hours || "";
+        document.getElementById("description").value = entry?.description || "";
+        document.getElementById("modalHint").textContent = entry
+          ? "Edit time entry"
+          : "Add a new time entry";
+        document.getElementById("error").classList.add("hidden");
+        document.getElementById("modal").classList.remove("hidden");
+      }
+      function closeModal() {
+        document.getElementById("modal").classList.add("hidden");
+        document.getElementById("form").reset();
+      }
+      function edit(id) {
+        let e = data().find((x) => String(x.id) === String(id));
+        if (e) openModal(e.date, e);
+      }
+      function removeEntry(id) {
+        if (!confirm("Delete this time entry?")) return;
+        save(data().filter((e) => String(e.id) !== String(id)));
+        render();
+        toast("Time entry deleted.");
+      }
+      function toast(t) {
+        let x = document.getElementById("toast");
+        x.textContent = t;
+        x.classList.remove("hidden");
+        clearTimeout(window.tt);
+        window.tt = setTimeout(() => x.classList.add("hidden"), 2200);
+      }
+      document.getElementById("form").onsubmit = (e) => {
+        e.preventDefault();
+        let id = document.getElementById("editId").value,
+          task = document.getElementById("task").value,
+          date = document.getElementById("date").value,
+          h = Number(document.getElementById("hours").value),
+          desc = document.getElementById("description").value.trim(),
+          err = document.getElementById("error");
+        if (!task || !date || !h || h < 0.5 || h > 16) {
+          err.textContent =
+            "Please select a task, date, and hours between 0.5 and 16.";
+          err.classList.remove("hidden");
+          return;
+        }
+        let x = data();
+        let item = {
+          id: id || Date.now().toString(),
+          task,
+          date,
+          hours: h,
+          description: desc,
+        };
+        if (id) {
+          let i = x.findIndex((e) => String(e.id) === String(id));
+          if (i > -1) x[i] = item;
+        } else x.push(item);
+        save(x);
+        closeModal();
+        render();
+        toast(id ? "Time entry updated." : "Time entry saved.");
+      };
+      document.getElementById("prevWeek").onclick = () => {
+        week = add(week, -7);
+        render();
+      };
+      document.getElementById("nextWeek").onclick = () => {
+        week = add(week, 7);
+        render();
+      };
+      document.getElementById("close").onclick = closeModal;
+      document.getElementById("cancel").onclick = closeModal;
+      document.getElementById("modal").onclick = (e) => {
+        if (e.target.id === "modal") closeModal();
+      };
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+      });
+      document.getElementById("submitBtn").onclick = () => {
+        let days = [0, 1, 2, 3, 4].map((i) => iso(add(week, i))),
+          total = data()
+            .filter((e) => days.includes(e.date))
+            .reduce((s, e) => s + Number(e.hours), 0);
+        localStorage.setItem(
+          SUB,
+          JSON.stringify({
+            weekStart: iso(week),
+            totalHours: total,
+            status: "Pending Review",
+            submittedAt: new Date().toISOString(),
+          }),
+        );
+        toast("Timesheet submitted for review.");
+      };
+      render();
+    </script>
+  </body>
+</html>
