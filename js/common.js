@@ -41,6 +41,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Khởi tạo các event sau khi component render xong
     function initComponentEvents(elementId) {
         if (elementId === 'header-container') {
+            const breadcrumb = document.querySelector('.breadcrumb');
+            const breadcrumbParent = document.body.dataset.breadcrumbParent;
+            const breadcrumbCurrent = document.body.dataset.breadcrumbCurrent;
+
+            if (breadcrumb && breadcrumbParent && breadcrumbCurrent) {
+                const parentItem = document.createElement('span');
+                parentItem.className = 'breadcrumb-item';
+                parentItem.textContent = breadcrumbParent;
+
+                const separator = document.createElement('span');
+                separator.className = 'breadcrumb-item';
+                separator.textContent = '/';
+
+                const currentItem = document.createElement('span');
+                currentItem.className = 'breadcrumb-item active';
+                currentItem.textContent = breadcrumbCurrent;
+
+                breadcrumb.replaceChildren(parentItem, separator, currentItem);
+            }
+
             const toggleBtn = document.getElementById('menu-toggle');
             const sidebar = document.querySelector('.sidebar');
             

@@ -1,0 +1,330 @@
+/* Task report: visual layout only. Data rendering will be added later. */
+
+.task-report-page {
+    width: 100%;
+    max-width: none;
+    padding-top: 30px;
+    padding-bottom: 40px;
+}
+
+.task-report-hero {
+    padding: 22px 20px;
+    margin-bottom: 28px;
+    background: linear-gradient(105deg, #e0e9f1 0%, #f7f7f7 100%);
+    border: 1px solid #e9edf1;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+.task-report-hero h1 {
+    margin: 0 0 8px;
+    font-size: 30px;
+    line-height: 1.3;
+    letter-spacing: -0.35px;
+}
+
+.task-report-hero p {
+    color: #536171;
+    font-size: 16px;
+}
+
+.task-report-filter-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 20px;
+    margin-bottom: 30px;
+    background: #e6e6e7;
+    border: 1px solid #e0e3e7;
+    border-radius: 9px;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+}
+
+.task-report-filter-controls,
+.task-report-actions,
+.task-report-progress-cell,
+.task-report-pagination,
+.task-report-pagination-controls,
+#task-report-page-numbers {
+    display: flex;
+    align-items: center;
+}
+
+.task-report-filter-controls {
+    flex: 1;
+    gap: 20px;
+    min-width: 0;
+}
+
+.task-report-filter-group {
+    flex: 0 1 280px;
+}
+
+.task-report-filter-group select {
+    width: 100%;
+    height: 44px;
+    padding: 0 38px 0 14px;
+    color: #2d3745;
+    font: inherit;
+    font-size: 16px;
+    background: #f8f8f9;
+    border: 1px solid #eceef1;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.task-report-filter-group select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.12);
+}
+
+.task-report-actions {
+    flex: 0 0 auto;
+    gap: 10px;
+}
+
+.task-report-actions .btn {
+    height: 44px;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.task-report-export-button {
+    color: #4d5969;
+    background: #f7f8fa;
+    border-color: transparent;
+}
+
+.task-report-export-button:hover {
+    color: #0874c9;
+    background: #fff;
+    border-color: #0874c9;
+}
+
+.task-report-advanced-button {
+    background: #0874c9;
+}
+
+.task-report-table-card {
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #e5e9ee;
+    border-radius: 9px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+.task-report-table-scroll {
+    overflow-x: auto;
+}
+
+.task-report-table {
+    min-width: 920px;
+}
+
+.task-report-table th {
+    padding: 14px 20px;
+    color: #4c5868;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.15;
+    text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
+    background: #e9e9ea;
+    border-bottom: 1px solid #dedfe1;
+}
+
+.task-report-table th:first-child {
+    width: 31%;
+    text-align: left;
+}
+
+.task-report-table th:nth-child(6) {
+    color: #cc1c25;
+}
+
+.task-report-table td {
+    padding: 17px 20px;
+    font-size: 16px;
+    text-align: center;
+    background: #fdfdfd;
+    border-bottom-color: #ebedf0;
+}
+
+.task-report-table td:first-child {
+    font-size: 17px;
+    text-align: left;
+}
+
+.task-report-table tbody tr:nth-child(even):not(.task-report-total-row) td {
+    background: #f8f8f8;
+}
+
+.task-report-table tbody tr:hover:not(.task-report-total-row) td {
+    background: #f1f7ff;
+}
+
+.task-report-done {
+    color: #0874c9 !important;
+}
+
+.task-report-in-progress {
+    color: #244fd2 !important;
+}
+
+.task-report-blocked {
+    color: #a85200 !important;
+}
+
+.task-report-overdue {
+    color: #ce1d26 !important;
+}
+
+.task-report-progress-cell {
+    justify-content: center;
+    gap: 10px;
+    min-width: 185px;
+}
+
+.task-report-progress-cell > span {
+    min-width: 34px;
+    color: #354253;
+    font-size: 13px;
+}
+
+.task-report-progress {
+    width: 150px;
+    height: 10px;
+    overflow: hidden;
+    background: #e3e5e8;
+    border-radius: 999px;
+}
+
+.task-report-progress > span {
+    display: block;
+    height: 100%;
+    background: #0874c9;
+    border-radius: inherit;
+}
+
+.task-report-progress--warning > span {
+    background: #3157cf;
+}
+
+.task-report-total-row td {
+    font-weight: 600;
+    text-transform: uppercase;
+    background: #ececed !important;
+}
+
+.task-report-pagination {
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 20px;
+    background: #f5f5f6;
+}
+
+.task-report-pagination p {
+    color: #5d6878;
+}
+
+.task-report-pagination-controls,
+#task-report-page-numbers {
+    gap: 10px;
+}
+
+.task-report-pagination-controls button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    color: #4d5969;
+    font: inherit;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.task-report-pagination-controls button:hover {
+    color: #0874c9;
+    border-color: #bcdafa;
+}
+
+#task-report-page-numbers .is-active {
+    color: #fff;
+    background: #0874c9;
+    border-color: #0874c9;
+}
+
+.task-report-page .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (max-width: 900px) {
+    .task-report-filter-card {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .task-report-filter-controls {
+        flex-wrap: wrap;
+    }
+
+    .task-report-filter-group {
+        flex: 1 1 230px;
+    }
+
+    .task-report-actions {
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 640px) {
+    .task-report-page {
+        padding-top: 24px;
+    }
+
+    .task-report-hero {
+        padding: 20px 16px;
+    }
+
+    .task-report-hero h1 {
+        font-size: 25px;
+    }
+
+    .task-report-hero p {
+        font-size: 14px;
+    }
+
+    .task-report-filter-card {
+        padding: 16px;
+    }
+
+    .task-report-filter-controls,
+    .task-report-actions {
+        flex-direction: column;
+    }
+
+    .task-report-filter-group,
+    .task-report-actions .btn {
+        width: 100%;
+    }
+
+    .task-report-pagination {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

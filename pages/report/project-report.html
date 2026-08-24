@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETRMS - Báo cáo Dự án</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/report/project-report.css">
+</head>
+
+<body
+    data-breadcrumb-parent="Báo cáo"
+    data-breadcrumb-current="Báo cáo Dự án"
+>
+    <div class="app-container">
+        <div id="sidebar-container"></div>
+
+        <div class="main-wrapper">
+            <div id="header-container"></div>
+
+            <main class="main-content project-report-page">
+                <section class="project-report-heading">
+                    <div>
+                        <h1>Báo cáo Dự án</h1>
+                        <p>
+                            Tổng hợp hiệu suất và tiến độ chi tiết của các dự án
+                            đang triển khai.
+                        </p>
+                    </div>
+
+                    <div class="project-report-actions">
+                        <button
+                            id="project-report-export-button"
+                            class="btn btn-outline"
+                            type="button"
+                        >
+                            ⭳ Xuất Báo Cáo
+                        </button>
+
+                        <button
+                            id="project-report-create-button"
+                            class="btn btn-primary"
+                            type="button"
+                        >
+                            ＋ Tạo Báo Cáo Mới
+                        </button>
+                    </div>
+                </section>
+
+                <section class="project-report-filter-card">
+                    <div class="project-report-filters">
+                        <label class="project-report-filter-group">
+                            <span>THỜI GIAN</span>
+                            <select id="project-report-period">
+                                <option value="current-month">Tháng này</option>
+                                <option value="current-quarter">Quý này</option>
+                                <option value="current-year">Năm nay</option>
+                                <option value="all">Tất cả thời gian</option>
+                            </select>
+                        </label>
+
+                        <label class="project-report-filter-group">
+                            <span>QUẢN LÝ DỰ ÁN (PM)</span>
+                            <select id="project-report-pm-filter">
+                                <option value="all">Tất cả PM</option>
+                            </select>
+                        </label>
+
+                        <label class="project-report-filter-group">
+                            <span>TRẠNG THÁI</span>
+                            <select id="project-report-status-filter">
+                                <option value="all">Tất cả trạng thái</option>
+                            </select>
+                        </label>
+
+                        <button
+                            id="project-report-advanced-filter"
+                            class="btn btn-secondary"
+                            type="button"
+                        >
+                            ☰ Bộ lọc nâng cao
+                        </button>
+                    </div>
+                </section>
+
+                <section class="project-report-table-card">
+                    <div class="project-report-table-scroll">
+                        <table class="data-table project-report-table">
+                            <thead>
+                                <tr>
+                                    <th>Mã DA</th>
+                                    <th>Tên dự án</th>
+                                    <th>Quản lý (PM)</th>
+                                    <th>Tổng task</th>
+                                    <th>Hoàn thành</th>
+                                    <th>Trễ hạn</th>
+                                    <th>Tỷ lệ trễ %</th>
+                                    <th>Est. Hours</th>
+                                    <th>Logged Hours</th>
+                                    <th>Tiến độ</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="project-report-tbody">
+                                <tr>
+                                    <td class="project-code"><a href="#">PJ-2024-01</a></td>
+                                    <td class="project-name">Nâng cấp Hệ thống ERP</td>
+                                    <td><div class="project-manager"><span class="project-manager-avatar">NA</span><span>Nguyễn Văn A</span></div></td>
+                                    <td>150</td><td class="project-completed">120</td><td class="project-overdue">5</td>
+                                    <td><span class="project-overdue-rate project-overdue-rate--low">3.3%</span></td>
+                                    <td>1,200h</td><td>980h</td>
+                                    <td><div class="project-progress-cell"><span>80%</span><div class="project-progress"><span style="width: 80%"></span></div></div></td>
+                                </tr>
+                                <tr>
+                                    <td class="project-code"><a href="#">PJ-2024-05</a></td>
+                                    <td class="project-name">Triển khai CRM cho Khối Kinh doanh</td>
+                                    <td><div class="project-manager"><span class="project-manager-avatar project-manager-avatar--photo">TB</span><span>Trần Thị B</span></div></td>
+                                    <td>85</td><td class="project-completed">40</td><td class="project-overdue">12</td>
+                                    <td><span class="project-overdue-rate project-overdue-rate--high">14.1%</span></td>
+                                    <td>850h</td><td>410h</td>
+                                    <td><div class="project-progress-cell"><span>47%</span><div class="project-progress project-progress--warning"><span style="width: 47%"></span></div></div></td>
+                                </tr>
+                                <tr>
+                                    <td class="project-code"><a href="#">PJ-2023-42</a></td>
+                                    <td class="project-name">Tái cấu trúc Hạ tầng Cloud</td>
+                                    <td><div class="project-manager"><span class="project-manager-avatar project-manager-avatar--purple">LC</span><span>Lê Văn C</span></div></td>
+                                    <td>210</td><td class="project-completed">210</td><td class="project-overdue">0</td>
+                                    <td><span class="project-overdue-rate project-overdue-rate--none">0%</span></td>
+                                    <td>2,500h</td><td>2,460h</td>
+                                    <td><div class="project-progress-cell"><span>100%</span><div class="project-progress project-progress--done"><span style="width: 100%"></span></div></div></td>
+                                </tr>
+                                <tr>
+                                    <td class="project-code"><a href="#">PJ-2024-11</a></td>
+                                    <td class="project-name">Phát triển Ứng dụng Mobile</td>
+                                    <td><div class="project-manager"><span class="project-manager-avatar project-manager-avatar--photo">PD</span><span>Phạm Đức D</span></div></td>
+                                    <td>180</td><td class="project-completed">95</td><td class="project-overdue">2</td>
+                                    <td><span class="project-overdue-rate project-overdue-rate--low">1.1%</span></td>
+                                    <td>1,600h</td><td>840h</td>
+                                    <td><div class="project-progress-cell"><span>53%</span><div class="project-progress"><span style="width: 53%"></span></div></div></td>
+                                </tr>
+                                <tr>
+                                    <td class="project-code"><a href="#">PJ-2024-18</a></td>
+                                    <td class="project-name">Cổng thông tin nhân sự</td>
+                                    <td><div class="project-manager"><span class="project-manager-avatar">MN</span><span>Mai Ngọc N</span></div></td>
+                                    <td>72</td><td class="project-completed">18</td><td class="project-overdue">8</td>
+                                    <td><span class="project-overdue-rate project-overdue-rate--high">11.1%</span></td>
+                                    <td>720h</td><td>205h</td>
+                                    <td><div class="project-progress-cell"><span>25%</span><div class="project-progress project-progress--warning"><span style="width: 25%"></span></div></div></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <footer class="project-report-pagination">
+                        <p id="project-report-summary">
+                            Hiển thị 1 đến 5 của 24 dự án
+                        </p>
+
+                        <div class="pagination-controls">
+                            <button
+                                id="project-report-prev-page"
+                                type="button"
+                                aria-label="Trang trước"
+                            >
+                                ‹
+                            </button>
+
+                            <div id="project-report-page-numbers">
+                                <button class="is-active" type="button">1</button>
+                                <button type="button">2</button>
+                                <button type="button">3</button>
+                            </div>
+
+                            <button
+                                id="project-report-next-page"
+                                type="button"
+                                aria-label="Trang sau"
+                            >
+                                ›
+                            </button>
+                        </div>
+                    </footer>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/report/project-report.js"></script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETRMS - Thống kê tổng quan</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/report/overview.css">
+</head>
+<body data-breadcrumb-parent="Báo cáo" data-breadcrumb-current="Tổng quan">
+    <div class="app-container">
+        <div id="sidebar-container"></div>
+
+        <div class="main-wrapper">
+            <div id="header-container"></div>
+
+            <main class="main-content report-analytics-page">
+                <section class="report-filter-bar" aria-label="Bộ lọc báo cáo">
+                    <div class="report-filter-controls">
+                        <label class="sr-only" for="report-period-filter">Khoảng thời gian</label>
+                        <select id="report-period-filter" class="report-filter-select" aria-label="Khoảng thời gian">
+                            <option value="current-month">▣ Tháng này (Tháng 10/2023)</option>
+                            <option value="current-quarter">▣ Quý này</option>
+                            <option value="current-year">▣ Năm nay</option>
+                        </select>
+
+                        <label class="sr-only" for="report-project-filter">Dự án</label>
+                        <select id="report-project-filter" class="report-filter-select" aria-label="Dự án">
+                            <option value="">▦ Tất cả dự án</option>
+                        </select>
+
+                        <label class="sr-only" for="report-department-filter">Phòng ban</label>
+                        <select id="report-department-filter" class="report-filter-select" aria-label="Phòng ban">
+                            <option value="">▦ Tất cả phòng ban</option>
+                        </select>
+                    </div>
+
+                    <button id="report-export-button" class="btn report-export-button" type="button" title="Xuất báo cáo dưới dạng PDF">
+                        <span aria-hidden="true"></span>
+                        ⭳ Xuất Báo Cáo
+                        <span class="report-export-caret" aria-hidden="true">▾</span>
+                    </button>
+                </section>
+
+                <section class="report-analytics-top-grid">
+                    <article class="report-analytics-card report-status-card">
+                        <div class="report-analytics-card-header">
+                            <h2>Trạng thái công việc</h2>
+                            <button class="report-more-button" type="button" aria-label="Tùy chọn biểu đồ trạng thái">⋮</button>
+                        </div>
+
+                        <div id="task-status-chart" class="report-chart-body">
+                            <p>Đang tải dữ liệu trạng thái task...</p>
+                        </div>
+                    </article>
+
+                    <article class="report-analytics-card report-wsi-card">
+                        <div class="report-analytics-card-header">
+                            <div>
+                                <h2>KL Công việc trung bình (WSI)</h2>
+                                <p>Theo phòng ban / Đơn vị: Điểm WSI</p>
+                            </div>
+
+                            <div class="report-chart-switcher" aria-label="Chu kỳ biểu đồ WSI">
+                                <button class="is-active" type="button">Tuần</button>
+                                <button type="button">Tháng</button>
+                            </div>
+                        </div>
+
+                        <div id="department-wsi-chart" class="report-chart-body">
+                            <p>Đang tải dữ liệu sức tải...</p>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="report-analytics-card report-milestone-card">
+                    <div class="report-analytics-card-header">
+                        <div>
+                            <h2>Tốc độ hoàn thành mục tiêu</h2>
+                            <p>Kế hoạch (Planned) vs Thực tế (Actual) theo tuần</p>
+                        </div>
+
+                        <div class="report-line-legend" aria-label="Chú thích biểu đồ">
+                            <span class="report-line-legend-planned">Planned</span>
+                            <span class="report-line-legend-actual">Actual</span>
+                        </div>
+                    </div>
+
+                    <div id="milestone-chart" class="report-chart-body">
+                        <p>Đang tải dữ liệu milestone...</p>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/report/overview.js"></script>
+</body>
+</html>

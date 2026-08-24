@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETRMS - Báo cáo Công việc</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/report/task-report.css">
+</head>
+
+<body
+    data-breadcrumb-parent="Báo cáo"
+    data-breadcrumb-current="Báo cáo Công việc"
+>
+    <div class="app-container">
+        <div id="sidebar-container"></div>
+
+        <div class="main-wrapper">
+            <div id="header-container"></div>
+
+            <main class="main-content task-report-page">
+                <section class="task-report-hero">
+                    <h1>Báo cáo Công việc (Tasks)</h1>
+                    <p>
+                        Tổng hợp chi tiết hiệu suất xử lý công việc theo từng
+                        phòng ban và trạng thái.
+                    </p>
+                </section>
+
+                <section class="task-report-filter-card" aria-label="Bộ lọc báo cáo công việc">
+                    <div class="task-report-filter-controls">
+                        <label class="task-report-filter-group">
+                            <span class="sr-only">Phòng ban</span>
+                            <select id="task-report-department-filter" aria-label="Lọc theo phòng ban">
+                                <option value="all">▦ Tất cả Phòng ban</option>
+                            </select>
+                        </label>
+
+                        <label class="task-report-filter-group">
+                            <span class="sr-only">Thời gian</span>
+                            <select id="task-report-period-filter" aria-label="Lọc theo thời gian">
+                                <option value="current-month">▣ Tháng hiện tại</option>
+                                <option value="current-quarter">▣ Quý hiện tại</option>
+                                <option value="current-year">▣ Năm hiện tại</option>
+                                <option value="all">▣ Tất cả thời gian</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="task-report-actions">
+                        <button
+                            id="task-report-export-button"
+                            class="btn task-report-export-button"
+                            type="button"
+                        >
+                            ⭳ Xuất Báo Cáo
+                        </button>
+
+                        <button
+                            id="task-report-advanced-filter"
+                            class="btn btn-primary task-report-advanced-button"
+                            type="button"
+                        >
+                            ☰ Bộ lọc nâng Cao
+                        </button>
+                    </div>
+                </section>
+
+                <section class="task-report-table-card">
+                    <div class="task-report-table-scroll">
+                        <table class="data-table task-report-table">
+                            <thead>
+                                <tr>
+                                    <th>Phòng ban</th>
+                                    <th>Tổng task</th>
+                                    <th>Done</th>
+                                    <th>In progress</th>
+                                    <th>Blocked</th>
+                                    <th>Overdue</th>
+                                    <th>Tỷ lệ hoàn thành<br>đúng hạn</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="task-report-tbody">
+                                <tr>
+                                    <td>Phát triển Sản phẩm</td>
+                                    <td>452</td>
+                                    <td class="task-report-done">310</td>
+                                    <td class="task-report-in-progress">98</td>
+                                    <td class="task-report-blocked">22</td>
+                                    <td class="task-report-overdue">22</td>
+                                    <td>
+                                        <div class="task-report-progress-cell">
+                                            <span>85%</span>
+                                            <div class="task-report-progress">
+                                                <span style="width: 85%"></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Marketing &amp; Truyền thông</td>
+                                    <td>215</td>
+                                    <td class="task-report-done">180</td>
+                                    <td class="task-report-in-progress">25</td>
+                                    <td class="task-report-blocked">5</td>
+                                    <td class="task-report-overdue">5</td>
+                                    <td>
+                                        <div class="task-report-progress-cell">
+                                            <span>92%</span>
+                                            <div class="task-report-progress">
+                                                <span style="width: 92%"></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Thiết kế (UI/UX)</td>
+                                    <td>148</td>
+                                    <td class="task-report-done">85</td>
+                                    <td class="task-report-in-progress">40</td>
+                                    <td class="task-report-blocked">8</td>
+                                    <td class="task-report-overdue">15</td>
+                                    <td>
+                                        <div class="task-report-progress-cell">
+                                            <span>65%</span>
+                                            <div class="task-report-progress task-report-progress--warning">
+                                                <span style="width: 65%"></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Nhân sự</td>
+                                    <td>85</td>
+                                    <td class="task-report-done">78</td>
+                                    <td class="task-report-in-progress">5</td>
+                                    <td class="task-report-blocked">0</td>
+                                    <td class="task-report-overdue">2</td>
+                                    <td>
+                                        <div class="task-report-progress-cell">
+                                            <span>98%</span>
+                                            <div class="task-report-progress">
+                                                <span style="width: 98%"></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="task-report-total-row">
+                                    <td>Tổng cộng</td>
+                                    <td>900</td>
+                                    <td class="task-report-done">653</td>
+                                    <td class="task-report-in-progress">168</td>
+                                    <td class="task-report-blocked">35</td>
+                                    <td class="task-report-overdue">44</td>
+                                    <td>
+                                        <div class="task-report-progress-cell">
+                                            <span>82%</span>
+                                            <div class="task-report-progress">
+                                                <span style="width: 82%"></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <footer class="task-report-pagination">
+                        <p id="task-report-summary">Hiển thị 4 / 12 phòng ban</p>
+
+                        <div class="task-report-pagination-controls">
+                            <button id="task-report-prev-page" type="button" aria-label="Trang trước">‹</button>
+                            <div id="task-report-page-numbers">
+                                <button class="is-active" type="button">1</button>
+                                <button type="button">2</button>
+                                <button type="button">3</button>
+                            </div>
+                            <button id="task-report-next-page" type="button" aria-label="Trang sau">›</button>
+                        </div>
+                    </footer>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/report/task-report.js"></script>
+</body>
+</html>
