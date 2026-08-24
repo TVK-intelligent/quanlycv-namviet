@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thành viên Dự án | ETRMS</title>
+    <meta name="description" content="Quản lý thành viên các dự án: thêm, chỉnh sửa capacity và gỡ thành viên.">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/project/project.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <div id="sidebar-container"></div>
+        <div class="main-wrapper">
+            <div id="header-container"></div>
+            <main class="main-content">
+
+                <!-- Breadcrumb -->
+                <div class="breadcrumb">
+                    <a href="/index.html">Dashboard</a>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <a href="/pages/project/project-list.html">Quản lý Dự án</a>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <span>Thành viên Dự án</span>
+                </div>
+
+                <h1 class="page-title">Thành viên Dự án</h1>
+
+                <div class="table-card">
+
+                    <!-- Toolbar -->
+                    <div class="project-toolbar table-toolbar">
+                        <div class="project-toolbar-left">
+                            <select id="member-project-filter" class="project-filter-select">
+                                <option value="">Tất cả dự án</option>
+                                <!-- populated by JS -->
+                            </select>
+                            <div class="project-search-box">
+                                <i class="fa fa-search"></i>
+                                <input type="text" id="member-search" class="form-control"
+                                    placeholder="Tìm theo tên thành viên..." autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="project-toolbar-right">
+                            <button id="btn-add-member" class="btn btn-primary">
+                                <i class="fa fa-plus"></i> Thêm thành viên
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div style="overflow-x:auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:50px;">Avatar</th>
+                                    <th style="min-width:170px;">Họ tên</th>
+                                    <th style="min-width:190px;">Email</th>
+                                    <th style="min-width:170px;">Dự án</th>
+                                    <th style="min-width:110px;">Vai trò</th>
+                                    <th style="min-width:140px; text-align:right;">Allocated Capacity (%)</th>
+                                    <th style="min-width:120px;">Ngày tham gia</th>
+                                    <th style="width:120px; text-align:center;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="member-table-body">
+                                <!-- rows injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="empty-state" id="member-empty-state" style="display:none;">
+                        <div class="empty-state-icon"><i class="fa fa-users"></i></div>
+                        <div class="empty-state-text">Chưa có thành viên nào</div>
+                        <div class="empty-state-sub">Nhấn "+ Thêm thành viên" để thêm thành viên vào dự án.</div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination" id="member-pagination"></div>
+
+                </div><!-- /.table-card -->
+
+            </main>
+            <div id="footer-container"></div>
+        </div>
+    </div>
+
+    <div id="modal-container"></div>
+    <div id="loading-container"></div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/project/project-data.js"></script>
+    <script src="/js/project/project-member.js"></script>
+</body>
+
+</html>

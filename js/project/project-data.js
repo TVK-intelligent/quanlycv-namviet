@@ -292,6 +292,40 @@ function deleteMember(id) {
     saveToLS(LS_KEYS.MEMBERS, members);
 }
 
+/**
+ * Look up a single member by id.
+ */
+function getProjectMemberById(id) {
+    return getFromLS(LS_KEYS.MEMBERS).find(m => m.id === id) || null;
+}
+
+/**
+ * Create a new ProjectMember.
+ * Delegates to saveMember() (which generates id + createdAt).
+ */
+function addProjectMember(memberData) {
+    saveMember(memberData);
+}
+
+/**
+ * Update only the allocatedCapacity (and optionally role) of an existing member.
+ */
+function updateMemberCapacity(memberId, capacity, role) {
+    const member = getProjectMemberById(memberId);
+    if (!member) return;
+    member.allocatedCapacity = capacity;
+    if (role !== undefined) member.role = role;
+    saveMember(member);
+}
+
+/**
+ * Remove a single project member by id.
+ * Alias for deleteMember to provide a descriptive API for the UI layer.
+ */
+function removeProjectMember(id) {
+    deleteMember(id);
+}
+
 // ─────────────────────────────────────────────────────────────
 // 6. ResourceRequest CRUD & Workflow
 // ─────────────────────────────────────────────────────────────
