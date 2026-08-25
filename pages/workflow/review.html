@@ -1,313 +1,486 @@
 <!doctype html>
-
 <html lang="vi">
   <head>
-    <meta charset="utf-8" />
-    <meta
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-      name="viewport"
-    />
-    <title>Submit Task</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Review & Phê duyệt - Work Management</title>
+
+    <!-- CSS dùng chung của project -->
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/layout.css" />
+
+    <!-- CSS riêng trang Review -->
+    <link rel="stylesheet" href="/css/review.css" />
+
+    <!-- Font Awesome -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
       rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-      rel="stylesheet"
-    />
-    <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "on-primary": "#ffffff",
-              "on-error": "#ffffff",
-              primary: "#003d9b",
-              "on-secondary-container": "#00734c",
-              background: "#f9f9ff",
-              tertiary: "#5e3c00",
-              "surface-container-highest": "#d7e2ff",
-              "inverse-on-surface": "#edf0ff",
-              "on-surface": "#041b3c",
-              "primary-fixed-dim": "#b2c5ff",
-              "inverse-primary": "#b2c5ff",
-              "error-container": "#ffdad6",
-              "secondary-fixed-dim": "#65dca4",
-              "on-primary-fixed": "#001848",
-              "surface-dim": "#cadaff",
-              "on-background": "#041b3c",
-              "on-tertiary-container": "#ffca81",
-              "surface-tint": "#0c56d0",
-              "on-surface-variant": "#434654",
-              "on-secondary-fixed-variant": "#005235",
-              "on-tertiary-fixed-variant": "#624000",
-              "secondary-container": "#82f9be",
-              "secondary-fixed": "#82f9be",
-              "tertiary-fixed-dim": "#ffb950",
-              "surface-bright": "#f9f9ff",
-              "inverse-surface": "#1d3052",
-              "surface-container-high": "#e0e8ff",
-              "on-primary-container": "#c4d2ff",
-              "on-primary-fixed-variant": "#0040a2",
-              outline: "#737685",
-              "on-tertiary-fixed": "#291800",
-              "tertiary-fixed": "#ffddb3",
-              "tertiary-container": "#7d5200",
-              "surface-container": "#e8edff",
-              "on-secondary-fixed": "#002113",
-              "surface-variant": "#d7e2ff",
-              "on-secondary": "#ffffff",
-              "surface-container-lowest": "#ffffff",
-              "primary-fixed": "#dae2ff",
-              "on-tertiary": "#ffffff",
-              "outline-variant": "#c3c6d6",
-              secondary: "#006c47",
-              "surface-container-low": "#f1f3ff",
-              error: "#ba1a1a",
-              "primary-container": "#0052cc",
-              surface: "#f9f9ff",
-              "on-error-container": "#93000a",
-            },
-            borderRadius: {
-              DEFAULT: "0.125rem",
-              lg: "0.25rem",
-              xl: "0.5rem",
-              full: "0.75rem",
-            },
-            spacing: {
-              gutter: "12px",
-              "margin-edge": "16px",
-              "touch-target": "44px",
-              "stack-sm": "8px",
-              unit: "4px",
-              "stack-md": "16px",
-            },
-            fontFamily: {
-              "label-sm": ["Inter"],
-              "headline-md": ["Inter"],
-              "body-md": ["Inter"],
-              "body-lg": ["Inter"],
-              display: ["Inter"],
-              "headline-sm": ["Inter"],
-              "body-sm": ["Inter"],
-              "label-md": ["Inter"],
-            },
-            fontSize: {
-              "label-sm": ["11px", { lineHeight: "14px", fontWeight: "500" }],
-              "headline-md": [
-                "20px",
-                {
-                  lineHeight: "28px",
-                  letterSpacing: "-0.01em",
-                  fontWeight: "600",
-                },
-              ],
-              "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
-              "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
-              display: [
-                "24px",
-                {
-                  lineHeight: "32px",
-                  letterSpacing: "-0.02em",
-                  fontWeight: "700",
-                },
-              ],
-              "headline-sm": [
-                "16px",
-                { lineHeight: "24px", fontWeight: "600" },
-              ],
-              "body-sm": ["12px", { lineHeight: "16px", fontWeight: "400" }],
-              "label-md": [
-                "12px",
-                {
-                  lineHeight: "16px",
-                  letterSpacing: "0.04em",
-                  fontWeight: "600",
-                },
-              ],
-            },
-          },
-        },
-      };
-    </script>
-    <style>
-      .bottom-sheet {
-        transform: translateY(100%);
-        animation: slideUp 0.3s ease-out forwards;
-      }
-      @keyframes slideUp {
-        from {
-          transform: translateY(100%);
-        }
-        to {
-          transform: translateY(0);
-        }
-      }
-
-      .custom-checkbox {
-        appearance: none;
-        width: 20px;
-        height: 20px;
-        border: 2px solid theme("colors.outline-variant");
-        border-radius: 4px;
-        outline: none;
-        transition: all 0.2s ease;
-        position: relative;
-        cursor: pointer;
-      }
-
-      .custom-checkbox:checked {
-        background-color: theme("colors.primary");
-        border-color: theme("colors.primary");
-      }
-
-      .custom-checkbox:checked::after {
-        content: "";
-        position: absolute;
-        left: 5px;
-        top: 2px;
-        width: 6px;
-        height: 10px;
-        border: solid white;
-        border-width: 0 2px 2px 0;
-        transform: rotate(45deg);
-      }
-
-      .custom-checkbox:focus-visible {
-        box-shadow:
-          0 0 0 2px theme("colors.surface"),
-          0 0 0 4px theme("colors.primary");
-      }
-    </style>
-    <style>
-      body {
-        min-height: max(884px, 100dvh);
-      }
-    </style>
   </head>
-  <body
-    class="bg-surface-variant/50 antialiased text-on-surface h-screen w-screen overflow-hidden flex flex-col justify-end"
-  >
-    <!-- Backdrop -->
-    <div
-      class="fixed inset-0 bg-on-surface/30 z-40 transition-opacity duration-300"
-    ></div>
-    <!-- Bottom Sheet Modal -->
-    <div
-      class="bottom-sheet relative z-50 w-full bg-surface rounded-t-xl shadow-[0_-8px_24px_rgba(4,27,60,0.1)] flex flex-col max-h-[795px]"
-    >
-      <!-- Drag Handle (Visual only) -->
-      <div class="w-full flex justify-center pt-3 pb-1">
-        <div class="w-10 h-1 bg-outline-variant rounded-full"></div>
-      </div>
-      <!-- Header -->
-      <div
-        class="flex items-center justify-between px-margin-edge py-stack-md border-b border-outline-variant/30"
-      >
-        <h2 class="font-headline-sm text-headline-sm text-on-surface">
-          Gửi thành công
-        </h2>
-        <button
-          aria-label="Close modal"
-          class="p-2 -mr-2 rounded-full hover:bg-surface-container-high transition-colors active:scale-95"
-        >
-          <span
-            class="material-symbols-outlined text-on-surface-variant"
-            data-icon="close"
-            >close</span
-          >
-        </button>
-      </div>
-      <!-- Scrollable Content -->
-      <div
-        class="flex-1 overflow-y-auto px-margin-edge py-stack-md space-y-stack-md"
-      >
-        <div
-          class="flex flex-col items-center justify-center py-10 text-center space-y-4"
-        >
-          <div
-            class="w-20 h-20 bg-secondary-container rounded-full flex items-center justify-center mb-2"
-          >
-            <span
-              class="material-symbols-outlined text-[48px] text-on-secondary-container"
-              data-icon="check_circle"
-              >check_circle</span
-            >
+
+  <body>
+    <div class="app-container">
+      <!-- Sidebar -->
+      <div id="sidebar-container"></div>
+
+      <div class="main-wrapper">
+        <!-- Header -->
+        <div id="header-container"></div>
+
+        <!-- ================= NỘI DUNG TRANG REVIEW ================= -->
+        <main class="main-content">
+          <div class="review-page">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+              <span>Quy trình</span>
+              <span>/</span>
+              <span class="current">Review & Phê duyệt</span>
+            </div>
+
+            <!-- Tiêu đề -->
+            <div class="review-header">
+              <div>
+                <h1>Review & Phê duyệt Công việc</h1>
+                <p>
+                  Kiểm tra, đánh giá và phê duyệt các công việc đã hoàn thành.
+                </p>
+              </div>
+            </div>
+
+            <!-- ================= BỘ LỌC ================= -->
+            <div class="review-card review-toolbar">
+              <!-- Tìm kiếm -->
+              <div class="filter-group search-group">
+                <label for="review-search">Tìm kiếm</label>
+
+                <div class="search-wrapper">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+
+                  <input
+                    type="text"
+                    id="review-search"
+                    class="review-input"
+                    placeholder="Tìm kiếm tên công việc..."
+                  />
+                </div>
+              </div>
+
+              <!-- Trạng thái -->
+              <div class="filter-group">
+                <label for="status-filter">Trạng thái</label>
+
+                <select id="status-filter" class="review-select">
+                  <option value="all">Tất cả trạng thái</option>
+                  <option value="pending">Chờ duyệt</option>
+                  <option value="approved">Đã duyệt</option>
+                  <option value="rejected">Từ chối</option>
+                </select>
+              </div>
+
+              <!-- Project -->
+              <div class="filter-group">
+                <label for="project-filter">Dự án</label>
+
+                <select id="project-filter" class="review-select">
+                  <option value="all">Tất cả dự án</option>
+                  <option value="alpha">Project Alpha</option>
+                  <option value="beta">Project Beta</option>
+                  <option value="dashboard">Dashboard System</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- ================= THỐNG KÊ ================= -->
+            <div class="review-summary">
+              <div class="summary-card">
+                <div class="summary-icon total">
+                  <i class="fa-solid fa-list-check"></i>
+                </div>
+
+                <div>
+                  <span>Tổng công việc</span>
+                  <strong id="total-count">0</strong>
+                </div>
+              </div>
+
+              <div class="summary-card">
+                <div class="summary-icon pending">
+                  <i class="fa-solid fa-clock"></i>
+                </div>
+
+                <div>
+                  <span>Chờ duyệt</span>
+                  <strong id="pending-count">0</strong>
+                </div>
+              </div>
+
+              <div class="summary-card">
+                <div class="summary-icon approved">
+                  <i class="fa-solid fa-circle-check"></i>
+                </div>
+
+                <div>
+                  <span>Đã duyệt</span>
+                  <strong id="approved-count">0</strong>
+                </div>
+              </div>
+
+              <div class="summary-card">
+                <div class="summary-icon rejected">
+                  <i class="fa-solid fa-circle-xmark"></i>
+                </div>
+
+                <div>
+                  <span>Từ chối</span>
+                  <strong id="rejected-count">0</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- ================= BẢNG REVIEW ================= -->
+            <div class="review-card review-table-card">
+              <div class="table-responsive">
+                <table class="review-table">
+                  <thead>
+                    <tr>
+                      <th>Tên công việc</th>
+                      <th>Dự án</th>
+                      <th>Người thực hiện</th>
+                      <th>Người kiểm tra</th>
+                      <th class="text-center">Bằng chứng</th>
+                      <th class="text-center">DoD</th>
+                      <th>Trạng thái</th>
+                      <th class="text-center">Lịch sử</th>
+                      <th class="action-column">Thao tác</th>
+                    </tr>
+                  </thead>
+
+                  <tbody id="review-body">
+                    <!-- TASK 1 -->
+                    <tr data-project="alpha" data-status="pending">
+                      <td>
+                        <div class="task-info">
+                          <span class="task-title">
+                            Triển khai đăng nhập OAuth2
+                          </span>
+                          <span class="task-code">TASK-001</span>
+                        </div>
+                      </td>
+
+                      <td>Project Alpha</td>
+
+                      <td>
+                        <div class="user-info">
+                          <div class="avatar">NA</div>
+                          <span>Nguyễn Văn A</span>
+                        </div>
+                      </td>
+
+                      <td>
+                        <div class="user-info">
+                          <div class="avatar avatar-qa">TB</div>
+                          <span>Trần Thị B</span>
+                        </div>
+                      </td>
+
+                      <td class="text-center">
+                        <button
+                          class="icon-btn btn-proof"
+                          title="Xem bằng chứng"
+                        >
+                          <i class="fa-solid fa-link"></i>
+                        </button>
+                      </td>
+
+                      <td class="text-center">
+                        <span class="dod-badge dod-complete"> 100% </span>
+                      </td>
+
+                      <td class="status-cell">
+                        <span class="status-badge status-pending">
+                          Chờ duyệt
+                        </span>
+                      </td>
+
+                      <td class="text-center">
+                        <button
+                          class="icon-btn btn-history"
+                          title="Xem lịch sử"
+                        >
+                          <i class="fa-solid fa-clock-rotate-left"></i>
+                        </button>
+                      </td>
+
+                      <td>
+                        <div class="action-buttons">
+                          <button class="btn-review btn-pass" title="Phê duyệt">
+                            <i class="fa-solid fa-check"></i>
+                            Pass
+                          </button>
+
+                          <button class="btn-review btn-reject" title="Từ chối">
+                            <i class="fa-solid fa-xmark"></i>
+                            Reject
+                          </button>
+
+                          <button
+                            class="btn-review btn-internal"
+                            title="Phê duyệt nội bộ"
+                          >
+                            Internal Approve
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- TASK 2 -->
+                    <tr data-project="alpha" data-status="pending">
+                      <td>
+                        <div class="task-info">
+                          <span class="task-title">
+                            Cải tiến cấu trúc cơ sở dữ liệu
+                          </span>
+                          <span class="task-code">TASK-002</span>
+                        </div>
+                      </td>
+
+                      <td>Project Alpha</td>
+
+                      <td>
+                        <div class="user-info">
+                          <div class="avatar avatar-dev">LM</div>
+                          <span>Lê Minh</span>
+                        </div>
+                      </td>
+
+                      <td>
+                        <div class="user-info">
+                          <div class="avatar avatar-tester">PT</div>
+                          <span>Phan Tuấn</span>
+                        </div>
+                      </td>
+
+                      <td class="text-center">
+                        <button
+                          class="icon-btn btn-proof"
+                          title="Xem bằng chứng"
+                        >
+                          <i class="fa-solid fa-link"></i>
+                        </button>
+                      </td>
+
+                      <td class="text-center">
+                        <span class="dod-badge dod-progress"> 85% </span>
+                      </td>
+
+                      <td class="status-cell">
+                        <span class="status-badge status-pending">
+                          Chờ duyệt
+                        </span>
+                      </td>
+
+                      <td class="text-center">
+                        <button
+                          class="icon-btn btn-history"
+                          title="Xem lịch sử"
+                        >
+                          <i class="fa-solid fa-clock-rotate-left"></i>
+                        </button>
+                      </td>
+
+                      <td>
+                        <div class="action-buttons">
+                          <button class="btn-review btn-pass" title="Phê duyệt">
+                            <i class="fa-solid fa-check"></i>
+                            Pass
+                          </button>
+
+                          <button class="btn-review btn-reject" title="Từ chối">
+                            <i class="fa-solid fa-xmark"></i>
+                            Reject
+                          </button>
+
+                          <button
+                            class="btn-review btn-internal"
+                            title="Phê duyệt nội bộ"
+                          >
+                            Internal Approve
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- TASK 3 -->
+                    <tr data-project="dashboard" data-status="pending">
+                      <td>
+                        <div class="task-info">
+                          <span class="task-title">
+                            Cập nhật giao diện Dashboard
+                          </span>
+                          <span class="task-code">TASK-003</span>
+                        </div>
+                      </td>
+
+                      <td>Dashboard System</td>
+
+                      <td>
+                        <div class="user-info">
+                          <div class="avatar avatar-design">HY</div>
+                          <span>Hoàng Yến</span>
+                        </div>
+                      </td>
+
+                      <td>
+                        <div class="user-info">
+                          <div class="avatar avatar-qa">QA</div>
+                          <span>QA Team</span>
+                        </div>
+                      </td>
+
+                      <td class="text-center">
+                        <button
+                          class="icon-btn btn-proof"
+                          title="Xem bằng chứng"
+                        >
+                          <i class="fa-solid fa-link"></i>
+                        </button>
+                      </td>
+
+                      <td class="text-center">
+                        <span class="dod-badge dod-complete"> 100% </span>
+                      </td>
+
+                      <td class="status-cell">
+                        <span class="status-badge status-pending">
+                          Chờ duyệt
+                        </span>
+                      </td>
+
+                      <td class="text-center">
+                        <button
+                          class="icon-btn btn-history"
+                          title="Xem lịch sử"
+                        >
+                          <i class="fa-solid fa-clock-rotate-left"></i>
+                        </button>
+                      </td>
+
+                      <td>
+                        <div class="action-buttons">
+                          <button class="btn-review btn-pass" title="Phê duyệt">
+                            <i class="fa-solid fa-check"></i>
+                            Pass
+                          </button>
+
+                          <button class="btn-review btn-reject" title="Từ chối">
+                            <i class="fa-solid fa-xmark"></i>
+                            Reject
+                          </button>
+
+                          <button
+                            class="btn-review btn-internal"
+                            title="Phê duyệt nội bộ"
+                          >
+                            Internal Approve
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- TASK 4 -->
+                    <tr data-project="beta" data-status="approved">
+                      <td>
+                        <div class="task-info">
+                          <span class="task-title">
+                            Xây dựng API quản lý người dùng
+                          </span>
+                          <span class="task-code">TASK-004</span>
+                        </div>
+                      </td>
+
+                      <td>Project Beta</td>
+
+                      <td>
+                        <div class="user-info">
+                          <div class="avatar avatar-dev">HN</div>
+                          <span>Hoàng Nam</span>
+                        </div>
+                      </td>
+
+                      <td>
+                        <div class="user-info">
+                          <div class="avatar avatar-tester">MH</div>
+                          <span>Mai Hương</span>
+                        </div>
+                      </td>
+
+                      <td class="text-center">
+                        <button
+                          class="icon-btn btn-proof"
+                          title="Xem bằng chứng"
+                        >
+                          <i class="fa-solid fa-link"></i>
+                        </button>
+                      </td>
+
+                      <td class="text-center">
+                        <span class="dod-badge dod-complete"> 100% </span>
+                      </td>
+
+                      <td class="status-cell">
+                        <span class="status-badge status-approved">
+                          Đã duyệt
+                        </span>
+                      </td>
+
+                      <td class="text-center">
+                        <button
+                          class="icon-btn btn-history"
+                          title="Xem lịch sử"
+                        >
+                          <i class="fa-solid fa-clock-rotate-left"></i>
+                        </button>
+                      </td>
+
+                      <td>
+                        <div class="action-buttons">
+                          <button class="btn-review btn-disabled" disabled>
+                            <i class="fa-solid fa-check"></i>
+                            Đã duyệt
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- Không tìm thấy -->
+                <div id="empty-review" class="empty-review hidden">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <p>Không tìm thấy công việc phù hợp.</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <h3 class="font-headline-sm text-headline-sm text-on-surface">
-            Đã nộp bài thành công!
-          </h3>
-          <p
-            class="font-body-md text-body-md text-on-surface-variant max-w-[280px]"
-          >
-            Yêu cầu của bạn đã được chuyển đến Reviewer. Bạn sẽ nhận được thông
-            báo sau khi có kết quả phê duyệt.
-          </p>
-        </div>
-      </div>
-      <!-- Footer Actions -->
-      <div
-        class="p-margin-edge border-t border-outline-variant/30 bg-surface flex gap-3 pb-safe"
-      >
-        <button
-          class="w-full h-touch-target flex items-center justify-center bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:bg-primary-fixed-variant transition-colors active:scale-[0.98]"
-        >
-          Đóng
-        </button>
+        </main>
+
+        <!-- Footer -->
+        <div id="footer-container"></div>
       </div>
     </div>
-    <script>
-      // Simple script to handle checkbox counter logic for demonstration
-      document.addEventListener("DOMContentLoaded", () => {
-        const checkboxes = document.querySelectorAll(".custom-checkbox");
-        const counterDisplay = document.querySelector(".bg-primary-fixed");
-        const submitBtn = document.querySelector("button.bg-primary");
-        const urlInput = document.getElementById("proof-url");
 
-        function updateState() {
-          const checkedCount = Array.from(checkboxes).filter(
-            (cb) => cb.checked,
-          ).length;
-          const total = checkboxes.length;
+    <!-- Modal -->
+    <div id="modal-container"></div>
 
-          counterDisplay.textContent = `Yêu cầu (${checkedCount}/${total})`;
+    <!-- Loading -->
+    <div id="loading-container"></div>
 
-          if (checkedCount === total) {
-            counterDisplay.classList.remove("bg-primary-fixed", "text-primary");
-            counterDisplay.classList.add(
-              "bg-secondary-container",
-              "text-on-secondary-container",
-            );
-          } else {
-            counterDisplay.classList.add("bg-primary-fixed", "text-primary");
-            counterDisplay.classList.remove(
-              "bg-secondary-container",
-              "text-on-secondary-container",
-            );
-          }
+    <!-- JS chung -->
+    <script src="/js/common.js"></script>
 
-          // Simulate validation state (DoD checked + URL entered)
-          const isUrlValid = urlInput.value.trim().length > 0;
-          if (checkedCount === total && isUrlValid) {
-            submitBtn.removeAttribute("disabled");
-          } else {
-            submitBtn.setAttribute("disabled", "true");
-          }
-        }
-
-        checkboxes.forEach((cb) => cb.addEventListener("change", updateState));
-        urlInput.addEventListener("input", updateState);
-
-        // Initial setup
-        submitBtn.setAttribute("disabled", "true");
-      });
-    </script>
+    <!-- JS riêng trang Review -->
+    <script src="/js/review.js"></script>
   </body>
 </html>

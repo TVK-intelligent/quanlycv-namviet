@@ -1,0 +1,409 @@
+/* ==============================
+   TRANG GIA HẠN CÔNG VIỆC
+================================= */
+
+.extension-page {
+  padding: 24px;
+}
+
+/* ==============================
+   TABS
+================================= */
+
+.workflow-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.workflow-tab {
+  border: none;
+  background: transparent;
+  color: #595959;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  transition: 0.2s;
+}
+
+.workflow-tab i {
+  margin-right: 6px;
+}
+
+.workflow-tab:hover {
+  color: #1677ff;
+}
+
+.workflow-tab.active {
+  color: #1677ff;
+  font-weight: 600;
+  border-bottom-color: #1677ff;
+}
+
+/* ==============================
+   BREADCRUMB
+================================= */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #8c8c8c;
+  margin-bottom: 14px;
+}
+
+.breadcrumb .current {
+  color: #262626;
+  font-weight: 500;
+}
+
+/* ==============================
+   HEADER
+================================= */
+
+.extension-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.extension-header h1 {
+  margin: 0 0 6px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #262626;
+}
+
+.extension-header p {
+  margin: 0;
+  font-size: 14px;
+  color: #8c8c8c;
+}
+
+/* ==============================
+   BUTTON CREATE
+================================= */
+
+.btn-create-extension {
+  border: none;
+  background: #1677ff;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  white-space: nowrap;
+  transition: 0.2s;
+}
+
+.btn-create-extension:hover {
+  background: #0958d9;
+}
+
+/* ==============================
+   CARD
+================================= */
+
+.extension-card {
+  background: #ffffff;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* ==============================
+   TOOLBAR
+================================= */
+
+.extension-toolbar {
+  padding: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #595959;
+}
+
+.extension-select,
+.extension-input {
+  height: 38px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  padding: 0 12px;
+  font-size: 14px;
+  outline: none;
+  background: #ffffff;
+  color: #262626;
+}
+
+.extension-select {
+  min-width: 190px;
+}
+
+.extension-input {
+  width: 100%;
+  padding-left: 38px;
+}
+
+.extension-select:focus,
+.extension-input:focus {
+  border-color: #1677ff;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.1);
+}
+
+.search-group {
+  flex: 1;
+  min-width: 250px;
+}
+
+.search-wrapper {
+  position: relative;
+}
+
+.search-wrapper i {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8c8c8c;
+}
+
+/* ==============================
+   TABLE
+================================= */
+
+.extension-table-card {
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.extension-table {
+  width: 100%;
+  min-width: 1050px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.extension-table th {
+  background: #fafafa;
+  color: #595959;
+  font-weight: 600;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.extension-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #434343;
+  vertical-align: middle;
+}
+
+.extension-table tbody tr {
+  transition: 0.2s;
+}
+
+.extension-table tbody tr:hover {
+  background: #f5faff;
+}
+
+.extension-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.task-name {
+  font-weight: 600;
+  color: #262626 !important;
+  min-width: 220px;
+}
+
+.new-deadline {
+  color: #1677ff !important;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.reason-cell {
+  max-width: 280px;
+  color: #595959 !important;
+}
+
+/* ==============================
+   STATUS BADGE
+================================= */
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-pending {
+  color: #d48806;
+  background: #fffbe6;
+  border: 1px solid #ffe58f;
+}
+
+.status-approved {
+  color: #389e0d;
+  background: #f6ffed;
+  border: 1px solid #b7eb8f;
+}
+
+.status-rejected {
+  color: #cf1322;
+  background: #fff1f0;
+  border: 1px solid #ffa39e;
+}
+
+/* ==============================
+   ACTION BUTTONS
+================================= */
+
+.action-column {
+  text-align: right !important;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.btn-action {
+  width: 34px;
+  height: 34px;
+
+  border: 1px solid #d9d9d9;
+  background: #ffffff;
+
+  border-radius: 6px;
+  cursor: pointer;
+
+  color: #595959;
+  transition: 0.2s;
+}
+
+.btn-action:hover {
+  color: #1677ff;
+  border-color: #1677ff;
+  background: #f0f7ff;
+}
+
+/* Nút duyệt */
+
+.btn-approve:hover {
+  color: #389e0d;
+  border-color: #52c41a;
+  background: #f6ffed;
+}
+
+/* Nút từ chối */
+
+.btn-reject:hover {
+  color: #cf1322;
+  border-color: #ff4d4f;
+  background: #fff1f0;
+}
+
+/* Nút xóa */
+
+.btn-delete:hover {
+  color: #cf1322;
+  border-color: #ff4d4f;
+  background: #fff1f0;
+}
+
+/* ==============================
+   FOOTER INFO
+================================= */
+
+.extension-footer-info {
+  margin-top: 14px;
+  text-align: right;
+  color: #8c8c8c;
+  font-size: 13px;
+}
+
+.extension-footer-info span {
+  color: #1677ff;
+  font-weight: 600;
+}
+
+/* ==============================
+   RESPONSIVE
+================================= */
+
+@media (max-width: 768px) {
+  .extension-page {
+    padding: 16px;
+  }
+
+  .workflow-tabs {
+    overflow-x: auto;
+  }
+
+  .workflow-tab {
+    white-space: nowrap;
+  }
+
+  .extension-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .extension-header h1 {
+    font-size: 23px;
+  }
+
+  .btn-create-extension {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .filter-group,
+  .search-group {
+    width: 100%;
+  }
+
+  .extension-select {
+    width: 100%;
+  }
+
+  .extension-header p {
+    line-height: 1.5;
+  }
+}
