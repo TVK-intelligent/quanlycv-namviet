@@ -23,7 +23,7 @@
 <script>
     // Các hàm helper dùng chung để mở/đóng Modal từ mọi nơi
     function openModal(title, contentHtml, onConfirmCallback) {
-        document.getElementById('modal-title').innerText = title || 'Xác nhận';
+        document.getElementById('modal-title').innerHTML = title || 'Xác nhận';
         if (contentHtml) {
             document.getElementById('modal-body').innerHTML = contentHtml;
         }

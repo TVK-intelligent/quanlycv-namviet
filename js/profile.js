@@ -399,6 +399,20 @@ function initChangePasswordPage() {
         const newPass = document.getElementById('new-password').value;
         const confirmPass = document.getElementById('confirm-password').value;
         
+        // Xác định vai trò hiện tại
+        const currentRole = localStorage.getItem('etrms-simulated-role') || 'all';
+        let profileKey = currentRole === 'all' ? 'head' : currentRole;
+
+        // Kiểm tra mật khẩu hiện tại với tài khoản lưu trong AuthService
+        if (window.AuthService && typeof window.AuthService.getAccounts === 'function') {
+            const accounts = window.AuthService.getAccounts();
+            const currentAcc = accounts.find(a => a.role === profileKey);
+            if (currentAcc && currentAcc.password !== currentPass) {
+                window.showToast("Mật khẩu hiện tại không chính xác!", "error");
+                return;
+            }
+        }
+        
         if (newPass.length < 6) {
             window.showToast("Mật khẩu mới phải có tối thiểu 6 ký tự!", "error");
             return;
@@ -414,13 +428,12 @@ function initChangePasswordPage() {
             return;
         }
         
-        // Lưu lịch sử hoạt động vào vai trò đang chọn
-        const currentRole = localStorage.getItem('etrms-simulated-role') || 'all';
-        let profileKey = currentRole;
-        if (currentRole === 'all') {
-            profileKey = 'head';
+        // Cập nhật mật khẩu trong AuthService
+        if (window.AuthService && typeof window.AuthService.updatePassword === 'function') {
+            window.AuthService.updatePassword(profileKey, newPass);
         }
-        
+
+        // Lưu lịch sử hoạt động vào vai trò đang chọn
         const profiles = JSON.parse(localStorage.getItem('etrms-user-profiles'));
         if (profiles && profiles[profileKey]) {
             profiles[profileKey].activities.unshift({

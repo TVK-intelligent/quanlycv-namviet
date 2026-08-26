@@ -48,15 +48,48 @@
             </button>
         </div>
 
-        <!-- Thông tin Tài khoản Đăng nhập -->
-        <div class="user-profile-dropdown" style="border-left: 1px solid var(--border-color); padding-left: 16px;">
-            <div class="user-avatar-trigger" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 8px; border-radius: var(--border-radius-md); transition: background var(--transition-fast);">
+        <!-- Thông tin Tài khoản Đăng nhập & Dropdown Menu -->
+        <div class="user-profile-dropdown" id="user-profile-dropdown" style="border-left: 1px solid var(--border-color); padding-left: 16px; position: relative;">
+            <div class="user-avatar-trigger" id="user-avatar-trigger" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 8px; border-radius: var(--border-radius-md); transition: background var(--transition-fast);">
                 <div class="avatar-circle" id="header-user-avatar" style="width: 32px; height: 32px; border-radius: 50%; background-color: var(--primary-color); color: white; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center;">KT</div>
                 <div class="user-info" style="display: flex; flex-direction: column; text-align: left;">
                     <span class="user-name" id="header-user-name" style="font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.2;">Khải Trần</span>
                     <span class="user-role" id="header-user-role" style="font-size: 11px; color: var(--text-muted);">Trưởng phòng</span>
                 </div>
-                <i class="fa-solid fa-chevron-down dropdown-icon" style="font-size: 10px; color: var(--text-muted); transition: transform var(--transition-fast);"></i>
+                <i class="fa-solid fa-chevron-down dropdown-icon" id="user-dropdown-arrow" style="font-size: 10px; color: var(--text-muted); transition: transform var(--transition-fast);"></i>
+            </div>
+
+            <!-- Dropdown Menu Box -->
+            <div class="user-dropdown-menu" id="header-user-menu">
+                <div class="user-dropdown-header">
+                    <div class="user-dropdown-avatar" id="dropdown-user-avatar" style="background-color: var(--primary-color);">KT</div>
+                    <div class="user-dropdown-info">
+                        <span class="user-dropdown-name" id="dropdown-user-name">Khải Trần</span>
+                        <span class="user-dropdown-email" id="dropdown-user-email">khai.tran@namviet.vn</span>
+                        <span class="user-dropdown-badge" id="dropdown-user-badge">Trưởng phòng</span>
+                    </div>
+                </div>
+                <ul class="user-dropdown-list">
+                    <li>
+                        <a href="/pages/profile/profile.html">
+                            <i class="fa-solid fa-user-gear" style="color: var(--primary-color);"></i>
+                            <span>Hồ sơ cá nhân</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/pages/profile/change-password.html">
+                            <i class="fa-solid fa-key" style="color: #fa8c16;"></i>
+                            <span>Đổi mật khẩu</span>
+                        </a>
+                    </li>
+                    <div class="user-dropdown-divider"></div>
+                    <li>
+                        <a href="#" class="text-danger" id="header-logout-btn">
+                            <i class="fa-solid fa-arrow-right-from-bracket" style="color: var(--danger-color);"></i>
+                            <span style="color: var(--danger-color); font-weight: 600;">Đăng xuất</span>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

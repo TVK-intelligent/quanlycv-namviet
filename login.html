@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - Work Management</title>
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231890FF'><path d='M12 2L2 7L12 12L22 7L12 2Z'/><path d='M2 17L12 22L22 17'/><path d='M2 12L12 17L22 12'/></svg>">
+    <!-- Font Inter -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Auth CSS -->
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+    <div class="auth-container">
+        <!-- ======================================================= -->
+        <!-- CỘT TRÁI: HERO BRANDING & FEATURE SHOWCASE               -->
+        <!-- ======================================================= -->
+        <section class="auth-hero-panel">
+            <!-- Brand Header -->
+            <div class="hero-brand">
+                <div class="hero-logo-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+                        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="hero-brand-text">
+                    <span class="hero-brand-name">Work Management</span>
+                    <span class="hero-brand-tagline">Enterprise Task & Resource</span>
+                </div>
+            </div>
+
+            <!-- Hero Main Content -->
+            <div class="hero-content">
+                <div class="hero-badge-pill">
+                    <i class="fa-solid fa-sparkles"></i> Phiên bản Enterprise 2.4.0
+                </div>
+                <h1 class="hero-title">
+                    Quản trị tiến độ & <span>Tối ưu nguồn lực</span> toàn diện.
+                </h1>
+                <p class="hero-description">
+                    Hệ thống vận hành theo chuẩn quốc tế: Quản lý sức tải nhân sự tự động (WSI), giám sát tiến độ thời gian thực và phân quyền đa cấp độ.
+                </p>
+
+                <!-- 3 Highlight Features -->
+                <div class="hero-features">
+                    <div class="hero-feature-item">
+                        <div class="hero-feature-icon">
+                            <i class="fa-solid fa-gauge-high"></i>
+                        </div>
+                        <div class="hero-feature-text">
+                            <h4>Chỉ số Sức tải WSI Tự động</h4>
+                            <p>Cảnh báo quá tải/rảnh rỗi tức thì theo định mức năng lực.</p>
+                        </div>
+                    </div>
+
+                    <div class="hero-feature-item">
+                        <div class="hero-feature-icon">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                        <div class="hero-feature-text">
+                            <h4>Work Management & Kanban Chuẩn Jira</h4>
+                            <p>Theo dõi tiến độ, checklist DoR/DoD và Timesheet tuần.</p>
+                        </div>
+                    </div>
+
+                    <div class="hero-feature-item">
+                        <div class="hero-feature-icon">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div class="hero-feature-text">
+                            <h4>Phân quyền RBAC Đa vai trò</h4>
+                            <p>Tùy biến chế độ xem cho Trưởng phòng, PM và Nhân viên.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Footer -->
+            <div class="hero-footer">
+                <span>© 2026 Nam Viet Corp. All rights reserved.</span>
+                <div style="display: flex; gap: 16px;">
+                    <a href="#" onclick="alert('Work Management Enterprise Edition'); return false;">Điều khoản</a>
+                    <a href="#" onclick="alert('Chính sách bảo mật nội bộ'); return false;">Bảo mật</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================= -->
+        <!-- CỘT PHẢI: FORM ĐĂNG NHẬP CHÍNH                           -->
+        <!-- ======================================================= -->
+        <main class="auth-form-panel">
+            <div class="auth-form-card">
+                <div class="auth-header">
+                    <span class="auth-header-badge">Hệ thống Nội bộ</span>
+                    <h2 class="auth-title">Đăng nhập tài khoản</h2>
+                    <p class="auth-subtitle">Vui lòng nhập thông tin đăng nhập để bắt đầu phiên làm việc.</p>
+                </div>
+
+                <!-- Form đăng nhập -->
+                <form id="login-form" class="auth-form" novalidate>
+                    <!-- Email / Tài khoản -->
+                    <div class="form-group-modern">
+                        <label for="login-email">
+                            <span>Email hoặc Tên đăng nhập</span>
+                        </label>
+                        <div class="input-icon-wrapper">
+                            <input 
+                                type="email" 
+                                id="login-email" 
+                                class="form-control-modern" 
+                                placeholder="name@namviet.vn" 
+                                required 
+                                autocomplete="email"
+                            >
+                            <i class="fa-regular fa-envelope input-leading-icon"></i>
+                        </div>
+                    </div>
+
+                    <!-- Mật khẩu -->
+                    <div class="form-group-modern">
+                        <label for="login-password">
+                            <span>Mật khẩu</span>
+                        </label>
+                        <div class="input-icon-wrapper">
+                            <input 
+                                type="password" 
+                                id="login-password" 
+                                class="form-control-modern" 
+                                placeholder="Nhập mật khẩu của bạn" 
+                                required 
+                                autocomplete="current-password"
+                            >
+                            <i class="fa-solid fa-lock input-leading-icon"></i>
+                            <button type="button" class="input-trailing-btn" id="toggle-password" title="Hiện/Ẩn mật khẩu">
+                                <i class="fa-regular fa-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Ghi nhớ & Quên mật khẩu -->
+                    <div class="form-options-row">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" id="remember-me" checked>
+                            <span>Ghi nhớ đăng nhập</span>
+                        </label>
+                        <a href="#" id="open-forgot-pwd" class="forgot-password-link">Quên mật khẩu?</a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="btn-login-submit" class="btn-submit-auth">
+                        <span class="btn-text"><i class="fa-solid fa-arrow-right-to-bracket" style="margin-right: 6px;"></i> Đăng nhập vào hệ thống</span>
+                        <div class="auth-spinner"></div>
+                    </button>
+                </form>
+
+                <!-- Phân đoạn Đăng nhập Nhanh Demo -->
+                <div class="demo-accounts-divider">
+                    <span>Hoặc chọn tài khoản thử nghiệm nhanh</span>
+                </div>
+
+                <div class="demo-accounts-grid">
+                    <!-- Tài khoản 1: Trưởng phòng -->
+                    <div class="demo-account-item" onclick="quickLogin('head')" title="Click để đăng nhập nhanh vai trò Trưởng phòng">
+                        <div class="demo-account-left">
+                            <div class="demo-account-avatar" style="background-color: #1890FF;">KT</div>
+                            <div class="demo-account-info">
+                                <span class="demo-account-name">
+                                    Khải Trần <i class="fa-solid fa-crown" style="color: #faad14; font-size: 11px;"></i>
+                                </span>
+                                <span class="demo-account-role">Trưởng phòng (Full quyền Admin)</span>
+                            </div>
+                        </div>
+                        <div class="demo-account-action">
+                            <span>Vào ngay</span> <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Tài khoản 2: PM -->
+                    <div class="demo-account-item" onclick="quickLogin('pm')" title="Click để đăng nhập nhanh vai trò Quản lý dự án">
+                        <div class="demo-account-left">
+                            <div class="demo-account-avatar" style="background-color: #FA8C16;">PK</div>
+                            <div class="demo-account-info">
+                                <span class="demo-account-name">Phan Văn Khánh</span>
+                                <span class="demo-account-role">Quản lý Dự án (PM)</span>
+                            </div>
+                        </div>
+                        <div class="demo-account-action">
+                            <span>Vào ngay</span> <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Tài khoản 3: Nhân viên (Dev) -->
+                    <div class="demo-account-item" onclick="quickLogin('employee')" title="Click để đăng nhập nhanh vai trò Nhân viên / Dev">
+                        <div class="demo-account-left">
+                            <div class="demo-account-avatar" style="background-color: #52C41A;">GB</div>
+                            <div class="demo-account-info">
+                                <span class="demo-account-name">Lê Gia Bách</span>
+                                <span class="demo-account-role">Lập trình viên (Developer)</span>
+                            </div>
+                        </div>
+                        <div class="demo-account-action">
+                            <span>Vào ngay</span> <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- MODAL: QUÊN MẬT KHẨU                                     -->
+    <!-- ======================================================= -->
+    <div class="auth-modal-backdrop" id="forgot-password-modal">
+        <div class="auth-modal-card">
+            <div class="auth-modal-header">
+                <div>
+                    <h3 class="auth-modal-title"><i class="fa-solid fa-key" style="color: #1890FF; margin-right: 8px;"></i>Khôi phục Mật khẩu</h3>
+                    <p style="font-size: 13px; color: #64748b; margin-top: 4px;">Nhập email tài khoản để nhận liên kết đặt lại mật khẩu.</p>
+                </div>
+                <button type="button" class="auth-modal-close" id="close-forgot-pwd">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="forgot-password-form" style="display: flex; flex-direction: column; gap: 16px;">
+                <div class="form-group-modern">
+                    <label for="forgot-email">Email đăng ký</label>
+                    <div class="input-icon-wrapper">
+                        <input type="email" id="forgot-email" class="form-control-modern" placeholder="ví dụ: khai.tran@namviet.vn" required>
+                        <i class="fa-regular fa-envelope input-leading-icon"></i>
+                    </div>
+                </div>
+
+                <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px dashed #cbd5e1; font-size: 12px; color: #475569; line-height: 1.5;">
+                    💡 <strong>Gợi ý:</strong> Với các tài khoản thử nghiệm, mật khẩu mặc định là: <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-weight: 700; color: #1890FF;">123456</code>.
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 8px;">
+                    <button type="button" class="btn-submit-auth" id="btn-cancel-forgot" style="background: #f1f5f9; color: #475569; box-shadow: none;">Đóng</button>
+                    <button type="submit" class="btn-submit-auth" id="btn-submit-forgot">
+                        <span class="btn-text">Gửi liên kết</span>
+                        <div class="auth-spinner"></div>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Kiểm tra nếu đã đăng nhập thì tự động điều hướng vào trang chính
+            AuthService.checkAuth(true);
+
+            const loginForm = document.getElementById('login-form');
+            const emailInput = document.getElementById('login-email');
+            const passwordInput = document.getElementById('login-password');
+            const rememberMeCheckbox = document.getElementById('remember-me');
+            const submitBtn = document.getElementById('btn-login-submit');
+            const togglePasswordBtn = document.getElementById('toggle-password');
+
+            // Nạp email đã ghi nhớ nếu có
+            const rememberedEmail = localStorage.getItem(AuthService.AUTH_KEYS.REMEMBER_EMAIL);
+            if (rememberedEmail) {
+                emailInput.value = rememberedEmail;
+                passwordInput.focus();
+            } else {
+                emailInput.focus();
+            }
+
+            // Xử lý ẩn/hiện mật khẩu
+            togglePasswordBtn.addEventListener('click', () => {
+                const isPassword = passwordInput.type === 'password';
+                passwordInput.type = isPassword ? 'text' : 'password';
+                const icon = togglePasswordBtn.querySelector('i');
+                icon.className = isPassword ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash';
+            });
+
+            // Xử lý gửi Form Đăng nhập
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+                const remember = rememberMeCheckbox.checked;
+
+                // Xóa trạng thái invalid cũ
+                emailInput.classList.remove('is-invalid');
+                passwordInput.classList.remove('is-invalid');
+
+                if (!email) {
+                    emailInput.classList.add('is-invalid');
+                    AuthService.showAuthToast('Vui lòng nhập Email hoặc Tên đăng nhập!', 'error');
+                    emailInput.focus();
+                    return;
+                }
+
+                if (!password) {
+                    passwordInput.classList.add('is-invalid');
+                    AuthService.showAuthToast('Vui lòng nhập Mật khẩu!', 'error');
+                    passwordInput.focus();
+                    return;
+                }
+
+                // Hiển thị trạng thái đang xử lý
+                submitBtn.classList.add('is-loading');
+
+                setTimeout(() => {
+                    const result = AuthService.login(email, password, remember);
+
+                    if (result.success) {
+                        AuthService.showAuthToast(`Đăng nhập thành công! Xin chào ${result.user.name}`, 'success');
+                        
+                        // Lấy URL redirect nếu có
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const redirectUrl = urlParams.get('redirect') || '/index.html';
+
+                        setTimeout(() => {
+                            window.location.href = decodeURIComponent(redirectUrl);
+                        }, 500);
+                    } else {
+                        submitBtn.classList.remove('is-loading');
+                        passwordInput.classList.add('is-invalid');
+                        loginForm.classList.add('shake-animation');
+                        setTimeout(() => loginForm.classList.remove('shake-animation'), 400);
+                        AuthService.showAuthToast(result.message, 'error');
+                    }
+                }, 400);
+            });
+
+            // Xử lý Modal Quên mật khẩu
+            const forgotModal = document.getElementById('forgot-password-modal');
+            const openForgotBtn = document.getElementById('open-forgot-pwd');
+            const closeForgotBtn = document.getElementById('close-forgot-pwd');
+            const cancelForgotBtn = document.getElementById('btn-cancel-forgot');
+            const forgotForm = document.getElementById('forgot-password-form');
+            const forgotEmailInput = document.getElementById('forgot-email');
+            const submitForgotBtn = document.getElementById('btn-submit-forgot');
+
+            const openForgot = (e) => {
+                e.preventDefault();
+                forgotEmailInput.value = emailInput.value || '';
+                forgotModal.classList.add('is-open');
+                forgotEmailInput.focus();
+            };
+
+            const closeForgot = () => {
+                forgotModal.classList.remove('is-open');
+            };
+
+            openForgotBtn.addEventListener('click', openForgot);
+            closeForgotBtn.addEventListener('click', closeForgot);
+            cancelForgotBtn.addEventListener('click', closeForgot);
+            forgotModal.addEventListener('click', (e) => {
+                if (e.target === forgotModal) closeForgot();
+            });
+
+            forgotForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const fEmail = forgotEmailInput.value.trim();
+                if (!fEmail) {
+                    AuthService.showAuthToast('Vui lòng nhập email để khôi phục!', 'error');
+                    return;
+                }
+
+                submitForgotBtn.classList.add('is-loading');
+                setTimeout(() => {
+                    submitForgotBtn.classList.remove('is-loading');
+                    closeForgot();
+                    AuthService.showAuthToast(`Đã gửi hướng dẫn khôi phục mật khẩu tới email: ${fEmail}`, 'info');
+                }, 600);
+            });
+        });
+
+        // Hàm Đăng nhập nhanh một chạm cho các tài khoản mẫu
+        window.quickLogin = function(role) {
+            const accounts = AuthService.getAccounts();
+            const account = accounts.find(a => a.role === role);
+            if (!account) return;
+
+            document.getElementById('login-email').value = account.email;
+            document.getElementById('login-password').value = account.password;
+            
+            const submitBtn = document.getElementById('btn-login-submit');
+            submitBtn.classList.add('is-loading');
+
+            setTimeout(() => {
+                const result = AuthService.login(account.email, account.password, true);
+                if (result.success) {
+                    AuthService.showAuthToast(`Đăng nhập với vai trò ${result.user.title} (${result.user.name})`, 'success');
+                    
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const redirectUrl = urlParams.get('redirect') || '/index.html';
+                    setTimeout(() => {
+                        window.location.href = decodeURIComponent(redirectUrl);
+                    }, 400);
+                }
+            }, 300);
+        };
+    </script>
+</body>
+</html>
