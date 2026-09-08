@@ -3,145 +3,326 @@
  * Cung cấp dữ liệu động và giao diện tùy biến cho từng vai trò người dùng (Head, PM, Employee)
  */
 
-(function() {
-    'use strict';
-
+(function() {    // ==========================================
+    // 1. DỮ LIỆU ĐỘNG TỪ LOCALSTORAGE (DYNAMIC DATA GETTER)
     // ==========================================
-    // 1. DỮ LIỆU GIẢ LẬP THEO TỪNG VAI TRÒ (MOCK DATA)
-    // ==========================================
-    const DASHBOARD_DATA = {
-        // --- VAI TRÒ TRƯỞNG PHÒNG (HEAD) ---
-        head: {
-            kpi: {
-                totalProjects: "8 Dự án",
-                projectsTrend: "+2 dự án mới tháng này",
-                totalTasks: "142 Tasks",
-                tasksTrend: "86% đúng tiến độ",
-                capacityAlerts: "3 Thành viên",
-                capacityTrend: "Quá tải > 100% WSI",
-                pendingApprovals: "5 Yêu cầu",
-                approvalsTrend: "2 gia hạn, 3 duyệt Timesheet",
-                ontimeRate: "94.5%",
-                ontimeTrend: "+2.1% so với tháng trước"
-            },
-            wsiList: [
-                { name: "Lê Gia Bách", avatar: "GB", color: "#52C41A", role: "Dev Frontend", dept: "Tổ Phát triển (Dev)", wsi: 110, status: "danger", statusText: "Quá tải (110%)" },
-                { name: "Tuấn Bùi", avatar: "TB", color: "#722ED1", role: "Dev Backend", dept: "Tổ Phát triển (Dev)", wsi: 125, status: "danger", statusText: "Quá tải (125%)" },
-                { name: "Hoàng Nam", avatar: "HN", color: "#13C2C2", role: "Tester QA", dept: "Tổ Kiểm thử (QA)", wsi: 95, status: "warning", statusText: "Đủ tải (95%)" },
-                { name: "Trần Minh", avatar: "TM", color: "#FA8C16", role: "UI/UX Designer", dept: "Tổ UI/UX Design", wsi: 70, status: "success", statusText: "Rảnh rỗi (70%)" },
-                { name: "Nguyễn Văn Phong", avatar: "NP", color: "#EB2F96", role: "Dev Fullstack", dept: "Tổ Phát triển (Dev)", wsi: 85, status: "success", statusText: "An toàn (85%)" }
-            ],
-            performance: [
-                { name: "Lê Gia Bách", role: "Dev", completed: 18, bugs: 2, cases: "-", ontime: "96%", kpi: "9.2 / 10" },
-                { name: "Tuấn Bùi", role: "Dev", completed: 15, bugs: 4, cases: "-", ontime: "88%", kpi: "8.5 / 10" },
-                { name: "Hoàng Nam", role: "Tester", completed: 22, bugs: "-", cases: "78 cases", ontime: "98%", kpi: "9.5 / 10" },
-                { name: "Trần Minh", role: "Designer", completed: 12, bugs: "-", cases: "-", ontime: "92%", kpi: "8.9 / 10" }
-            ],
-            matrix: [
-                { name: "Lê Gia Bách", crm: "50%", workManagement: "50%", mobile: "10%", other: "0%", total: "110%", isOver: true },
-                { name: "Tuấn Bùi", crm: "40%", workManagement: "60%", mobile: "25%", other: "0%", total: "125%", isOver: true },
-                { name: "Hoàng Nam", crm: "30%", workManagement: "40%", mobile: "25%", other: "0%", total: "95%", isOver: false },
-                { name: "Trần Minh", crm: "20%", workManagement: "30%", mobile: "20%", other: "0%", total: "70%", isOver: false },
-                { name: "Nguyễn Văn Phong", crm: "35%", workManagement: "25%", mobile: "25%", other: "0%", total: "85%", isOver: false }
-            ],
-            inbox: [
-                { id: "req-1", type: "extension", icon: "fa-solid fa-clock-rotate-left", title: "Yêu cầu gia hạn Task 'Tối ưu hoá API Timesheet'", sender: "Tuấn Bùi (Backend Dev)", time: "15 phút trước", status: "Chờ duyệt" },
-                { id: "req-2", type: "timesheet", icon: "fa-solid fa-calendar-check", title: "Phê duyệt Timesheet tuần 34 của Tổ Dev", sender: "Phan Văn Khánh (PM)", time: "1 giờ trước", status: "Chờ chốt" },
-                { id: "req-3", type: "qa", icon: "fa-solid fa-shield-halved", title: "Xác nhận kiểm thử Release Module Dashboard", sender: "Hoàng Nam (QA Lead)", time: "3 giờ trước", status: "Chờ nghiệm thu" }
-            ],
-            timeline: [
-                { actor: "dev", title: "Tuấn Bùi đã đẩy bản vá Bug #104 lên nhánh staging", time: "10 phút trước" },
-                { actor: "tester", title: "Hoàng Nam đã hoàn thành kiểm thử Regression Test v2.4", time: "45 phút trước" },
-                { actor: "dev", title: "Lê Gia Bách đã đóng Task 'Thiết kế Layout Hồ sơ cá nhân'", time: "2 giờ trước" },
-                { actor: "pm", title: "Phan Văn Khánh đã cập nhật tiến độ Dự án CRM lên 75%", time: "4 giờ trước" }
-            ]
-        },
+    function getDynamicDashboardData() {
+        let projects = [];
+        let tasks = [];
+        let employees = [];
+        let notifications = { all: [], head: [], pm: [], employee: [] };
 
-        // --- VAI TRÒ QUẢN LÝ DỰ ÁN (PM) ---
-        pm: {
-            kpi: {
-                totalProjects: "3 Dự án",
-                projectsTrend: "2 On-track, 1 At-risk",
-                totalTasks: "64 Tasks",
-                tasksTrend: "24 đang làm, 40 xong",
-                capacityAlerts: "1 Cảnh báo",
-                capacityTrend: "Tuấn Bùi quá tải 125%",
-                pendingApprovals: "4 Yêu cầu",
-                approvalsTrend: "3 Review, 1 Gia hạn",
-                ontimeRate: "91.8%",
-                ontimeTrend: "+1.5% so với tuần trước"
-            },
-            projectsHealth: [
-                { name: "Dự án CRM Doanh nghiệp", progress: 75, start: "01/06/2026", end: "30/09/2026", sla: "94%", status: "On-Track", statusClass: "badge-success" },
-                { name: "Hệ thống Work Management", progress: 45, start: "15/07/2026", end: "15/11/2026", sla: "92%", status: "On-Track", statusClass: "badge-success" },
-                { name: "Ứng dụng Mobile Quản lý", progress: 30, start: "01/08/2026", end: "30/10/2026", sla: "78%", status: "At-Risk", statusClass: "badge-danger" }
-            ],
-            milestones: [
-                { name: "Sprint 1: Phân tích & UI Design", project: "Work Management", deadline: "10/08/2026", progress: 100, status: "Đã hoàn thành", statusClass: "badge-success" },
-                { name: "Sprint 2: Module Xác thực & Dashboard", project: "Work Management", deadline: "30/08/2026", progress: 80, status: "Đang thực hiện", statusClass: "badge-primary" },
-                { name: "Sprint 3: Quản lý Công việc & Kanban", project: "Work Management", deadline: "20/09/2026", progress: 15, status: "Sắp tới", statusClass: "badge-secondary" },
-                { name: "Release Beta CRM v1.0", project: "CRM Doanh nghiệp", deadline: "15/09/2026", progress: 70, status: "Đang kiểm thử", statusClass: "badge-warning" }
-            ],
-            teamWorkload: [
-                { name: "Lê Gia Bách", avatar: "GB", color: "#52C41A", role: "Dev Frontend", project: "Work Management, CRM", tasks: 5, wsi: 110, status: "Quá tải (110%)", statusClass: "badge-danger" },
-                { name: "Tuấn Bùi", avatar: "TB", color: "#722ED1", role: "Dev Backend", project: "Work Management, Mobile", tasks: 6, wsi: 125, status: "Quá tải (125%)", statusClass: "badge-danger" },
-                { name: "Hoàng Nam", avatar: "HN", color: "#13C2C2", role: "Tester", project: "CRM, Work Management", tasks: 4, wsi: 95, status: "Đủ tải (95%)", statusClass: "badge-warning" },
-                { name: "Trần Minh", avatar: "TM", color: "#FA8C16", role: "UI Designer", project: "Mobile App", tasks: 2, wsi: 70, status: "An toàn (70%)", statusClass: "badge-success" }
-            ],
-            inbox: [
-                { id: "pm-req-1", type: "extension", icon: "fa-solid fa-clock-rotate-left", title: "Xin gia hạn Task 'Tích hợp API Đăng nhập SSO' thêm 2 ngày", sender: "Lê Gia Bách", time: "30 phút trước", status: "Chờ duyệt" },
-                { id: "pm-req-2", type: "qa", icon: "fa-solid fa-check-double", title: "Yêu cầu Review mã nguồn Pull Request #42", sender: "Tuấn Bùi", time: "2 giờ trước", status: "Cần review" },
-                { id: "pm-req-3", type: "timesheet", icon: "fa-solid fa-user-clock", title: "Timesheet tuần 34 của Hoàng Nam đã gửi", sender: "Hoàng Nam", time: "5 giờ trước", status: "Chờ xác nhận" }
-            ],
-            timeline: [
-                { actor: "dev", title: "Lê Gia Bách đã mở Pull Request: Feature Auth & Logout Flow", time: "25 phút trước" },
-                { actor: "tester", title: "Hoàng Nam đã log 3 bugs trên Module Quản lý Dự án", time: "1 giờ trước" },
-                { actor: "dev", title: "Tuấn Bùi đã cập nhật schema cơ sở dữ liệu cho Module Task", time: "3 giờ trước" }
-            ]
-        },
-
-        // --- VAI TRÒ NHÂN VIÊN (EMPLOYEE - DEV/TESTER) ---
-        employee: {
-            kpi: {
-                totalProjects: "2 Dự án",
-                projectsTrend: "Work Management (60%), Mobile (40%)",
-                totalTasks: "14 Tasks",
-                tasksTrend: "10 hoàn thành, 3 đang làm, 1 trễ",
-                capacityAlerts: "1 Cảnh báo",
-                capacityTrend: "Sức tải tuần này 110% (Cần lưu ý)",
-                pendingApprovals: "1 Yêu cầu",
-                approvalsTrend: "Đã gửi xin gia hạn Task #48",
-                ontimeRate: "96.2%",
-                ontimeTrend: "Vượt chỉ tiêu cá nhân (+4.2%)"
-            },
-            myTasks: [
-                { id: "t1", title: "Hoàn thiện giao diện Trang Đăng nhập & Đăng xuất (Auth Flow)", project: "Work Management", priority: "p1", priorityText: "Khẩn cấp (P1)", isToday: true, isDone: true },
-                { id: "t2", title: "Fix lỗi hiển thị avatar trên Safari & Mobile viewport", project: "Work Management", priority: "p2", priorityText: "Ưu tiên cao (P2)", isToday: true, isDone: false },
-                { id: "t3", title: "Viết kịch bản kiểm thử Checklist DoR/DoD", project: "Work Management", priority: "p3", priorityText: "Bình thường (P3)", isToday: true, isDone: false },
-                { id: "t4", title: "Tối ưu hóa tốc độ tải CSS Dashboard", project: "Work Management", priority: "p4", priorityText: "Thấp (P4)", isToday: false, isDone: true },
-                { id: "t5", title: "Cập nhật tài liệu hướng dẫn sử dụng hệ thống", project: "Mobile App", priority: "p3", priorityText: "Bình thường (P3)", isToday: false, isDone: false }
-            ],
-            devBugs: [
-                { id: "BUG-101", title: "Nút Đăng xuất bị tràn lề trên màn hình iPad", project: "Work Management", tester: "Hoàng Nam", priority: "P1", priorityClass: "tag-p1", isReopened: false },
-                { id: "BUG-102", title: "Chưa validate độ dài mật khẩu khi đổi mật khẩu", project: "Work Management", tester: "Hoàng Nam", priority: "P2", priorityClass: "tag-p2", isReopened: false },
-                { id: "BUG-103", title: "Sai màu avatar mặc định khi chuyển đổi vai trò", project: "CRM", tester: "Đặng Linh", priority: "P3", priorityClass: "tag-p3", isReopened: true }
-            ],
-            testerTasks: [
-                { id: "TEST-201", title: "Kiểm thử luồng Đăng nhập với tài khoản mẫu 1-chạm", project: "Work Management", dev: "Lê Gia Bách", priority: "P1", priorityClass: "tag-p1" },
-                { id: "TEST-202", title: "Kiểm tra bảo mật Route Guard khi chưa đăng nhập", project: "Work Management", dev: "Lê Gia Bách", priority: "P1", priorityClass: "tag-p1" },
-                { id: "TEST-203", title: "Kiểm thử hiển thị biểu đồ KPI và WSI trên Firefox", project: "CRM", dev: "Tuấn Bùi", priority: "P2", priorityClass: "tag-p2" }
-            ],
-            inbox: [
-                { id: "emp-req-1", type: "qa", icon: "fa-solid fa-circle-check", title: "Task 'Giao diện Hồ sơ cá nhân' đã được Tester nghiệm thu PASS", sender: "Hoàng Nam (QA)", time: "20 phút trước", status: "Đã duyệt" },
-                { id: "emp-req-2", type: "extension", icon: "fa-solid fa-clock", title: "Yêu cầu gia hạn Task #48 đang chờ Trưởng phòng phê duyệt", sender: "Hệ thống", time: "2 giờ trước", status: "Đang chờ" }
-            ],
-            timeline: [
-                { actor: "dev", title: "Bạn đã nộp mã nguồn hoàn thành Module Auth", time: "15 phút trước" },
-                { actor: "tester", title: "Hoàng Nam đã kiểm thử đạt chuẩn tính năng Đổi mật khẩu", time: "1 giờ trước" },
-                { actor: "pm", title: "Phan Văn Khánh đã giao task mới 'Tối ưu UI Mobile' cho bạn", time: "1 ngày trước" }
-            ]
+        try {
+            projects = JSON.parse(localStorage.getItem('etrms-projects')) || [];
+        } catch (e) {}
+        if (projects.length === 0) {
+            projects = [
+                { id: 'proj_001', projectCode: 'PRJ-2024-001', projectName: 'Hệ thống Quản lý Nhân sự v2', pmUserId: 'user_001', pmUserName: 'Nguyễn Văn An', weightage: 40, budget: 500000000, startDate: '2024-01-15', endDate: '2026-09-30', priority: 'P1', status: 'IN_PROGRESS', progress: 65 },
+                { id: 'proj_002', projectCode: 'PRJ-2024-001-A', projectName: 'Module Tuyển dụng', pmUserId: 'user_001', pmUserName: 'Nguyễn Văn An', weightage: 20, budget: 150000000, startDate: '2024-01-15', endDate: '2026-03-31', priority: 'P2', status: 'COMPLETED', progress: 100 },
+                { id: 'proj_003', projectCode: 'PRJ-2024-001-B', projectName: 'Module Chấm công', pmUserId: 'user_005', pmUserName: 'Hoàng Văn Em', pmUserId: 'user_005', weightage: 20, budget: 150000000, startDate: '2026-04-01', endDate: '2026-08-30', priority: 'P2', status: 'IN_PROGRESS', progress: 40 },
+                { id: 'proj_004', projectCode: 'PRJ-2024-002', projectName: 'Cổng thông tin Khách hàng', pmUserId: 'user_005', pmUserName: 'Hoàng Văn Em', pmUserId: 'user_005', weightage: 30, budget: 300000000, startDate: '2026-03-01', endDate: '2026-09-30', priority: 'P1', status: 'IN_PROGRESS', progress: 30 }
+            ];
+            localStorage.setItem('etrms-projects', JSON.stringify(projects));
         }
-    };
+
+        try {
+            employees = JSON.parse(localStorage.getItem('etrms_employees')) || [];
+        } catch (e) {}
+        if (employees.length === 0) {
+            employees = [
+                { id: "EMP_001", avatar: "TM", fullName: "Trần Văn Minh", email: "minh.tv@etrms.vn", phone: "0987654321", deptId: "DEPT_DEV", deptRole: "MEMBER", systemRole: "USER", wsiCapacity: 85, avatarColor: "#1890FF" },
+                { id: "EMP_002", avatar: "GB", fullName: "Lê Gia Bách", email: "bach.lg@etrms.vn", phone: "0912345678", deptId: "DEPT_QA", deptRole: "HEAD", systemRole: "ADMIN", wsiCapacity: 100, avatarColor: "#52C41A" },
+                { id: "EMP_003", avatar: "TB", fullName: "Nguyễn Tuấn Bùi", email: "bui.nt@etrms.vn", phone: "0909090909", deptId: "DEPT_DEV", deptRole: "TEAM_LEAD", systemRole: "USER", wsiCapacity: 125, avatarColor: "#722ED1" }
+            ];
+            localStorage.setItem('etrms_employees', JSON.stringify(employees));
+        }
+
+        try {
+            tasks = JSON.parse(localStorage.getItem('etrms_tasks')) || [];
+        } catch (e) {}
+        if (tasks.length === 0) {
+            tasks = [
+                { id: 101, code: 'TASK-101', title: 'Dev Backend API Xác thực người dùng', project: 'Triển khai CRM', department: 'Phòng Kế toán', assignee: 'Khải Trần Văn', priority: 'P1', status: 'IN_PROGRESS', estHours: 8, dueDate: '2026-08-25' },
+                { id: 102, code: 'TASK-102', title: 'Thiết kế Mockup UI Dashboard & Workspace', project: 'Thiết kế hệ thống ETRMS', department: 'Phòng CNTT', assignee: 'Hải Nam', priority: 'P2', status: 'DONE', estHours: 16, dueDate: '2026-08-05' },
+                { id: 103, code: 'TASK-103', title: 'Khảo sát quy trình nghiệp vụ các phòng ban', project: 'Hệ thống Vận hành Nội bộ', department: 'Phòng Marketing', assignee: 'Lê Gia Bách', priority: 'P3', status: 'TO_DO', estHours: 16, dueDate: '2026-08-10' }
+            ];
+            localStorage.setItem('etrms_tasks', JSON.stringify(tasks));
+        }
+
+        try {
+            notifications = JSON.parse(localStorage.getItem('etrms-notifications')) || notifications;
+        } catch (e) {}
+
+        // Lấy danh sách yêu cầu gia hạn thực tế để hiển thị lên Inbox của Head/PM
+        let extRequests = [];
+        try {
+            extRequests = JSON.parse(localStorage.getItem('taskconnect_extensions')) || [];
+        } catch(e) {}
+        
+        const dynamicInbox = [];
+        extRequests.forEach(req => {
+            if (req.status === 'Pending' || req.status === 'PENDING' || req.status === 'pending') {
+                dynamicInbox.push({
+                    id: req.id,
+                    type: "extension",
+                    icon: "fa-solid fa-clock-rotate-left",
+                    title: `Yêu cầu gia hạn Task '${req.task}'`,
+                    sender: `${req.requester} (${req.dept || 'IT Dept'})`,
+                    time: "Hôm nay",
+                    status: "Chờ duyệt"
+                });
+            }
+        });
+
+        // Nếu không có yêu cầu thực tế nào, thêm dữ liệu mock để giao diện không bị trống
+        if (dynamicInbox.length === 0) {
+            dynamicInbox.push(
+                { id: "req-1", type: "extension", icon: "fa-solid fa-clock-rotate-left", title: "Yêu cầu gia hạn Task 'Tối ưu hoá API Timesheet'", sender: "Nguyễn Tuấn Bùi", time: "15 phút trước", status: "Chờ duyệt" },
+                { id: "req-2", type: "timesheet", icon: "fa-solid fa-calendar-check", title: "Phê duyệt Timesheet tuần 34 của Tổ Dev", sender: "Phan Văn Khánh (PM)", time: "1 giờ trước", status: "Chờ chốt" },
+                { id: "req-3", type: "qa", icon: "fa-solid fa-shield-halved", title: "Xác nhận kiểm thử Release Module Dashboard", sender: "Lê Gia Bách", time: "3 giờ trước", status: "Chờ nghiệm thu" }
+            );
+        }
+
+        const todayStr = new Date().toISOString().split('T')[0];
+        const totalProjectsCount = projects.length;
+        const totalTasksCount = tasks.length;
+        const overloadedEmployees = employees.filter(emp => (emp.wsiCapacity || 0) > 100);
+        const capacityAlertsCount = overloadedEmployees.length;
+
+        // Tính tỷ lệ đúng hạn: Số task DONE không bị trễ hạn / Tổng số task DONE
+        const doneTasks = tasks.filter(t => t.status === 'DONE');
+        const onTimeDoneTasks = doneTasks.filter(t => !t.dueDate || t.dueDate >= todayStr);
+        const onTimeRateVal = doneTasks.length > 0 ? ((onTimeDoneTasks.length / doneTasks.length) * 100).toFixed(1) : "100";
+
+        // Tên của user đang đăng nhập
+        const currentUser = JSON.parse(localStorage.getItem('etrms-auth-user')) || { name: 'Lê Gia Bách' };
+
+        const employeeInbox = [];
+        extRequests.forEach(req => {
+            if (req.requester === currentUser.name) {
+                let statusText = 'Đang chờ';
+                if (req.status === 'Approved' || req.status === 'APPROVED' || req.status === 'approved') statusText = 'Đã duyệt';
+                else if (req.status === 'Rejected' || req.status === 'REJECTED' || req.status === 'rejected') statusText = 'Từ chối';
+
+                employeeInbox.push({
+                    id: req.id,
+                    type: "extension",
+                    icon: req.status === 'Approved' || req.status === 'APPROVED' || req.status === 'approved' ? "fa-solid fa-circle-check" : "fa-solid fa-clock",
+                    title: `Yêu cầu gia hạn Task '${req.task}'`,
+                    sender: "Hệ thống",
+                    time: "Hôm nay",
+                    status: statusText
+                });
+            }
+        });
+
+        if (employeeInbox.length === 0) {
+            employeeInbox.push(
+                { id: "emp-req-1", type: "qa", icon: "fa-solid fa-circle-check", title: "Task 'Giao diện Hồ sơ cá nhân' đã được duyệt PASS", sender: "Hoàng Nam (QA)", time: "20 phút trước", status: "Đã duyệt" }
+            );
+        }
+
+        const dynamicData = {
+            head: {
+                kpi: {
+                    totalProjects: `${totalProjectsCount} Dự án`,
+                    projectsTrend: `Hoạt động phòng ban`,
+                    totalTasks: `${totalTasksCount} Tasks`,
+                    tasksTrend: `${doneTasks.length} đã hoàn thành`,
+                    capacityAlerts: `${capacityAlertsCount} Thành viên`,
+                    capacityTrend: `Quá tải > 100% WSI`,
+                    pendingApprovals: `${dynamicInbox.length} Yêu cầu`,
+                    approvalsTrend: `Đang chờ xử lý`,
+                    ontimeRate: `${onTimeRateVal}%`,
+                    ontimeTrend: `Tính toán từ thực tế`
+                },
+                wsiList: employees.map(emp => {
+                    const wsi = emp.wsiCapacity || 0;
+                    let status = 'success';
+                    let statusText = `Rảnh rỗi (${wsi}%)`;
+                    if (wsi > 100) {
+                        status = 'danger';
+                        statusText = `Quá tải (${wsi}%)`;
+                    } else if (wsi >= 90) {
+                        status = 'warning';
+                        statusText = `Đủ tải (${wsi}%)`;
+                    } else {
+                        statusText = `An toàn (${wsi}%)`;
+                    }
+                    let deptName = 'Tổ Phát triển (Dev)';
+                    if (emp.deptId === 'DEPT_QA') deptName = 'Tổ Kiểm thử (QA)';
+                    else if (emp.deptId === 'DEPT_HR') deptName = 'Tổ Nhân sự';
+
+                    return {
+                        name: emp.fullName,
+                        avatar: emp.fullName.trim().split(' ').pop().substring(0, 2).toUpperCase(),
+                        color: emp.avatarColor || '#1890FF',
+                        role: emp.deptRole || 'Developer',
+                        dept: deptName,
+                        wsi: wsi,
+                        status: status,
+                        statusText: statusText
+                    };
+                }),
+                performance: employees.map(emp => {
+                    const empTasks = tasks.filter(t => t.assignee === emp.fullName);
+                    const empDone = empTasks.filter(t => t.status === 'DONE');
+                    const empBugs = tasks.filter(t => t.assignee === emp.fullName && t.title.toLowerCase().includes('bug')).length;
+                    const empOnTime = empDone.length > 0 ? Math.round((empDone.filter(t => !t.dueDate || t.dueDate >= todayStr).length / empDone.length) * 100) : 100;
+                    return {
+                        name: emp.fullName,
+                        role: emp.deptRole === 'HEAD' ? 'Lead' : 'Member',
+                        completed: empDone.length,
+                        bugs: empBugs > 0 ? empBugs : '-',
+                        cases: emp.deptId === 'DEPT_QA' ? `${empTasks.length} cases` : '-',
+                        ontime: `${empOnTime}%`,
+                        kpi: (8.0 + (empOnTime / 100) * 2.0 - (empBugs * 0.2)).toFixed(1) + ' / 10'
+                    };
+                }),
+                matrix: employees.map(emp => {
+                    return {
+                        name: emp.fullName,
+                        crm: emp.fullName === 'Lê Gia Bách' ? '50%' : (emp.fullName === 'Trần Văn Minh' ? '20%' : '40%'),
+                        workManagement: emp.fullName === 'Lê Gia Bách' ? '50%' : (emp.fullName === 'Trần Văn Minh' ? '30%' : '60%'),
+                        mobile: emp.fullName === 'Lê Gia Bách' ? '0%' : (emp.fullName === 'Trần Văn Minh' ? '20%' : '25%'),
+                        other: '0%',
+                        total: `${emp.wsiCapacity || 100}%`,
+                        isOver: (emp.wsiCapacity || 0) > 100
+                    };
+                }),
+                inbox: dynamicInbox,
+                timeline: [
+                    { actor: "dev", title: "Nguyễn Tuấn Bùi đã đẩy bản vá Bug #104 lên nhánh staging", time: "10 phút trước" },
+                    { actor: "dev", title: "Lê Gia Bách đã đóng Task 'Thiết kế Layout Hồ sơ cá nhân'", time: "2 giờ trước" },
+                    { actor: "pm", title: "Phan Văn Khánh đã cập nhật tiến độ Dự án CRM lên 75%", time: "4 giờ trước" }
+                ]
+            },
+            pm: {
+                kpi: {
+                    totalProjects: `${totalProjectsCount} Dự án`,
+                    projectsTrend: `Tổng số dự án vận hành`,
+                    totalTasks: `${totalTasksCount} Tasks`,
+                    tasksTrend: `${tasks.filter(t => t.status === 'IN_PROGRESS').length} đang thực hiện`,
+                    capacityAlerts: `${capacityAlertsCount} Cảnh báo`,
+                    capacityTrend: `Nhân sự quá tải WSI`,
+                    pendingApprovals: `${dynamicInbox.length} Yêu cầu`,
+                    approvalsTrend: `Đang chờ PM duyệt`,
+                    ontimeRate: `${onTimeRateVal}%`,
+                    ontimeTrend: `Tính tự động`
+                },
+                projectsHealth: projects.map(p => {
+                    let status = 'On-Track';
+                    let statusClass = 'badge-success';
+                    if (p.progress < 50 && p.status === 'IN_PROGRESS') {
+                        status = 'At-Risk';
+                        statusClass = 'badge-danger';
+                    }
+                    return {
+                        name: p.projectName,
+                        progress: p.progress || 0,
+                        start: p.startDate,
+                        end: p.endDate,
+                        sla: '92%',
+                        status: status,
+                        statusClass: statusClass
+                    };
+                }),
+                milestones: [
+                    { name: "Sprint 1: Phân tích & UI Design", project: "Work Management", deadline: "10/08/2026", progress: 100, status: "Đã hoàn thành", statusClass: "badge-success" },
+                    { name: "Sprint 2: Module Xác thực & Dashboard", project: "Work Management", deadline: "30/08/2026", progress: 80, status: "Đang thực hiện", statusClass: "badge-primary" },
+                    { name: "Sprint 3: Quản lý Công việc & Kanban", project: "Work Management", deadline: "20/09/2026", progress: 15, status: "Sắp tới", statusClass: "badge-secondary" }
+                ],
+                teamWorkload: employees.map(emp => {
+                    const empTasks = tasks.filter(t => t.assignee === emp.fullName);
+                    const wsi = emp.wsiCapacity || 100;
+                    let statusClass = 'badge-success';
+                    let statusText = 'An toàn';
+                    if (wsi > 100) {
+                        statusClass = 'badge-danger';
+                        statusText = `Quá tải (${wsi}%)`;
+                    } else if (wsi >= 90) {
+                        statusClass = 'badge-warning';
+                        statusText = `Đủ tải (${wsi}%)`;
+                    }
+                    return {
+                        name: emp.fullName,
+                        avatar: emp.fullName.trim().split(' ').pop().substring(0, 2).toUpperCase(),
+                        color: emp.avatarColor || '#1890FF',
+                        role: emp.deptRole || 'Developer',
+                        project: emp.fullName === 'Lê Gia Bách' ? 'Work Management' : 'Triển khai CRM',
+                        tasks: empTasks.filter(t => t.status !== 'DONE').length,
+                        wsi: wsi,
+                        status: statusText,
+                        statusClass: statusClass
+                    };
+                }),
+                inbox: dynamicInbox,
+                timeline: [
+                    { actor: "dev", title: "Lê Gia Bách đã mở Pull Request: Feature Auth & Logout Flow", time: "25 phút trước" },
+                    { actor: "dev", title: "Nguyễn Tuấn Bùi đã cập nhật schema cơ sở dữ liệu", time: "3 giờ trước" }
+                ]
+            },
+            employee: {
+                kpi: {
+                    totalProjects: `2 Dự án`,
+                    projectsTrend: `Đang tham gia thực hiện`,
+                    totalTasks: `${tasks.filter(t => t.assignee === currentUser.name).length} Tasks`,
+                    tasksTrend: `${tasks.filter(t => t.assignee === currentUser.name && t.status === 'DONE').length} đã xong`,
+                    capacityAlerts: `0 Cảnh báo`,
+                    capacityTrend: `Sức tải cá nhân ổn định`,
+                    pendingApprovals: `${employeeInbox.length} Đơn`,
+                    approvalsTrend: `Yêu cầu gia hạn của bạn`,
+                    ontimeRate: `100%`,
+                    ontimeTrend: `Đúng hạn tuyệt đối`
+                },
+                myTasks: tasks.filter(t => t.assignee === currentUser.name).map(t => {
+                    return {
+                        id: t.id,
+                        title: t.title,
+                        project: t.project || 'Dự án chung',
+                        priority: t.priority ? t.priority.toLowerCase() : 'p3',
+                        priorityText: t.priority === 'P1' ? 'Khẩn cấp (P1)' : t.priority === 'P2' ? 'Ưu tiên cao (P2)' : 'Bình thường (P3)',
+                        isToday: t.priority === 'P1' || t.priority === 'P2',
+                        isDone: t.status === 'DONE'
+                    };
+                }),
+                devBugs: tasks.filter(t => t.assignee === currentUser.name && t.title.toLowerCase().includes('bug')).map(t => {
+                    return {
+                        id: 'BUG-' + t.id,
+                        title: t.title,
+                        project: t.project || 'Work Management',
+                        tester: t.tester || 'Hoàng Nam',
+                        priority: t.priority || 'P2',
+                        priorityClass: 'tag-' + (t.priority ? t.priority.toLowerCase() : 'p2'),
+                        isReopened: false
+                    };
+                }),
+                testerTasks: tasks.filter(t => t.tester === currentUser.name || (t.title.toLowerCase().includes('kiểm thử') && t.status === 'IN_REVIEW')).map(t => {
+                    return {
+                        id: 'TEST-' + t.id,
+                        title: t.title,
+                        project: t.project || 'Work Management',
+                        dev: t.assignee || 'Lập trình viên',
+                        priority: t.priority || 'P1',
+                        priorityClass: 'tag-' + (t.priority ? t.priority.toLowerCase() : 'p1')
+                    };
+                }),
+                inbox: employeeInbox,
+                timeline: [
+                    { actor: "dev", title: "Bạn đã nộp mã nguồn hoàn thành Module Auth", time: "15 phút trước" }
+                ]
+            }
+        };
+
+        return dynamicData;
+    }
+
+    // Proxy động để tự động truy cập dữ liệu thực tế tại mọi thời điểm
+    const DASHBOARD_DATA = new Proxy({}, {
+        get: function(target, prop) {
+            return getDynamicDashboardData()[prop];
+        }
+    });
 
     // ==========================================
     // 2. CÁC HÀM RENDER DỮ LIỆU RA GIAO DIỆN
