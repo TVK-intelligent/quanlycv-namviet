@@ -1,0 +1,505 @@
+/* ==============================
+   TRANG REVIEW & PHE DUYET
+   ============================== */
+
+.review-page {
+  padding: 24px;
+}
+
+/* ==============================
+   BREADCRUMB
+   ============================== */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #8c8c8c;
+  margin-bottom: 14px;
+}
+
+.breadcrumb .current {
+  color: #262626;
+  font-weight: 500;
+}
+
+/* ==============================
+   HEADER
+   ============================== */
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.review-header h1 {
+  margin: 0 0 6px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #262626;
+}
+
+.review-header p {
+  margin: 0;
+  font-size: 14px;
+  color: #8c8c8c;
+}
+
+/* ==============================
+   CARD
+   ============================== */
+
+.review-card {
+  background: #ffffff;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* ==============================
+   TOOLBAR
+   ============================== */
+
+.review-toolbar {
+  padding: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #595959;
+}
+
+.review-select,
+.review-input {
+  height: 38px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  padding: 0 12px;
+  font-size: 14px;
+  outline: none;
+  background: #ffffff;
+}
+
+.review-select {
+  min-width: 190px;
+}
+
+.review-input {
+  width: 100%;
+  padding-left: 38px;
+}
+
+.review-select:focus,
+.review-input:focus {
+  border-color: #1677ff;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.1);
+}
+
+.search-group {
+  flex: 1;
+  min-width: 250px;
+}
+
+.search-wrapper {
+  position: relative;
+}
+
+.search-wrapper i {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8c8c8c;
+}
+
+/* ==============================
+   THONG KE
+   ============================== */
+
+.review-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.summary-card {
+  background: #ffffff;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.summary-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+}
+
+.summary-icon.total {
+  color: #1677ff;
+  background: #e6f4ff;
+}
+
+.summary-icon.pending {
+  color: #d48806;
+  background: #fff7e6;
+}
+
+.summary-icon.approved {
+  color: #389e0d;
+  background: #f6ffed;
+}
+
+.summary-icon.rejected {
+  color: #cf1322;
+  background: #fff1f0;
+}
+
+.summary-card span {
+  display: block;
+  font-size: 13px;
+  color: #8c8c8c;
+  margin-bottom: 3px;
+}
+
+.summary-card strong {
+  font-size: 22px;
+  color: #262626;
+}
+
+/* ==============================
+   TABLE
+   ============================== */
+
+.review-table-card {
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.review-table {
+  width: 100%;
+  min-width: 1200px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.review-table th {
+  background: #fafafa;
+  color: #595959;
+  font-weight: 600;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.review-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #434343;
+  vertical-align: middle;
+}
+
+.review-table tbody tr {
+  transition: 0.2s;
+}
+
+.review-table tbody tr:hover {
+  background: #f5faff;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+/* ==============================
+   TASK
+   ============================== */
+
+.task-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.task-title {
+  font-weight: 600;
+  color: #262626;
+}
+
+.task-code {
+  font-size: 12px;
+  color: #8c8c8c;
+}
+
+/* ==============================
+   USER
+   ============================== */
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #e6f4ff;
+  color: #1677ff;
+  font-size: 11px;
+  font-weight: 700;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+.avatar-dev {
+  background: #f6ffed;
+  color: #389e0d;
+}
+
+.avatar-qa {
+  background: #fff1f0;
+  color: #cf1322;
+}
+
+.avatar-tester {
+  background: #f9f0ff;
+  color: #722ed1;
+}
+
+.avatar-design {
+  background: #fff7e6;
+  color: #d46b08;
+}
+
+/* ==============================
+   DOD BADGE
+   ============================== */
+
+.dod-badge {
+  display: inline-block;
+  min-width: 48px;
+  padding: 4px 9px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dod-complete {
+  background: #f6ffed;
+  color: #389e0d;
+  border: 1px solid #b7eb8f;
+}
+
+.dod-progress {
+  background: #e6f4ff;
+  color: #1677ff;
+  border: 1px solid #91caff;
+}
+
+/* ==============================
+   STATUS
+   ============================== */
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-pending {
+  color: #d48806;
+  background: #fff7e6;
+  border: 1px solid #ffd591;
+}
+
+.status-approved {
+  color: #389e0d;
+  background: #f6ffed;
+  border: 1px solid #b7eb8f;
+}
+
+.status-rejected {
+  color: #cf1322;
+  background: #fff1f0;
+  border: 1px solid #ffa39e;
+}
+
+/* ==============================
+   ICON BUTTON
+   ============================== */
+
+.icon-btn {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #d9d9d9;
+  background: #ffffff;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #595959;
+  transition: 0.2s;
+}
+
+.icon-btn:hover {
+  color: #1677ff;
+  border-color: #1677ff;
+  background: #f0f7ff;
+}
+
+/* ==============================
+   ACTION
+   ============================== */
+
+.action-column {
+  text-align: right !important;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.btn-review {
+  border: none;
+  padding: 7px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: 0.2s;
+  white-space: nowrap;
+}
+
+.btn-pass {
+  background: #52c41a;
+  color: #ffffff;
+}
+
+.btn-pass:hover {
+  background: #389e0d;
+}
+
+.btn-reject {
+  background: #ff4d4f;
+  color: #ffffff;
+}
+
+.btn-reject:hover {
+  background: #cf1322;
+}
+
+.btn-internal {
+  background: #1677ff;
+  color: #ffffff;
+}
+
+.btn-internal:hover {
+  background: #0958d9;
+}
+
+.btn-disabled {
+  background: #f5f5f5;
+  color: #8c8c8c;
+  cursor: not-allowed;
+}
+
+/* ==============================
+   EMPTY
+   ============================== */
+
+.empty-review {
+  padding: 50px 20px;
+  text-align: center;
+  color: #8c8c8c;
+}
+
+.empty-review i {
+  font-size: 30px;
+  margin-bottom: 12px;
+}
+
+.empty-review p {
+  margin: 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ==============================
+   RESPONSIVE
+   ============================== */
+
+@media (max-width: 1100px) {
+  .review-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .review-page {
+    padding: 16px;
+  }
+
+  .review-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .review-header h1 {
+    font-size: 23px;
+  }
+
+  .filter-group,
+  .search-group {
+    width: 100%;
+  }
+
+  .review-select {
+    width: 100%;
+  }
+
+  .review-summary {
+    grid-template-columns: 1fr;
+  }
+}
