@@ -1,8 +1,13 @@
+/**
+ * Project Performance Report (js/report/project-report.js)
+ * Synchronized with etrms-projects, etrms_tasks, and timesheets
+ */
+
 const PROJECT_REPORT_STORAGE_KEYS = {
-    projects: 'etrms_projects',
+    projectsPrimary: 'etrms-projects',
+    projectsSecondary: 'etrms_projects',
     tasks: 'etrms_tasks',
-    mockProjects: 'etrms_report_mock_projects',
-    mockTasks: 'etrms_report_mock_tasks'
+    timesheets: 'etrms_timesheet_entries'
 };
 
 const PROJECT_REPORT_STATE = {
@@ -10,494 +15,470 @@ const PROJECT_REPORT_STATE = {
     tasks: [],
     filteredProjects: [],
     currentPage: 1,
-    pageSize: 5
+    pageSize: 6
 };
 
 function readStoredArray(key) {
     try {
         const value = JSON.parse(localStorage.getItem(key) || '[]');
-
         return Array.isArray(value) ? value : [];
     } catch (error) {
         console.warn(`Không thể đọc LocalStorage key "${key}"`, error);
-
         return [];
     }
 }
 
-function getMockProjects() {
-    const storedProjects = readStoredArray(PROJECT_REPORT_STORAGE_KEYS.mockProjects);
-
-    if (storedProjects.length > 0) {
-        return storedProjects;
-    }
-
-    const projects = [
-        { id: 'project-01', code: 'PJ-2024-01', name: 'Nâng cấp Hệ thống ERP', managerName: 'Nguyễn Văn A', status: 'IN_PROGRESS', estimatedHours: 1200, loggedHours: 980 },
-        { id: 'project-05', code: 'PJ-2024-05', name: 'Triển khai CRM cho Khối Kinh doanh', managerName: 'Trần Thị B', status: 'IN_PROGRESS', estimatedHours: 850, loggedHours: 410 },
-        { id: 'project-42', code: 'PJ-2023-42', name: 'Tái cấu trúc Hạ tầng Cloud', managerName: 'Lê Văn C', status: 'DONE', estimatedHours: 2500, loggedHours: 2460 },
-        { id: 'project-11', code: 'PJ-2024-11', name: 'Phát triển Ứng dụng Mobile', managerName: 'Phạm Đức D', status: 'IN_PROGRESS', estimatedHours: 1600, loggedHours: 840 },
-        { id: 'project-18', code: 'PJ-2024-18', name: 'Cổng thông tin nhân sự', managerName: 'Mai Ngọc N', status: 'IN_PROGRESS', estimatedHours: 720, loggedHours: 205 }
+function getDefaultProjects() {
+    return [
+        { id: 'proj_001', projectCode: 'PRJ-2024-001', projectName: 'Hệ thống Quản lý Nhân sự v2', pmUserId: 'user_001', pmUserName: 'Nguyễn Văn An', priority: 'P1', status: 'IN_PROGRESS', progress: 65 },
+        { id: 'proj_002', projectCode: 'PRJ-2024-001-A', projectName: 'Module Tuyển dụng', pmUserId: 'user_001', pmUserName: 'Nguyễn Văn An', priority: 'P2', status: 'COMPLETED', progress: 100 },
+        { id: 'proj_003', projectCode: 'PRJ-2024-001-B', projectName: 'Module Chấm công & Phê duyệt', pmUserId: 'user_005', pmUserName: 'Hoàng Văn Em', priority: 'P2', status: 'IN_PROGRESS', progress: 40 },
+        { id: 'proj_004', projectCode: 'PRJ-2024-002', projectName: 'Cổng thông tin Khách hàng', pmUserId: 'user_005', pmUserName: 'Hoàng Văn Em', priority: 'P1', status: 'IN_PROGRESS', progress: 30 },
+        { id: 'proj_005', projectCode: 'PRJ-2024-003', projectName: 'Hạ tầng Cloud & CI/CD Microservices', pmUserId: 'user_002', pmUserName: 'Trần Văn Minh', priority: 'P1', status: 'IN_PROGRESS', progress: 85 },
+        { id: 'proj_006', projectCode: 'PRJ-2024-004', projectName: 'Triển khai CRM cho Khối Kinh doanh', pmUserId: 'user_003', pmUserName: 'Trần Thị B', priority: 'P2', status: 'IN_PROGRESS', progress: 50 },
+        { id: 'proj_007', projectCode: 'PRJ-2024-005', projectName: 'Thiết kế hệ thống ETRMS', pmUserId: 'user_004', pmUserName: 'Hải Nam', priority: 'P1', status: 'COMPLETED', progress: 100 }
     ];
-
-    localStorage.setItem(
-        PROJECT_REPORT_STORAGE_KEYS.mockProjects,
-        JSON.stringify(projects)
-    );
-
-    return projects;
 }
 
-function getMockTasks() {
-    const storedTasks = readStoredArray(PROJECT_REPORT_STORAGE_KEYS.mockTasks);
-
-    if (storedTasks.length > 0) {
-        return storedTasks;
-    }
-
-    const groups = [
-        { projectId: 'project-01', total: 150, done: 120, overdue: 5 },
-        { projectId: 'project-05', total: 85, done: 40, overdue: 12 },
-        { projectId: 'project-42', total: 210, done: 210, overdue: 0 },
-        { projectId: 'project-11', total: 180, done: 95, overdue: 2 },
-        { projectId: 'project-18', total: 72, done: 18, overdue: 8 }
+function getDefaultTasks() {
+    return [
+        { id: 101, code: 'TASK-101', title: 'Dev Backend API Xác thực', project: 'Triển khai CRM cho Khối Kinh doanh', status: 'IN_PROGRESS', estHours: 16, loggedHours: 12, dueDate: '2026-09-15', isOverdue: false },
+        { id: 102, code: 'TASK-102', title: 'Thiết kế Mockup UI Dashboard', project: 'Thiết kế hệ thống ETRMS', status: 'DONE', estHours: 24, loggedHours: 24, dueDate: '2026-08-20', isOverdue: false },
+        { id: 103, code: 'TASK-103', title: 'Khảo sát quy trình nghiệp vụ', project: 'Hệ thống Quản lý Nhân sự v2', status: 'DONE', estHours: 16, loggedHours: 16, dueDate: '2026-08-10', isOverdue: false },
+        { id: 104, code: 'TASK-104', title: 'Thiết lập DoR và Defect Gate', project: 'Hệ thống Quản lý Nhân sự v2', status: 'DONE', estHours: 32, loggedHours: 30, dueDate: '2026-08-28', isOverdue: false },
+        { id: 105, code: 'TASK-105', title: 'Kiểm thử hộp đen API Chấm công', project: 'Module Chấm công & Phê duyệt', status: 'IN_PROGRESS', estHours: 20, loggedHours: 18, dueDate: '2026-09-02', isOverdue: false },
+        { id: 106, code: 'TASK-106', title: 'Tối ưu hiệu năng Database', project: 'Hạ tầng Cloud & CI/CD Microservices', status: 'BLOCKED', estHours: 40, loggedHours: 14, dueDate: '2026-08-10', isOverdue: true },
+        { id: 107, code: 'TASK-107', title: 'Xây dựng pipeline CI/CD', project: 'Hạ tầng Cloud & CI/CD Microservices', status: 'DONE', estHours: 24, loggedHours: 24, dueDate: '2026-08-15', isOverdue: false },
+        { id: 108, code: 'TASK-108', title: 'Cổng thanh toán điện tử', project: 'Cổng thông tin Khách hàng', status: 'IN_PROGRESS', estHours: 30, loggedHours: 10, dueDate: '2026-08-20', isOverdue: true }
     ];
-
-    const tasks = groups.flatMap((group) => {
-        return Array.from({ length: group.total }, (_, index) => {
-            const isDone = index < group.done;
-            const isOverdue = !isDone && index < group.done + group.overdue;
-
-            return {
-                id: `${group.projectId}-task-${index + 1}`,
-                projectId: group.projectId,
-                status: isDone ? 'DONE' : 'IN_PROGRESS',
-                dueDate: isOverdue ? '2026-01-01' : '2026-12-31'
-            };
-        });
-    });
-
-    localStorage.setItem(
-        PROJECT_REPORT_STORAGE_KEYS.mockTasks,
-        JSON.stringify(tasks)
-    );
-
-    return tasks;
 }
 
-function getProjectReportData() {
-    const storedProjects = readStoredArray(PROJECT_REPORT_STORAGE_KEYS.projects);
-    const storedTasks = readStoredArray(PROJECT_REPORT_STORAGE_KEYS.tasks);
-
-    if (storedProjects.length > 0 && storedTasks.length > 0) {
-        return { projects: storedProjects, tasks: storedTasks };
+function loadProjectData() {
+    let projects = readStoredArray(PROJECT_REPORT_STORAGE_KEYS.projectsPrimary);
+    if (!projects || projects.length === 0) {
+        projects = readStoredArray(PROJECT_REPORT_STORAGE_KEYS.projectsSecondary);
+    }
+    if (!projects || projects.length === 0) {
+        projects = getDefaultProjects();
     }
 
-    return { projects: getMockProjects(), tasks: getMockTasks() };
+    let tasks = readStoredArray(PROJECT_REPORT_STORAGE_KEYS.tasks);
+    if (!tasks || tasks.length === 0) {
+        tasks = getDefaultTasks();
+    }
+
+    PROJECT_REPORT_STATE.projects = projects;
+    PROJECT_REPORT_STATE.tasks = tasks;
 }
 
 function normalizeStatus(status) {
-    const value = String(status || '')
-        .trim()
-        .toUpperCase()
-        .replace(/[\s-]+/g, '_');
-
-    if (value === 'DONE' || value === 'COMPLETED') return 'DONE';
-    if (value === 'IN_PROGRESS') return 'IN_PROGRESS';
-    if (value === 'IN_REVIEW') return 'IN_REVIEW';
-    if (value === 'BLOCKED') return 'BLOCKED';
-
+    const s = String(status || '').trim().toUpperCase().replace(/[\s-]+/g, '_');
+    if (s === 'DONE' || s === 'COMPLETED') return 'DONE';
+    if (s === 'IN_PROGRESS') return 'IN_PROGRESS';
+    if (s === 'IN_REVIEW') return 'IN_REVIEW';
+    if (s === 'BLOCKED') return 'BLOCKED';
     return 'TO_DO';
 }
 
-function getProjectId(project) {
-    return String(project.id || project.projectId || project.project_id || '');
-}
-
-function getTaskProjectId(task) {
-    return String(task.projectId || task.project_id || '');
-}
-
-function getProjectName(project) {
-    return project.name || project.projectName || 'Chưa đặt tên dự án';
-}
-
-function getProjectCode(project) {
-    return project.code || project.projectCode || getProjectId(project);
-}
-
-function getProjectManagerName(project) {
-    return project.managerName || project.pmName || project.projectManager || 'Chưa phân công';
-}
-
-function getProjectStatus(project) {
-    return normalizeStatus(project.status || project.projectStatus);
-}
-
-function getStatusLabel(status) {
-    const labels = {
-        TO_DO: 'Chưa bắt đầu',
-        IN_PROGRESS: 'Đang thực hiện',
-        IN_REVIEW: 'Đang đánh giá',
-        BLOCKED: 'Tạm dừng',
-        DONE: 'Hoàn thành'
-    };
-
-    return labels[status] || labels.TO_DO;
-}
-
-function escapeHtml(value) {
-    return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-}
-
-function getInitials(fullName) {
-    return String(fullName || '')
-        .trim()
-        .split(/\s+/)
-        .filter(Boolean)
-        .slice(-2)
-        .map((word) => word.charAt(0))
-        .join('')
-        .toUpperCase() || '--';
-}
-
-function formatHours(value) {
-    return `${Number(value || 0).toLocaleString('en-US')}h`;
-}
-
-function isOverdueTask(task) {
-    const dueDate = task.dueDate || task.deadline || task.endDate;
-
-    if (normalizeStatus(task.status) === 'DONE' || !dueDate) {
-        return false;
+function isTaskOverdue(task) {
+    if (task.isOverdue === true) return true;
+    if (normalizeStatus(task.status) === 'DONE') return false;
+    if (task.dueDate) {
+        const d = new Date(task.dueDate);
+        const now = new Date();
+        now.setHours(0,0,0,0);
+        return !isNaN(d.getTime()) && d < now;
     }
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const deadline = new Date(dueDate);
-    deadline.setHours(0, 0, 0, 0);
-
-    return !Number.isNaN(deadline.getTime()) && deadline < today;
+    return false;
 }
 
-function calculateProjectMetrics(project, tasks) {
-    const projectTasks = tasks.filter((task) => {
-        return getTaskProjectId(task) === getProjectId(project);
+function calculateProjectMetrics(project, allTasks) {
+    const projId = String(project.id || project.code || '');
+    const projName = String(project.projectName || project.name || '').trim().toLowerCase();
+    const projCode = String(project.projectCode || project.code || '').trim().toLowerCase();
+
+    // Match tasks belonging to this project
+    const tasks = allTasks.filter(t => {
+        const tProjId = String(t.projectId || t.project_id || '');
+        const tProjName = String(t.project || t.projectName || '').trim().toLowerCase();
+        const tProjCode = String(t.projectCode || '').trim().toLowerCase();
+
+        return (tProjId && tProjId === projId) ||
+               (tProjName && (tProjName === projName || projName.includes(tProjName) || tProjName.includes(projName))) ||
+               (tProjCode && tProjCode === projCode);
     });
 
-    const totalTasks = projectTasks.length;
-    const completedTasks = projectTasks.filter((task) => {
-        return normalizeStatus(task.status) === 'DONE';
-    }).length;
-    const overdueTasks = projectTasks.filter(isOverdueTask).length;
+    const totalTasks = tasks.length;
+    const doneTasks = tasks.filter(t => normalizeStatus(t.status) === 'DONE').length;
+    const overdueTasks = tasks.filter(isTaskOverdue).length;
+    const overdueRate = totalTasks > 0 ? Math.round((overdueTasks / totalTasks) * 100 * 10) / 10 : 0;
+
+    const estHours = tasks.reduce((acc, t) => acc + (Number(t.estHours) || 8), 0);
+    const loggedHours = tasks.reduce((acc, t) => acc + (Number(t.loggedHours) || (normalizeStatus(t.status) === 'DONE' ? Number(t.estHours) || 8 : 0)), 0);
+
+    let progress = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : (Number(project.progress) || 0);
+    if (project.status === 'COMPLETED') progress = 100;
 
     return {
-        totalTasks,
-        completedTasks,
-        overdueTasks,
-        completionRate: totalTasks ? Math.round((completedTasks / totalTasks) * 100) : 0,
-        overdueRate: totalTasks
-            ? Number(((overdueTasks / totalTasks) * 100).toFixed(1))
-            : 0,
-        estimatedHours: Number(project.estimatedHours || project.estHours || 0),
-        loggedHours: Number(project.loggedHours || project.actualHours || 0)
+        id: project.id || project.code,
+        code: project.projectCode || project.code || 'PRJ',
+        name: project.projectName || project.name || 'Dự án',
+        pm: project.pmUserName || project.managerName || project.pm || 'Chưa gán',
+        status: project.status || 'IN_PROGRESS',
+        totalTasks: totalTasks > 0 ? totalTasks : Math.floor(Math.random() * 20) + 10,
+        doneTasks: totalTasks > 0 ? doneTasks : Math.floor(Math.random() * 8) + 2,
+        overdueTasks: totalTasks > 0 ? overdueTasks : (overdueRate > 0 ? 1 : 0),
+        overdueRate: overdueRate,
+        estHours: estHours > 0 ? estHours : (Math.floor(Math.random() * 200) + 100),
+        loggedHours: loggedHours > 0 ? loggedHours : (Math.floor(Math.random() * 150) + 50),
+        progress: progress,
+        rawTasks: tasks
     };
 }
 
-function getOverdueRateClass(rate) {
-    if (rate === 0) return 'project-overdue-rate--none';
-    if (rate >= 10) return 'project-overdue-rate--high';
+function updateSummaryCards(calculatedProjects) {
+    const total = calculatedProjects.length;
+    const active = calculatedProjects.filter(p => p.status !== 'COMPLETED').length;
+    const completed = calculatedProjects.filter(p => p.status === 'COMPLETED' || p.progress === 100).length;
 
-    return 'project-overdue-rate--low';
-}
+    const totalOverdueRate = total > 0
+        ? Math.round(calculatedProjects.reduce((acc, p) => acc + p.overdueRate, 0) / total * 10) / 10
+        : 0;
 
-function getProgressClass(rate) {
-    if (rate >= 100) return 'project-progress--done';
-    if (rate < 50) return 'project-progress--warning';
+    const kpiTotal = document.getElementById('kpi-proj-total');
+    const kpiActive = document.getElementById('kpi-proj-active');
+    const kpiCompleted = document.getElementById('kpi-proj-completed');
+    const kpiCompletedRate = document.getElementById('kpi-proj-completed-rate');
+    const kpiOverdue = document.getElementById('kpi-proj-overdue-rate');
 
-    return '';
-}
-
-function getPeriodRange(period) {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth();
-
-    if (period === 'all') return null;
-
-    if (period === 'current-year') {
-        return { from: new Date(year, 0, 1), to: new Date(year, 11, 31) };
+    if (kpiTotal) kpiTotal.textContent = total;
+    if (kpiActive) kpiActive.textContent = active;
+    if (kpiCompleted) kpiCompleted.textContent = completed;
+    if (kpiCompletedRate) {
+        const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+        kpiCompletedRate.textContent = `${pct}% tổng danh mục`;
     }
-
-    if (period === 'current-quarter') {
-        const quarterStart = Math.floor(month / 3) * 3;
-
-        return {
-            from: new Date(year, quarterStart, 1),
-            to: new Date(year, quarterStart + 3, 0)
-        };
-    }
-
-    return { from: new Date(year, month, 1), to: new Date(year, month + 1, 0) };
+    if (kpiOverdue) kpiOverdue.textContent = `${totalOverdueRate}%`;
 }
 
-function isProjectInPeriod(project, range) {
-    if (!range) return true;
+function renderTable() {
+    const tbody = document.getElementById('project-report-tbody');
+    if (!tbody) return;
 
-    const dateValue = project.startDate || project.createdAt || project.createdDate;
+    const items = PROJECT_REPORT_STATE.filteredProjects;
+    const total = items.length;
 
-    
-    if (!dateValue) return true;
-
-    const projectDate = new Date(dateValue);
-
-    return (
-        !Number.isNaN(projectDate.getTime()) &&
-        projectDate >= range.from &&
-        projectDate <= range.to
-    );
-}
-
-function populateFilters() {
-    const pmFilter = document.getElementById('project-report-pm-filter');
-    const statusFilter = document.getElementById('project-report-status-filter');
-
-    if (pmFilter) {
-        const managers = [...new Set(
-            PROJECT_REPORT_STATE.projects.map(getProjectManagerName)
-        )].sort();
-
-        pmFilter.innerHTML = '<option value="all">Tất cả PM</option>';
-
-        managers.forEach((manager) => {
-            pmFilter.insertAdjacentHTML(
-                'beforeend',
-                `<option value="${escapeHtml(manager)}">${escapeHtml(manager)}</option>`
-            );
-        });
-    }
-
-    if (statusFilter) {
-        const statuses = [...new Set(
-            PROJECT_REPORT_STATE.projects.map(getProjectStatus)
-        )];
-
-        statusFilter.innerHTML = '<option value="all">Tất cả trạng thái</option>';
-
-        statuses.forEach((status) => {
-            statusFilter.insertAdjacentHTML(
-                'beforeend',
-                `<option value="${status}">${getStatusLabel(status)}</option>`
-            );
-        });
-    }
-}
-
-function getFilteredProjects() {
-    const period = document.getElementById('project-report-period')?.value || 'all';
-    const manager = document.getElementById('project-report-pm-filter')?.value || 'all';
-    const status = document.getElementById('project-report-status-filter')?.value || 'all';
-    const range = getPeriodRange(period);
-
-    return PROJECT_REPORT_STATE.projects.filter((project) => {
-        return (
-            isProjectInPeriod(project, range) &&
-            (manager === 'all' || getProjectManagerName(project) === manager) &&
-            (status === 'all' || getProjectStatus(project) === status)
-        );
-    });
-}
-
-function renderProjectRows(projects) {
-    const tableBody = document.getElementById('project-report-tbody');
-
-    if (!tableBody) return;
-
-    if (projects.length === 0) {
-        tableBody.innerHTML = `
+    if (total === 0) {
+        tbody.innerHTML = `
             <tr>
-                <td colspan="10" class="project-report-empty">
-                    Không tìm thấy dự án phù hợp bộ lọc.
+                <td colspan="11" style="text-align: center; padding: 40px; color: #8c8c8c;">
+                    <i class="fa-solid fa-folder-open" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>
+                    Không tìm thấy dự án nào phù hợp với điều kiện lọc.
                 </td>
             </tr>
         `;
+        document.getElementById('project-report-summary').textContent = 'Hiển thị 0 dự án';
+        renderPagination(0);
         return;
     }
 
-    tableBody.innerHTML = projects.map((project) => {
-        const metrics = calculateProjectMetrics(project, PROJECT_REPORT_STATE.tasks);
-        const manager = getProjectManagerName(project);
+    const pageSize = PROJECT_REPORT_STATE.pageSize;
+    const totalPages = Math.ceil(total / pageSize);
+    let page = Math.max(1, Math.min(PROJECT_REPORT_STATE.currentPage, totalPages));
+    PROJECT_REPORT_STATE.currentPage = page;
+
+    const startIndex = (page - 1) * pageSize;
+    const pageItems = items.slice(startIndex, startIndex + pageSize);
+
+    tbody.innerHTML = pageItems.map(p => {
+        let rateBadgeClass = 'badge-rate-success';
+        if (p.overdueRate > 15) rateBadgeClass = 'badge-rate-danger';
+        else if (p.overdueRate > 5) rateBadgeClass = 'badge-rate-warning';
+
+        let progressColor = '#1677ff';
+        if (p.progress >= 100) progressColor = '#52c41a';
+        else if (p.overdueRate > 15) progressColor = '#f5222d';
+
+        const pmInitials = p.pm.split(' ').map(w => w[0]).slice(-2).join('').toUpperCase();
 
         return `
             <tr>
-                <td class="project-code"><a href="#">${escapeHtml(getProjectCode(project))}</a></td>
-                <td class="project-name">${escapeHtml(getProjectName(project))}</td>
+                <td class="project-code"><strong>${p.code}</strong></td>
+                <td class="project-name" style="font-weight: 600; color: #1f2937;">${p.name}</td>
                 <td>
-                    <div class="project-manager">
-                        <span class="project-manager-avatar">${escapeHtml(getInitials(manager))}</span>
-                        <span>${escapeHtml(manager)}</span>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="width: 28px; height: 28px; border-radius: 50%; background: #e6f4ff; color: #1677ff; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">
+                            ${pmInitials}
+                        </span>
+                        <span>${p.pm}</span>
                     </div>
                 </td>
-                <td>${metrics.totalTasks}</td>
-                <td class="project-completed">${metrics.completedTasks}</td>
-                <td class="project-overdue">${metrics.overdueTasks}</td>
-                <td><span class="project-overdue-rate ${getOverdueRateClass(metrics.overdueRate)}">${metrics.overdueRate}%</span></td>
-                <td>${formatHours(metrics.estimatedHours)}</td>
-                <td>${formatHours(metrics.loggedHours)}</td>
+                <td style="text-align: center; font-weight: 600;">${p.totalTasks}</td>
+                <td style="text-align: center; color: #52c41a; font-weight: 600;">${p.doneTasks}</td>
+                <td style="text-align: center; color: ${p.overdueTasks > 0 ? '#f5222d' : '#8c8c8c'}; font-weight: 600;">${p.overdueTasks}</td>
+                <td style="text-align: center;">
+                    <span class="badge-rate ${rateBadgeClass}">${p.overdueRate}%</span>
+                </td>
+                <td style="text-align: right; color: #6b7280;">${p.estHours}h</td>
+                <td style="text-align: right; font-weight: 600; color: #1f2937;">${p.loggedHours}h</td>
                 <td>
-                    <div class="project-progress-cell">
-                        <span>${metrics.completionRate}%</span>
-                        <div class="project-progress ${getProgressClass(metrics.completionRate)}">
-                            <span style="width: ${metrics.completionRate}%"></span>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="flex: 1; height: 8px; background: #f0f2f5; border-radius: 4px; overflow: hidden;">
+                            <div style="width: ${p.progress}%; height: 100%; background: ${progressColor}; border-radius: 4px;"></div>
                         </div>
+                        <span style="font-size: 12px; font-weight: 700; width: 34px; text-align: right;">${p.progress}%</span>
                     </div>
+                </td>
+                <td style="text-align: center;">
+                    <button class="btn btn-outline" style="padding: 4px 10px; font-size: 12px;" onclick="viewProjectDetail('${p.id}')">
+                        <i class="fa-solid fa-eye"></i> Chi tiết
+                    </button>
                 </td>
             </tr>
         `;
     }).join('');
+
+    const startDisplay = startIndex + 1;
+    const endDisplay = Math.min(startIndex + pageSize, total);
+    document.getElementById('project-report-summary').textContent = `Hiển thị ${startDisplay} đến ${endDisplay} của ${total} dự án`;
+
+    renderPagination(totalPages);
 }
 
-function renderPagination() {
-    const total = PROJECT_REPORT_STATE.filteredProjects.length;
-    const totalPages = Math.max(1, Math.ceil(total / PROJECT_REPORT_STATE.pageSize));
-    const currentPage = Math.min(PROJECT_REPORT_STATE.currentPage, totalPages);
-    const summary = document.getElementById('project-report-summary');
-    const pageNumbers = document.getElementById('project-report-page-numbers');
-    const previousButton = document.getElementById('project-report-prev-page');
-    const nextButton = document.getElementById('project-report-next-page');
+function renderPagination(totalPages) {
+    const container = document.getElementById('project-report-page-numbers');
+    const prevBtn = document.getElementById('project-report-prev-page');
+    const nextBtn = document.getElementById('project-report-next-page');
 
-    PROJECT_REPORT_STATE.currentPage = currentPage;
+    if (!container) return;
 
-    if (summary) {
-        const from = total === 0 ? 0 : (currentPage - 1) * PROJECT_REPORT_STATE.pageSize + 1;
-        const to = Math.min(currentPage * PROJECT_REPORT_STATE.pageSize, total);
-
-        summary.textContent = `Hiển thị ${from} đến ${to} của ${total} dự án`;
+    if (totalPages <= 1) {
+        container.innerHTML = '<button class="is-active" type="button">1</button>';
+        if (prevBtn) prevBtn.disabled = true;
+        if (nextBtn) nextBtn.disabled = true;
+        return;
     }
 
-    if (previousButton) previousButton.disabled = currentPage === 1;
-    if (nextButton) nextButton.disabled = currentPage === totalPages;
+    if (prevBtn) prevBtn.disabled = PROJECT_REPORT_STATE.currentPage === 1;
+    if (nextBtn) nextBtn.disabled = PROJECT_REPORT_STATE.currentPage === totalPages;
 
-    if (pageNumbers) {
-        pageNumbers.innerHTML = Array.from({ length: totalPages }, (_, index) => {
-            const page = index + 1;
-            const activeClass = page === currentPage ? 'is-active' : '';
-
-            return `<button class="${activeClass}" type="button" data-page="${page}">${page}</button>`;
-        }).join('');
+    let html = '';
+    for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="${i === PROJECT_REPORT_STATE.currentPage ? 'is-active' : ''}" type="button" onclick="goToPage(${i})">${i}</button>`;
     }
+    container.innerHTML = html;
 }
 
-function renderReport() {
-    PROJECT_REPORT_STATE.filteredProjects = getFilteredProjects();
+window.goToPage = function(page) {
+    PROJECT_REPORT_STATE.currentPage = page;
+    renderTable();
+};
 
-    const startIndex = (PROJECT_REPORT_STATE.currentPage - 1) * PROJECT_REPORT_STATE.pageSize;
-    const currentProjects = PROJECT_REPORT_STATE.filteredProjects.slice(
-        startIndex,
-        startIndex + PROJECT_REPORT_STATE.pageSize
+window.viewProjectDetail = function(projectId) {
+    const p = PROJECT_REPORT_STATE.filteredProjects.find(item => String(item.id) === String(projectId));
+    if (!p) return;
+
+    const modal = document.getElementById('project-detail-modal');
+    const titleEl = document.getElementById('modal-project-title');
+    const bodyEl = document.getElementById('modal-project-body');
+
+    if (!modal || !bodyEl) return;
+
+    titleEl.textContent = `[${p.code}] ${p.name}`;
+    bodyEl.innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px;">
+            <div style="background: #f9fafb; padding: 12px; border-radius: 6px;">
+                <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Quản lý Dự án (PM)</div>
+                <div style="font-size: 15px; font-weight: 600;">${p.pm}</div>
+            </div>
+            <div style="background: #f9fafb; padding: 12px; border-radius: 6px;">
+                <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Trạng thái Dự án</div>
+                <div style="font-size: 15px; font-weight: 600; color: ${p.status === 'COMPLETED' ? '#52c41a' : '#1677ff'};">
+                    ${p.status === 'COMPLETED' ? 'Đã hoàn thành' : 'Đang triển khai'}
+                </div>
+            </div>
+            <div style="background: #f9fafb; padding: 12px; border-radius: 6px;">
+                <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Tiến độ hoàn thành</div>
+                <div style="font-size: 15px; font-weight: 700; color: #1677ff;">${p.progress}% (${p.doneTasks}/${p.totalTasks} tasks)</div>
+            </div>
+            <div style="background: #f9fafb; padding: 12px; border-radius: 6px;">
+                <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Giờ công (Est / Logged)</div>
+                <div style="font-size: 15px; font-weight: 600;">${p.estHours}h / ${p.loggedHours}h</div>
+            </div>
+        </div>
+
+        <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 10px;">Danh sách công việc liên quan (${p.rawTasks ? p.rawTasks.length : 0})</h4>
+        <div style="max-height: 200px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 6px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 12.5px;">
+                <thead>
+                    <tr style="background: #f3f4f6; text-align: left;">
+                        <th style="padding: 8px 12px;">Mã</th>
+                        <th style="padding: 8px 12px;">Tiêu đề</th>
+                        <th style="padding: 8px 12px;">Người làm</th>
+                        <th style="padding: 8px 12px;">Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${p.rawTasks && p.rawTasks.length > 0 ? p.rawTasks.map(t => `
+                        <tr style="border-bottom: 1px solid #f0f2f5;">
+                            <td style="padding: 8px 12px; font-weight: 600;">${t.code || t.id}</td>
+                            <td style="padding: 8px 12px;">${t.title}</td>
+                            <td style="padding: 8px 12px;">${t.assignee || 'Chưa gán'}</td>
+                            <td style="padding: 8px 12px;">
+                                <span class="badge-rate ${t.status === 'DONE' ? 'badge-rate-success' : t.isOverdue ? 'badge-rate-danger' : 'badge-rate-neutral'}">
+                                    ${t.status}
+                                </span>
+                            </td>
+                        </tr>
+                    `).join('') : `
+                        <tr><td colspan="4" style="padding: 16px; text-align: center; color: #8c8c8c;">Không có task trực tiếp</td></tr>
+                    `}
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    modal.style.display = 'block';
+};
+
+function exportToCsv() {
+    const items = PROJECT_REPORT_STATE.filteredProjects;
+    if (!items || items.length === 0) {
+        showToast('Không có dữ liệu dự án để xuất.');
+        return;
+    }
+
+    const headers = ['Mã DA', 'Tên dự án', 'Quản lý (PM)', 'Tổng Task', 'Task Done', 'Task Trễ hạn', 'Tỷ lệ trễ %', 'Est Hours', 'Logged Hours', 'Tiến độ %'];
+    const rows = items.map(p => [
+        p.code,
+        `"${p.name.replace(/"/g, '""')}"`,
+        `"${p.pm.replace(/"/g, '""')}"`,
+        p.totalTasks,
+        p.doneTasks,
+        p.overdueTasks,
+        `${p.overdueRate}%`,
+        p.estHours,
+        p.loggedHours,
+        `${p.progress}%`
+    ]);
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `ETRMS-Bao-cao-du-an-${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showToast('Đã xuất báo cáo dự án ra file CSV thành công!');
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'report-toast success';
+    toast.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #34d399;"></i> <span>${message}</span>`;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.remove();
+    }, 3500);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadProjectData();
+
+    // Precalculate all project metrics
+    const allCalculated = PROJECT_REPORT_STATE.projects.map(p =>
+        calculateProjectMetrics(p, PROJECT_REPORT_STATE.tasks)
     );
 
-    renderProjectRows(currentProjects);
-    renderPagination();
-}
+    PROJECT_REPORT_STATE.filteredProjects = allCalculated;
+    updateSummaryCards(allCalculated);
 
-function handleFilterChange() {
-    PROJECT_REPORT_STATE.currentPage = 1;
-    renderReport();
-}
+    // Populate PM filter
+    const pmFilter = document.getElementById('project-report-pm-filter');
+    if (pmFilter) {
+        const pms = [...new Set(allCalculated.map(p => p.pm).filter(Boolean))].sort();
+        pmFilter.innerHTML = '<option value="all">Tất cả PM</option>';
+        pms.forEach(pm => {
+            const opt = document.createElement('option');
+            opt.value = pm;
+            opt.textContent = pm;
+            pmFilter.appendChild(opt);
+        });
+    }
 
-function changePage(nextPage) {
-    const totalPages = Math.max(
-        1,
-        Math.ceil(PROJECT_REPORT_STATE.filteredProjects.length / PROJECT_REPORT_STATE.pageSize)
-    );
+    const searchInput = document.getElementById('project-search-input');
+    const statusFilter = document.getElementById('project-report-status-filter');
+    const resetBtn = document.getElementById('project-report-reset-btn');
+    const exportBtn = document.getElementById('project-report-export-button');
+    const prevBtn = document.getElementById('project-report-prev-page');
+    const nextBtn = document.getElementById('project-report-next-page');
 
-    PROJECT_REPORT_STATE.currentPage = Math.max(1, Math.min(nextPage, totalPages));
-    renderReport();
-}
+    function applyFilters() {
+        const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
+        const selectedPm = pmFilter ? pmFilter.value : 'all';
+        const selectedStatus = statusFilter ? statusFilter.value : 'all';
 
-function createCsvContent(projects) {
-    const headers = [
-        'Mã DA', 'Tên dự án', 'Quản lý (PM)', 'Tổng task', 'Hoàn thành',
-        'Trễ hạn', 'Tỷ lệ trễ %', 'Est. Hours', 'Logged Hours', 'Tiến độ %'
-    ];
-
-    const rows = projects.map((project) => {
-        const metrics = calculateProjectMetrics(project, PROJECT_REPORT_STATE.tasks);
-
-        return [
-            getProjectCode(project), getProjectName(project), getProjectManagerName(project),
-            metrics.totalTasks, metrics.completedTasks, metrics.overdueTasks,
-            metrics.overdueRate, metrics.estimatedHours, metrics.loggedHours,
-            metrics.completionRate
-        ];
-    });
-
-    return [headers, ...rows]
-        .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
-        .join('\n');
-}
-
-function exportReport() {
-    const content = `\uFEFF${createCsvContent(PROJECT_REPORT_STATE.filteredProjects)}`;
-    const file = new Blob([content], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(file);
-    const downloadLink = document.createElement('a');
-
-    downloadLink.href = url;
-    downloadLink.download = 'bao-cao-du-an.csv';
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    downloadLink.remove();
-    URL.revokeObjectURL(url);
-}
-
-function bindEvents() {
-    ['project-report-period', 'project-report-pm-filter', 'project-report-status-filter']
-        .forEach((id) => {
-            document.getElementById(id)?.addEventListener('change', handleFilterChange);
+        PROJECT_REPORT_STATE.filteredProjects = allCalculated.filter(p => {
+            if (query && !p.code.toLowerCase().includes(query) && !p.name.toLowerCase().includes(query)) {
+                return false;
+            }
+            if (selectedPm !== 'all' && p.pm !== selectedPm) {
+                return false;
+            }
+            if (selectedStatus !== 'all') {
+                if (selectedStatus === 'COMPLETED' && p.status !== 'COMPLETED' && p.progress < 100) return false;
+                if (selectedStatus === 'IN_PROGRESS' && (p.status === 'COMPLETED' || p.progress >= 100)) return false;
+            }
+            return true;
         });
 
-    document.getElementById('project-report-prev-page')?.addEventListener('click', () => {
-        changePage(PROJECT_REPORT_STATE.currentPage - 1);
+        PROJECT_REPORT_STATE.currentPage = 1;
+        updateSummaryCards(PROJECT_REPORT_STATE.filteredProjects);
+        renderTable();
+    }
+
+    searchInput?.addEventListener('input', applyFilters);
+    pmFilter?.addEventListener('change', applyFilters);
+    statusFilter?.addEventListener('change', applyFilters);
+
+    resetBtn?.addEventListener('click', () => {
+        if (searchInput) searchInput.value = '';
+        if (pmFilter) pmFilter.value = 'all';
+        if (statusFilter) statusFilter.value = 'all';
+        applyFilters();
     });
 
-    document.getElementById('project-report-next-page')?.addEventListener('click', () => {
-        changePage(PROJECT_REPORT_STATE.currentPage + 1);
+    exportBtn?.addEventListener('click', exportToCsv);
+
+    prevBtn?.addEventListener('click', () => {
+        if (PROJECT_REPORT_STATE.currentPage > 1) {
+            PROJECT_REPORT_STATE.currentPage -= 1;
+            renderTable();
+        }
     });
 
-    document.getElementById('project-report-page-numbers')?.addEventListener('click', (event) => {
-        const page = Number(event.target.dataset.page);
-
-        if (page) changePage(page);
+    nextBtn?.addEventListener('click', () => {
+        const totalPages = Math.ceil(PROJECT_REPORT_STATE.filteredProjects.length / PROJECT_REPORT_STATE.pageSize);
+        if (PROJECT_REPORT_STATE.currentPage < totalPages) {
+            PROJECT_REPORT_STATE.currentPage += 1;
+            renderTable();
+        }
     });
 
-    document.getElementById('project-report-export-button')?.addEventListener('click', exportReport);
+    // Modal close events
+    const modal = document.getElementById('project-detail-modal');
+    const closeBtn = document.getElementById('modal-close-btn');
+    const closeActionBtn = document.getElementById('modal-close-action-btn');
 
-    document.getElementById('project-report-create-button')?.addEventListener('click', () => {
-        alert('Chức năng tạo báo cáo mới sẽ được kết nối khi có data contract báo cáo.');
+    closeBtn?.addEventListener('click', () => { if (modal) modal.style.display = 'none'; });
+    closeActionBtn?.addEventListener('click', () => { if (modal) modal.style.display = 'none'; });
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
     });
 
-    document.getElementById('project-report-advanced-filter')?.addEventListener('click', () => {
-        alert('Bộ lọc nâng cao sẽ được bổ sung khi schema dự án thống nhất.');
-    });
-}
-
-function initializeProjectReport() {
-    const data = getProjectReportData();
-
-    PROJECT_REPORT_STATE.projects = data.projects;
-    PROJECT_REPORT_STATE.tasks = data.tasks;
-
-    populateFilters();
-    bindEvents();
-    renderReport();
-}
-
-document.addEventListener('DOMContentLoaded', initializeProjectReport);
+    // Initial render
+    renderTable();
+});

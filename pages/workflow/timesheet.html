@@ -1,258 +1,171 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng chấm công - Work Management</title>
 
-    <title>Timesheet - Work Management</title>
-
-    <!-- CSS dùng chung -->
-    <link rel="stylesheet" href="/css/style.css" />
-    <link rel="stylesheet" href="/css/layout.css" />
-
-    <!-- CSS riêng Timesheet -->
-    <link rel="stylesheet" href="/css/timesheet.css" />
+    <!-- CSS dùng chung của project -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout.css">
 
     <!-- Font Awesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
-  </head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <body>
+    <!-- CSS riêng Timesheet chuẩn hóa -->
+    <link rel="stylesheet" href="/css/timesheet.css">
+</head>
+
+<body data-breadcrumb-parent="Quy trình" data-breadcrumb-current="Bảng chấm công">
     <div class="app-container">
-      <div id="sidebar-container"></div>
+        <!-- Sidebar -->
+        <div id="sidebar-container"></div>
 
-      <div class="main-wrapper">
-        <div id="header-container"></div>
-
-        <main class="main-content">
-          <div class="timesheet-page">
-            <!-- Breadcrumb -->
-            <div class="breadcrumb">
-              <span>Quy trình</span>
-              <span>/</span>
-              <span class="current">Bảng chấm công</span>
-            </div>
-
+        <div class="main-wrapper">
             <!-- Header -->
-            <div class="timesheet-header">
-              <div>
-                <h1>Bảng chấm công</h1>
-                <p>Theo dõi và quản lý thời gian làm việc</p>
-              </div>
+            <div id="header-container"></div>
 
-              <button
-                type="button"
-                class="btn-create-timesheet"
-                id="btn-open-modal"
-              >
-                <i class="fa-solid fa-plus"></i>
-                Thêm thời gian
-              </button>
-            </div>
+            <!-- Main Content -->
+            <main class="main-content">
+                <div class="timesheet-container">
+                    <!-- Page Header -->
+                    <div class="timesheet-header-wrapper">
+                        <div>
+                            <h1>Bảng chấm công (Timesheet & Work Logs)</h1>
+                            <p>Theo dõi, ghi nhận nhật ký làm việc hàng ngày và kiểm soát chỉ tiêu 40 giờ/tuần</p>
+                        </div>
+                        <div class="timesheet-header-actions">
+                            <button type="button" class="btn-timesheet-primary" id="btn-open-modal">
+                                <i class="fa-solid fa-clock"></i> Ghi nhận thời gian
+                            </button>
+                            <button type="button" class="btn-timesheet-success" id="btn-submit-timesheet">
+                                <i class="fa-solid fa-paper-plane"></i> Gửi duyệt tuần
+                            </button>
+                        </div>
+                    </div>
 
-            <!-- Chọn tuần -->
-            <div class="timesheet-card week-toolbar">
-              <button type="button" class="week-nav-btn" id="prev-week">
-                <i class="fa-solid fa-chevron-left"></i>
-              </button>
+                    <!-- Week Navigator Card -->
+                    <div class="timesheet-week-card">
+                        <div class="week-nav-controls">
+                            <button type="button" class="btn-week-nav" id="prev-week" title="Tuần trước">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <span class="week-display-title" id="week-range">Đang tải tuần...</span>
+                            <span class="badge-week-number" id="week-number">Tuần --</span>
+                            <button type="button" class="btn-week-nav" id="next-week" title="Tuần sau">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn-week-today" id="btn-today">
+                                <i class="fa-solid fa-calendar-day"></i> Tuần hiện tại
+                            </button>
+                        </div>
+                    </div>
 
-              <div class="week-info">
-                <div class="week-label" id="week-range"></div>
-                <div class="week-number" id="week-number"></div>
-              </div>
+                    <!-- KPI Metric Cards (4 cards) -->
+                    <div class="timesheet-kpi-grid">
+                        <div class="timesheet-kpi-card">
+                            <div class="timesheet-kpi-icon icon-blue">
+                                <i class="fa-solid fa-stopwatch"></i>
+                            </div>
+                            <div class="timesheet-kpi-content">
+                                <div class="timesheet-kpi-label">Tổng giờ tuần này</div>
+                                <div class="timesheet-kpi-value" id="total-hours">0.0h</div>
+                                <div class="timesheet-kpi-sub">Đã log thời gian thực tế</div>
+                            </div>
+                        </div>
 
-              <button type="button" class="week-nav-btn" id="next-week">
-                <i class="fa-solid fa-chevron-right"></i>
-              </button>
-            </div>
+                        <div class="timesheet-kpi-card">
+                            <div class="timesheet-kpi-icon icon-purple">
+                                <i class="fa-solid fa-bullseye"></i>
+                            </div>
+                            <div class="timesheet-kpi-content">
+                                <div class="timesheet-kpi-label">Chỉ tiêu quy định</div>
+                                <div class="timesheet-kpi-value">40.0h</div>
+                                <div class="timesheet-kpi-sub">Định mức 8h/ngày chuẩn</div>
+                            </div>
+                        </div>
 
-            <!-- Thống kê -->
-            <div class="timesheet-stats">
-              <div class="stat-card">
-                <div class="stat-label">Tổng thời gian</div>
+                        <div class="timesheet-kpi-card">
+                            <div class="timesheet-kpi-icon icon-amber">
+                                <i class="fa-solid fa-hourglass-half"></i>
+                            </div>
+                            <div class="timesheet-kpi-content">
+                                <div class="timesheet-kpi-label">Còn thiếu / Vượt mức</div>
+                                <div class="timesheet-kpi-value" id="missing-hours">40.0h</div>
+                                <div class="timesheet-kpi-sub" id="missing-label">Cần log thêm để đủ chỉ tiêu</div>
+                            </div>
+                        </div>
 
-                <div class="stat-value" id="total-hours">0h</div>
-              </div>
+                        <div class="timesheet-kpi-card">
+                            <div class="timesheet-kpi-icon icon-green">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div class="timesheet-kpi-content">
+                                <div class="timesheet-kpi-label">Trạng thái chốt tuần</div>
+                                <div class="timesheet-kpi-value" id="submission-status" style="font-size: 16px; margin-top: 4px;">Bản nháp</div>
+                                <div class="timesheet-kpi-sub" id="submission-time">Chưa nộp phê duyệt</div>
+                            </div>
+                        </div>
+                    </div>
 
-              <div class="stat-card">
-                <div class="stat-label">Mục tiêu</div>
+                    <!-- Main Data Card -->
+                    <div class="timesheet-main-card">
+                        <!-- Toolbar Filter -->
+                        <div class="timesheet-filter-bar">
+                            <div class="timesheet-search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="timesheet-search" placeholder="Tìm kiếm theo công việc, dự án hoặc nội dung log...">
+                            </div>
 
-                <div class="stat-value">40h</div>
-              </div>
+                            <select id="timesheet-date-filter" class="timesheet-filter-select">
+                                <option value="all">Tất cả ngày trong tuần</option>
+                            </select>
 
-              <div class="stat-card missing-card">
-                <div class="stat-label">Còn thiếu</div>
+                            <select id="timesheet-project-filter" class="timesheet-filter-select">
+                                <option value="all">Tất cả dự án</option>
+                            </select>
+                        </div>
 
-                <div class="stat-value" id="missing-hours">40h</div>
-              </div>
-            </div>
+                        <!-- Data Table -->
+                        <div class="timesheet-table-wrapper">
+                            <table class="timesheet-unified-table">
+                                <thead>
+                                    <tr>
+                                        <th>Ngày làm việc</th>
+                                        <th>Công việc & Dự án</th>
+                                        <th>Người thực hiện</th>
+                                        <th>Mô tả công việc chi tiết</th>
+                                        <th style="text-align: center;">Thời lượng</th>
+                                        <th style="text-align: right; padding-right: 20px;">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="timesheet-body">
+                                    <!-- Dynamic rows rendered by js/timesheet.js -->
+                                </tbody>
+                            </table>
 
-            <!-- Bộ lọc -->
-            <div class="timesheet-card timesheet-toolbar">
-              <div class="filter-group">
-                <label for="timesheet-search"> Tìm kiếm </label>
-
-                <div class="search-wrapper">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-
-                  <input
-                    type="text"
-                    id="timesheet-search"
-                    class="timesheet-input"
-                    placeholder="Tìm kiếm công việc..."
-                  />
+                            <div class="timesheet-empty-state" id="empty-timesheet" style="display: none;">
+                                <i class="fa-regular fa-clock"></i>
+                                <p>Chưa có dữ liệu chấm công cho tuần này. Bấm <strong>"Ghi nhận thời gian"</strong> để bắt đầu log giờ!</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
+            </main>
 
-              <div class="filter-group">
-                <label for="timesheet-date-filter"> Ngày làm việc </label>
-
-                <select id="timesheet-date-filter" class="timesheet-select">
-                  <option value="all">Tất cả ngày</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Bảng Timesheet -->
-            <div class="timesheet-card timesheet-table-card">
-              <div class="table-responsive">
-                <table class="timesheet-table">
-                  <thead>
-                    <tr>
-                      <th>Ngày</th>
-                      <th>Công việc</th>
-                      <th>Mô tả</th>
-                      <th>Số giờ</th>
-                      <th class="action-column">Thao tác</th>
-                    </tr>
-                  </thead>
-
-                  <tbody id="timesheet-body">
-                    <!-- JavaScript render -->
-                  </tbody>
-                </table>
-              </div>
-
-              <div class="empty-timesheet" id="empty-timesheet">
-                <i class="fa-regular fa-clock"></i>
-
-                <p>Chưa có dữ liệu chấm công</p>
-              </div>
-            </div>
-
-            <!-- Nút gửi -->
-            <div class="timesheet-footer-action">
-              <button
-                type="button"
-                class="btn-submit-timesheet"
-                id="submit-timesheet"
-              >
-                <i class="fa-solid fa-paper-plane"></i>
-                Gửi bảng chấm công
-              </button>
-            </div>
-          </div>
-        </main>
-
-        <div id="footer-container"></div>
-      </div>
-    </div>
-
-    <!-- Modal -->
-    <div class="timesheet-modal" id="timesheet-modal">
-      <div class="modal-overlay"></div>
-
-      <div class="timesheet-modal-content">
-        <div class="modal-header">
-          <div>
-            <h2 id="modal-title">Thêm thời gian làm việc</h2>
-
-            <p>Nhập thông tin thời gian làm việc của bạn</p>
-          </div>
-
-          <button type="button" class="modal-close" id="close-modal">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
+            <!-- Footer -->
+            <div id="footer-container"></div>
         </div>
-
-        <form id="timesheet-form">
-          <input type="hidden" id="edit-id" />
-
-          <div class="form-group">
-            <label for="task-name"> Công việc </label>
-
-            <select id="task-name" required>
-              <option value="">-- Chọn công việc --</option>
-
-              <option value="PRJ-042: Chuyển đổi cơ sở dữ liệu">
-                PRJ-042: Chuyển đổi cơ sở dữ liệu
-              </option>
-
-              <option value="PRJ-045: Thiết kế lại giao diện">
-                PRJ-045: Thiết kế lại giao diện
-              </option>
-
-              <option value="INT-001: Họp nội bộ">INT-001: Họp nội bộ</option>
-            </select>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="work-date"> Ngày làm việc </label>
-
-              <input type="date" id="work-date" required />
-            </div>
-
-            <div class="form-group">
-              <label for="work-hours"> Số giờ </label>
-
-              <input
-                type="number"
-                id="work-hours"
-                min="0.5"
-                max="16"
-                step="0.5"
-                required
-              />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="work-description"> Mô tả công việc </label>
-
-            <textarea
-              id="work-description"
-              rows="4"
-              placeholder="Nhập nội dung công việc đã thực hiện..."
-            ></textarea>
-          </div>
-
-          <p class="form-error" id="form-error"></p>
-
-          <div class="modal-actions">
-            <button type="button" class="btn-cancel" id="cancel-modal">
-              Hủy
-            </button>
-
-            <button type="submit" class="btn-save">
-              <i class="fa-solid fa-floppy-disk"></i>
-              Lưu thời gian
-            </button>
-          </div>
-        </form>
-      </div>
     </div>
 
-    <!-- Thông báo -->
-    <div class="toast" id="toast"></div>
+    <!-- Modal Container -->
+    <div id="modal-container"></div>
+    <div id="loading-container"></div>
 
-    <!-- JS dùng chung -->
+    <!-- Scripts -->
     <script src="/js/common.js"></script>
-
-    <!-- JS riêng Timesheet -->
     <script src="/js/timesheet.js"></script>
-  </body>
+</body>
 </html>

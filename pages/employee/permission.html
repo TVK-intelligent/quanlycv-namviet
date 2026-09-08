@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân quyền & Vai trò (RBAC) - Work Management</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Hệ thống -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/project/project.css">
+
+    <style>
+        .perm-header-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        .btn-check-all {
+            background: none;
+            border: none;
+            color: #8c8c8c;
+            cursor: pointer;
+            font-size: 11px;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .btn-check-all:hover {
+            color: #1890ff;
+            background: #e6f7ff;
+        }
+    </style>
+</head>
+<body data-breadcrumb-parent="Quản lý Nhân sự" data-breadcrumb-current="Phân quyền & Vai trò">
+    <div class="app-container">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Header Container -->
+            <div id="header-container"></div>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <!-- Breadcrumb -->
+                <div class="breadcrumb" style="margin-bottom: 16px;">
+                    <a href="/index.html">Dashboard</a>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <span>Quản lý Nhân sự</span>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <span>Phân quyền & Vai trò</span>
+                </div>
+
+                <!-- Page Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <h1 style="font-size: 22px; font-weight: 700; color: #262626; margin: 0 0 4px 0;">Ma trận Phân quyền & Vai trò (RBAC)</h1>
+                        <p style="font-size: 13px; color: #8c8c8c; margin: 0;">Thiết lập ma trận quyền hạn (Xem, Tạo, Sửa, Xóa, Duyệt) chi tiết cho từng vai trò trong hệ thống.</p>
+                    </div>
+                    
+                    <button id="btn-save-permission" class="btn btn-primary" style="display: flex; align-items: center; gap: 8px; padding: 8px 20px; font-size: 13px; font-weight: 600; border-radius: 6px; border: none; cursor: pointer;">
+                        <i class="fa-solid fa-floppy-disk"></i> Lưu cấu hình Quyền
+                    </button>
+                </div>
+
+                <!-- Selector Toolbar -->
+                <div class="table-card" style="background: #ffffff; border-radius: 8px; border: 1px solid #e8e8e8; box-shadow: 0 1px 3px rgba(0,0,0,0.03); padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <label style="font-weight: 600; font-size: 13px; color: #262626;">Chọn Vai trò cấu hình:</label>
+                        <select id="select-rbac-role" style="padding: 8px 16px; border-radius: 6px; border: 1px solid #d9d9d9; font-size: 13px; font-weight: 600; color: #1890ff; background: #fff; cursor: pointer; outline: none; min-width: 220px;">
+                            <option value="ADMIN">Quản trị viên (Admin)</option>
+                            <option value="HEAD" selected>Trưởng phòng (Head of Dept)</option>
+                            <option value="PM">Quản lý Dự án (PM)</option>
+                            <option value="DEV">Lập trình viên (Developer)</option>
+                            <option value="TESTER">Kiểm thử viên (QA Tester)</option>
+                            <option value="CLIENT">Khách hàng (Client)</option>
+                        </select>
+                    </div>
+
+                    <div style="font-size: 12px; color: #8c8c8c;">
+                        Đang hiệu chỉnh quyền cho: <span id="current-role-badge" style="font-weight: 700; color: #1890ff; background: #e6f7ff; padding: 3px 8px; border-radius: 4px;">Trưởng phòng (Head)</span>
+                    </div>
+                </div>
+
+                <!-- Matrix Table Card -->
+                <div class="table-card" style="background: #ffffff; border-radius: 8px; border: 1px solid #e8e8e8; box-shadow: 0 1px 3px rgba(0,0,0,0.03); overflow: hidden;">
+                    <div class="table-responsive" style="overflow-x: auto;">
+                        <table class="data-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+                            <thead>
+                                <tr style="background: #fafafa; border-bottom: 1px solid #f0f0f0; color: #595959; font-weight: 600;">
+                                    <th style="padding: 14px 16px; width: 35%;">Danh mục Chức năng</th>
+                                    
+                                    <th style="padding: 14px 16px; text-align: center; width: 13%;">
+                                        <div class="perm-header-action">
+                                            <span>Xem (Read)</span>
+                                            <button class="btn-check-all" data-action="read" title="Tất cả/Bỏ chọn"><i class="fa-solid fa-check-double"></i></button>
+                                        </div>
+                                    </th>
+
+                                    <th style="padding: 14px 16px; text-align: center; width: 13%;">
+                                        <div class="perm-header-action">
+                                            <span>Tạo (Create)</span>
+                                            <button class="btn-check-all" data-action="create" title="Tất cả/Bỏ chọn"><i class="fa-solid fa-check-double"></i></button>
+                                        </div>
+                                    </th>
+
+                                    <th style="padding: 14px 16px; text-align: center; width: 13%;">
+                                        <div class="perm-header-action">
+                                            <span>Sửa (Update)</span>
+                                            <button class="btn-check-all" data-action="update" title="Tất cả/Bỏ chọn"><i class="fa-solid fa-check-double"></i></button>
+                                        </div>
+                                    </th>
+
+                                    <th style="padding: 14px 16px; text-align: center; width: 13%;">
+                                        <div class="perm-header-action">
+                                            <span>Xóa (Delete)</span>
+                                            <button class="btn-check-all" data-action="delete" title="Tất cả/Bỏ chọn"><i class="fa-solid fa-check-double"></i></button>
+                                        </div>
+                                    </th>
+
+                                    <th style="padding: 14px 16px; text-align: center; width: 13%;">
+                                        <div class="perm-header-action">
+                                            <span>Duyệt (Approve)</span>
+                                            <button class="btn-check-all" data-action="approve" title="Tất cả/Bỏ chọn"><i class="fa-solid fa-check-double"></i></button>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="permission-matrix-body">
+                                <!-- Rendered dynamically by permission.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modals & Containers dùng chung -->
+    <div id="modal-container"></div>
+    <div id="loading-container"></div>
+
+    <!-- Scripts -->
+    <script src="/js/common.js"></script>
+    <script src="/js/permission.js"></script>
+</body>
+</html>

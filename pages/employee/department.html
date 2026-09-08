@@ -2,60 +2,95 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh sách Phòng ban - ETRMS</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
-    <link rel="stylesheet" href="../../css/style.css">
-</head>
-<body class="bg-[#f9f9f9] font-sans text-[#1a1c1c]">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- KHU VỰC NỘI DUNG CHÍNH -->
-    <div class="flex flex-col w-full gap-8 p-6">
-        <div class="bg-white rounded-xl shadow-sm p-6 w-full">
-            
-            <!-- Header -->
-            <div class="flex items-center justify-between mb-8">
-                <h1 class="text-2xl font-semibold text-gray-800">Danh sách Phòng ban</h1>
-                <button id="btn-add-dept" class="bg-[#005daa] text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-90 transition-colors">
-                    <span class="material-symbols-outlined text-[20px]">add</span>
-                    <span class="font-semibold text-[14px]">Thêm phòng ban</span>
-                </button>
-            </div>
+    <!-- CSS Hệ thống chung -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout.css">
 
-            <!-- Toolbar -->
-            <div class="mb-6 w-full md:w-[320px]">
-                <div class="relative">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
-                    <input id="search-dept" class="w-full bg-gray-50 border border-gray-200 pl-10 pr-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#005daa] transition-all" placeholder="Tìm kiếm mã, tên phòng ban..." type="text"/>
+    <!-- Tailwind CSS (với preflight: false) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            corePlugins: {
+                preflight: false
+            }
+        };
+    </script>
+</head>
+<body data-breadcrumb-parent="Quản lý Nhân sự" data-breadcrumb-current="Phòng ban">
+    <div class="app-container">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Header Container -->
+            <div id="header-container"></div>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <!-- Breadcrumb -->
+                <div class="breadcrumb" style="margin-bottom: 16px;">
+                    <a href="/index.html">Dashboard</a>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <span>Quản lý Nhân sự</span>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <span>Phòng ban</span>
                 </div>
-            </div>
 
-            <!-- Table -->
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-gray-100 text-gray-600 uppercase text-xs font-semibold tracking-wider">
-                            <th class="py-3 px-4 rounded-tl-lg w-32">Mã Phòng</th>
-                            <th class="py-3 px-4">Tên Phòng ban</th>
-                            <th class="py-3 px-4">Trực thuộc</th>
-                            <th class="py-3 px-4 text-center w-32">Số nhân sự</th>
-                            <th class="py-3 px-4 rounded-tr-lg text-right w-24">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-sm text-gray-700" id="department-table-body">
-                        <!-- JS sẽ đổ dữ liệu vào đây -->
-                    </tbody>
-                </table>
-            </div>
+                <div class="bg-white rounded-xl shadow-sm p-6 w-full" style="background: #ffffff;">
+                    <!-- Header -->
+                    <div class="flex items-center justify-between mb-8">
+                        <h1 class="text-2xl font-semibold text-gray-800">Danh sách Phòng ban</h1>
+                        <button id="btn-add-dept" class="bg-[#005daa] text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-90 transition-colors" style="background-color: #005daa; color: #fff; border: none; cursor: pointer;">
+                            <span class="material-symbols-outlined text-[20px]">add</span>
+                            <span class="font-semibold text-[14px]">Thêm phòng ban</span>
+                        </button>
+                    </div>
+
+                    <!-- Toolbar -->
+                    <div class="mb-6 w-full md:w-[320px]">
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                            <input id="search-dept" class="w-full bg-gray-50 border border-gray-200 pl-10 pr-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#005daa] transition-all" style="border: 1px solid #e0e0e0;" placeholder="Tìm kiếm mã, tên phòng ban..." type="text"/>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-600 uppercase text-xs font-semibold tracking-wider" style="background-color: #f3f4f6;">
+                                    <th class="py-3 px-4 rounded-tl-lg w-32">Mã Phòng</th>
+                                    <th class="py-3 px-4">Tên Phòng ban</th>
+                                    <th class="py-3 px-4">Trực thuộc</th>
+                                    <th class="py-3 px-4 text-center w-32">Số nhân sự</th>
+                                    <th class="py-3 px-4 rounded-tr-lg text-right w-24">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm text-gray-700" id="department-table-body">
+                                <!-- JS sẽ đổ dữ liệu vào đây -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
 
     <!-- MODAL THÊM/SỬA PHÒNG BAN -->
-    <div id="dept-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col">
+    <div id="dept-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity" style="position: fixed; inset: 0; background-color: rgba(0,0,0,0.5); z-index: 9999;">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col" style="background: #fff; margin: auto;">
             <div class="flex justify-between items-center p-6 border-b border-gray-100">
                 <h3 class="text-xl font-semibold" id="dept-modal-title">Thêm mới Phòng ban</h3>
-                <button id="btn-close-dept" class="text-gray-400 hover:text-red-500 transition-colors">
+                <button id="btn-close-dept" class="text-gray-400 hover:text-red-500 transition-colors" style="background: none; border: none; cursor: pointer;">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
@@ -79,14 +114,19 @@
                 </form>
             </div>
             
-            <div class="p-6 border-t border-gray-100 flex justify-end gap-3 bg-gray-50">
-                <button id="btn-cancel-dept" class="px-4 py-2 rounded-lg font-semibold border border-gray-300 text-gray-700 hover:bg-gray-100">Hủy</button>
-                <button id="btn-save-dept" class="px-4 py-2 rounded-lg font-semibold bg-[#005daa] text-white hover:opacity-90">Lưu Phòng ban</button>
+            <div class="p-6 border-t border-gray-100 flex justify-end gap-3 bg-gray-50" style="background-color: #f9f9f9;">
+                <button id="btn-cancel-dept" class="px-4 py-2 rounded-lg font-semibold border border-gray-300 text-gray-700 hover:bg-gray-100" style="cursor: pointer;">Hủy</button>
+                <button id="btn-save-dept" class="px-4 py-2 rounded-lg font-semibold bg-[#005daa] text-white hover:opacity-90" style="background-color: #005daa; color: #fff; border: none; cursor: pointer;">Lưu Phòng ban</button>
             </div>
         </div>
     </div>
 
-    <!-- Nhúng file JS -->
-    <script src="../../js/department.js"></script>
+    <!-- Modals & Containers dùng chung -->
+    <div id="modal-container"></div>
+    <div id="loading-container"></div>
+
+    <!-- Scripts -->
+    <script src="/js/common.js"></script>
+    <script src="/js/department.js"></script>
 </body>
 </html>

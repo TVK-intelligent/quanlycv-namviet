@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yêu cầu Thay đổi (CR) - Work Management</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Hệ thống -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/project/project.css">
+
+    <style>
+        .cr-stat-card {
+            background: #ffffff;
+            border-radius: var(--border-radius-md, 8px);
+            padding: 14px 18px;
+            border: 1px solid var(--border-color, #e8e8e8);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .cr-stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body data-breadcrumb-parent="Quy trình" data-breadcrumb-current="Yêu cầu Thay đổi (CR)">
+    <div class="app-container">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Header Container -->
+            <div id="header-container"></div>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <!-- Breadcrumb -->
+                <div class="breadcrumb" style="margin-bottom: 16px;">
+                    <a href="/index.html">Dashboard</a>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <span>Quy trình</span>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <span>Yêu cầu Thay đổi (CR)</span>
+                </div>
+
+                <!-- Page Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <h1 style="font-size: 22px; font-weight: 700; color: #262626; margin: 0 0 4px 0;">Yêu cầu Thay đổi Phạm vi (Change Requests - CR)</h1>
+                        <p style="font-size: 13px; color: #8c8c8c; margin: 0;">Tiếp nhận, đánh giá tác động chi phí / tiến độ và phê duyệt các phát sinh từ khách hàng.</p>
+                    </div>
+                    
+                    <button id="btn-create-cr" class="btn btn-primary" style="display: flex; align-items: center; gap: 8px; padding: 8px 18px; font-size: 13px; font-weight: 600; border-radius: 6px; border: none; cursor: pointer;">
+                        <i class="fa-solid fa-plus"></i> Tạo Yêu cầu CR mới
+                    </button>
+                </div>
+
+                <!-- Summary Stats -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px;">
+                    <div class="cr-stat-card">
+                        <div class="cr-stat-icon" style="background: #e6f7ff; color: #1890ff;">
+                            <i class="fa-solid fa-code-compare"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 11px; color: #8c8c8c; text-transform: uppercase; font-weight: 600;">Tổng đơn CR</div>
+                            <div id="stat-total-cr" style="font-size: 20px; font-weight: 700; color: #262626;">0</div>
+                        </div>
+                    </div>
+
+                    <div class="cr-stat-card">
+                        <div class="cr-stat-icon" style="background: #fff7e6; color: #fa8c16;">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 11px; color: #8c8c8c; text-transform: uppercase; font-weight: 600;">Chờ đánh giá</div>
+                            <div id="stat-pending-cr" style="font-size: 20px; font-weight: 700; color: #fa8c16;">0</div>
+                        </div>
+                    </div>
+
+                    <div class="cr-stat-card">
+                        <div class="cr-stat-icon" style="background: #f6ffed; color: #52c41a;">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 11px; color: #8c8c8c; text-transform: uppercase; font-weight: 600;">Đã chấp thuận</div>
+                            <div id="stat-accepted-cr" style="font-size: 20px; font-weight: 700; color: #52c41a;">0</div>
+                        </div>
+                    </div>
+
+                    <div class="cr-stat-card">
+                        <div class="cr-stat-icon" style="background: #fff1f0; color: #ff4d4f;">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 11px; color: #8c8c8c; text-transform: uppercase; font-weight: 600;">Từ chối / Hủy</div>
+                            <div id="stat-rejected-cr" style="font-size: 20px; font-weight: 700; color: #ff4d4f;">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Card Container -->
+                <div class="table-card" style="background: #ffffff; border-radius: 8px; border: 1px solid #e8e8e8; box-shadow: 0 1px 3px rgba(0,0,0,0.03); overflow: hidden;">
+                    <!-- Filter Toolbar -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid #f0f0f0; flex-wrap: wrap; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            <div class="project-search-box" style="width: 240px;">
+                                <i class="fa fa-search"></i>
+                                <input type="text" id="cr-search" class="form-control" placeholder="Tìm theo mã, tiêu đề, khách hàng...">
+                            </div>
+
+                            <select id="cr-filter-project" class="form-control" style="padding: 6px 12px; font-size: 13px; border-radius: 6px; border: 1px solid #d9d9d9; background: #fff; max-width: 250px;">
+                                <option value="ALL">Tất cả dự án</option>
+                            </select>
+
+                            <select id="cr-filter-status" class="form-control" style="padding: 6px 12px; font-size: 13px; border-radius: 6px; border: 1px solid #d9d9d9; background: #fff; width: 150px;">
+                                <option value="ALL">Tất cả trạng thái</option>
+                                <option value="PENDING">Chờ đánh giá</option>
+                                <option value="ACCEPTED">Đã chấp thuận</option>
+                                <option value="REJECTED">Từ chối / Hủy</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Table Data -->
+                    <div class="table-responsive" style="overflow-x: auto;">
+                        <table class="data-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+                            <thead>
+                                <tr style="background: #fafafa; border-bottom: 1px solid #f0f0f0; color: #595959; font-weight: 600;">
+                                    <th style="padding: 12px 14px; width: 90px;">Mã CR</th>
+                                    <th style="padding: 12px 14px;">Mô tả Yêu cầu thay đổi</th>
+                                    <th style="padding: 12px 14px;">Khách hàng</th>
+                                    <th style="padding: 12px 14px;">Dự án</th>
+                                    <th style="padding: 12px 14px;">Đánh giá Tác động</th>
+                                    <th style="padding: 12px 14px;">Hạn chót mới</th>
+                                    <th style="padding: 12px 14px;">Trạng thái</th>
+                                    <th style="padding: 12px 14px; text-align: right;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cr-table-body">
+                                <!-- Rendered dynamically by change-request.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL 1: TẠO YÊU CẦU THAY ĐỔI MỚI -->
+    <div id="modal-create-cr" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 9999;">
+        <div style="background: #ffffff; width: 100%; max-width: 540px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow: hidden; display: flex; flex-direction: column;">
+            <div style="padding: 16px 20px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #262626;">Tạo Yêu cầu Thay đổi (Change Request)</h3>
+                <button id="btn-close-cr-modal" style="background: none; border: none; font-size: 16px; cursor: pointer; color: #8c8c8c;">&times;</button>
+            </div>
+            
+            <form id="form-create-cr" style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Dự án liên quan <span style="color: #ff4d4f;">*</span></label>
+                        <select id="new-cr-project" required class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;"></select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Tên Khách hàng <span style="color: #ff4d4f;">*</span></label>
+                        <input type="text" id="new-cr-client" required class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;" placeholder="Công ty / Đại diện...">
+                    </div>
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Tiêu đề Thay đổi <span style="color: #ff4d4f;">*</span></label>
+                    <input type="text" id="new-cr-title" required class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;" placeholder="Tóm tắt nội dung thay đổi scope...">
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Mô tả chi tiết yêu cầu</label>
+                    <textarea id="new-cr-desc" class="form-control" rows="3" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;" placeholder="Chi tiết yêu cầu bổ sung tính năng / chỉnh sửa quy trình..."></textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Ước tính giờ thêm (+Hours)</label>
+                        <input type="number" id="new-cr-hours" class="form-control" value="20" min="1" max="500" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Chi phí phát sinh (VND)</label>
+                        <input type="number" id="new-cr-cost" class="form-control" value="10000000" step="500000" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;">
+                    </div>
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Đề xuất Hạn mới</label>
+                    <input type="date" id="new-cr-due" class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;">
+                </div>
+
+                <div style="padding-top: 10px; border-top: 1px solid #f0f0f0; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" id="btn-cancel-cr-modal" style="padding: 7px 16px; border-radius: 6px; border: 1px solid #d9d9d9; background: #fff; cursor: pointer;">Hủy</button>
+                    <button type="submit" class="btn btn-primary" style="padding: 7px 20px; border-radius: 6px; border: none; background: #1890ff; color: #fff; font-weight: 600; cursor: pointer;">Gửi Yêu cầu CR</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: ĐÁNH GIÁ TÁC ĐỘNG & PHÊ DUYỆT -->
+    <div id="modal-assess-cr" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 9999;">
+        <div style="background: #ffffff; width: 100%; max-width: 520px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow: hidden; display: flex; flex-direction: column;">
+            <div style="padding: 16px 20px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #262626;">Đánh giá Tác động (<span id="assess-cr-code"></span>)</h3>
+                <button id="btn-close-assess-modal" style="background: none; border: none; font-size: 16px; cursor: pointer; color: #8c8c8c;">&times;</button>
+            </div>
+            
+            <div style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+                <div id="assess-cr-title" style="font-size: 13px; font-weight: 600; color: #1890ff; padding: 8px 12px; background: #e6f7ff; border-radius: 6px;"></div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Giờ phát sinh (Hours)</label>
+                        <input type="number" id="assess-cr-hours" class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Chi phí phát sinh (VND)</label>
+                        <input type="number" id="assess-cr-cost" class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;">
+                    </div>
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Hạn chót mới được điều chỉnh</label>
+                    <input type="date" id="assess-cr-due" class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;">
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Ghi chú đánh giá của PM</label>
+                    <textarea id="assess-cr-note" class="form-control" rows="3" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;" placeholder="Nhập nhận định về rủi ro, phân bổ nhân sự..."></textarea>
+                </div>
+
+                <div style="padding-top: 10px; border-top: 1px solid #f0f0f0; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" id="btn-cancel-assess-modal" style="padding: 7px 16px; border-radius: 6px; border: 1px solid #d9d9d9; background: #fff; cursor: pointer;">Hủy</button>
+                    <button type="button" id="btn-reject-cr" class="btn btn-danger" style="padding: 7px 16px; border-radius: 6px; border: none; background: #ff4d4f; color: #fff; font-weight: 600; cursor: pointer;">Từ chối</button>
+                    <button type="button" id="btn-approve-cr" class="btn btn-primary" style="padding: 7px 18px; border-radius: 6px; border: none; background: #52c41a; color: #fff; font-weight: 600; cursor: pointer;">Chấp thuận CR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals & Containers dùng chung -->
+    <div id="modal-container"></div>
+    <div id="loading-container"></div>
+
+    <!-- Scripts -->
+    <script src="/js/common.js"></script>
+    <script src="/js/change-request.js"></script>
+</body>
+</html>

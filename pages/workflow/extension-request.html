@@ -47,6 +47,7 @@
                 type="button"
                 class="workflow-tab"
                 data-tab="change-request"
+                onclick="window.location.href='/pages/workflow/change-request.html'"
               >
                 <i class="fa-solid fa-pen-to-square"></i>
                 Yêu cầu Thay đổi (CR)
@@ -100,7 +101,7 @@
                     type="text"
                     id="extension-search"
                     class="extension-input"
-                    placeholder="Tìm kiếm công việc..."
+                    placeholder="Tìm kiếm công việc, người xin..."
                   />
                 </div>
               </div>
@@ -123,122 +124,7 @@
                   </thead>
 
                   <tbody id="extension-body">
-                    <!-- Dòng 1 -->
-                    <tr
-                      data-status="pending"
-                      data-title="Update API Endpoints for Mobile"
-                    >
-                      <td class="task-name">Update API Endpoints for Mobile</td>
-
-                      <td>Nguyễn Văn A</td>
-
-                      <td>15/10/2023</td>
-
-                      <td class="new-deadline">18/10/2023</td>
-
-                      <td class="reason-cell">
-                        Chờ phản hồi từ team Backend về database schema mới.
-                      </td>
-
-                      <td>
-                        <span class="status-badge status-pending">
-                          Chờ duyệt
-                        </span>
-                      </td>
-
-                      <td>
-                        <div class="action-buttons">
-                          <button
-                            class="btn-action btn-approve"
-                            title="Duyệt yêu cầu"
-                          >
-                            <i class="fa-solid fa-check"></i>
-                          </button>
-
-                          <button
-                            class="btn-action btn-reject"
-                            title="Từ chối yêu cầu"
-                          >
-                            <i class="fa-solid fa-xmark"></i>
-                          </button>
-
-                          <button class="btn-action btn-edit" title="Chỉnh sửa">
-                            <i class="fa-solid fa-pen"></i>
-                          </button>
-
-                          <button class="btn-action btn-delete" title="Xóa">
-                            <i class="fa-solid fa-trash"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-
-                    <!-- Dòng 2 -->
-                    <tr
-                      data-status="approved"
-                      data-title="UI Design cho Dashboard"
-                    >
-                      <td class="task-name">UI Design cho Dashboard</td>
-
-                      <td>Trần Thị B</td>
-
-                      <td>10/10/2023</td>
-
-                      <td class="new-deadline">12/10/2023</td>
-
-                      <td class="reason-cell">
-                        Khách hàng thay đổi yêu cầu vào phút chót.
-                      </td>
-
-                      <td>
-                        <span class="status-badge status-approved">
-                          Đã duyệt
-                        </span>
-                      </td>
-
-                      <td>
-                        <div class="action-buttons">
-                          <button class="btn-action btn-edit" title="Chỉnh sửa">
-                            <i class="fa-solid fa-pen"></i>
-                          </button>
-
-                          <button class="btn-action btn-delete" title="Xóa">
-                            <i class="fa-solid fa-trash"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-
-                    <!-- Dòng 3 -->
-                    <tr data-status="rejected" data-title="Fix bug login form">
-                      <td class="task-name">Fix bug login form</td>
-
-                      <td>Lê Văn C</td>
-
-                      <td>08/10/2023</td>
-
-                      <td class="new-deadline">10/10/2023</td>
-
-                      <td class="reason-cell">Bị ốm và nghỉ làm một ngày.</td>
-
-                      <td>
-                        <span class="status-badge status-rejected">
-                          Từ chối
-                        </span>
-                      </td>
-
-                      <td>
-                        <div class="action-buttons">
-                          <button class="btn-action btn-edit" title="Chỉnh sửa">
-                            <i class="fa-solid fa-pen"></i>
-                          </button>
-
-                          <button class="btn-action btn-delete" title="Xóa">
-                            <i class="fa-solid fa-trash"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                    <!-- Dynamic extension rows rendered by js/extension-request.js -->
                   </tbody>
                 </table>
               </div>

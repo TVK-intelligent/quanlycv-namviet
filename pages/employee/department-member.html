@@ -2,55 +2,95 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thành viên Phòng ban - ETRMS</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
-    <link rel="stylesheet" href="../../css/style.css">
-</head>
-<body class="bg-[#f9f9f9] font-sans text-[#1a1c1c]">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <div class="flex flex-col w-full gap-8 p-6">
-        <div class="bg-white rounded-xl shadow-sm p-6 w-full min-h-[500px]">
-            
-            <!-- Header & Filter -->
-            <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
-                <h1 class="text-2xl font-semibold text-gray-800">Danh sách Thành viên</h1>
-                
-                <div class="flex items-center gap-3">
-                    <label class="font-semibold text-sm text-gray-600">Chọn phòng ban:</label>
-                    <select id="select-dept-view" class="bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg text-sm focus:outline-none focus:border-[#005daa] min-w-[250px] shadow-sm cursor-pointer transition-all">
-                        <!-- JS sẽ đổ danh sách phòng ban vào đây -->
-                    </select>
+    <!-- CSS Hệ thống chung -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout.css">
+
+    <!-- Tailwind CSS (với preflight: false) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            corePlugins: {
+                preflight: false
+            }
+        };
+    </script>
+</head>
+<body data-breadcrumb-parent="Quản lý Nhân sự" data-breadcrumb-current="Thành viên phòng ban">
+    <div class="app-container">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Header Container -->
+            <div id="header-container"></div>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <!-- Breadcrumb -->
+                <div class="breadcrumb" style="margin-bottom: 16px;">
+                    <a href="/index.html">Dashboard</a>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <span>Quản lý Nhân sự</span>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <span>Thành viên Phòng ban</span>
                 </div>
-            </div>
 
-            <!-- Table -->
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-gray-100 text-gray-600 uppercase text-xs font-semibold tracking-wider">
-                            <th class="py-3 px-4 rounded-tl-lg">Nhân viên</th>
-                            <th class="py-3 px-4">Email</th>
-                            <th class="py-3 px-4">Chức vụ</th>
-                            <th class="py-3 px-4 rounded-tr-lg">WSI (Sức tải)</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-sm text-gray-700" id="member-table-body">
-                        <!-- JS sẽ đổ dữ liệu nhân viên vào đây -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Trạng thái trống (Hiển thị khi phòng ban không có ai) -->
-            <div id="empty-state" class="hidden flex-col items-center justify-center py-12 text-gray-400">
-                <span class="material-symbols-outlined text-[48px] mb-3">group_off</span>
-                <p class="text-base">Phòng ban này hiện chưa có nhân sự nào.</p>
-            </div>
+                <div class="bg-white rounded-xl shadow-sm p-6 w-full min-h-[500px]" style="background: #ffffff;">
+                    <!-- Header & Filter -->
+                    <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+                        <h1 class="text-2xl font-semibold text-gray-800">Danh sách Thành viên</h1>
+                        
+                        <div class="flex items-center gap-3">
+                            <label class="font-semibold text-sm text-gray-600">Chọn phòng ban:</label>
+                            <select id="select-dept-view" class="bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg text-sm focus:outline-none focus:border-[#005daa] min-w-[250px] shadow-sm cursor-pointer transition-all" style="border: 1px solid #e0e0e0;">
+                                <!-- JS sẽ đổ danh sách phòng ban vào đây -->
+                            </select>
+                        </div>
+                    </div>
 
+                    <!-- Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-600 uppercase text-xs font-semibold tracking-wider" style="background-color: #f3f4f6;">
+                                    <th class="py-3 px-4 rounded-tl-lg">Nhân viên</th>
+                                    <th class="py-3 px-4">Email</th>
+                                    <th class="py-3 px-4">Chức vụ</th>
+                                    <th class="py-3 px-4 rounded-tr-lg">WSI (Sức tải)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm text-gray-700" id="member-table-body">
+                                <!-- JS sẽ đổ dữ liệu nhân viên vào đây -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Trạng thái trống (Hiển thị khi phòng ban không có ai) -->
+                    <div id="empty-state" class="hidden flex-col items-center justify-center py-12 text-gray-400">
+                        <span class="material-symbols-outlined text-[48px] mb-3">group_off</span>
+                        <p class="text-base">Phòng ban này hiện chưa có nhân sự nào.</p>
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
 
-    <!-- Nhúng file JS mới -->
-    <script src="../../js/department-member.js"></script>
+    <!-- Modals & Containers dùng chung -->
+    <div id="modal-container"></div>
+    <div id="loading-container"></div>
+
+    <!-- Scripts -->
+    <script src="/js/common.js"></script>
+    <script src="/js/department-member.js"></script>
 </body>
 </html>

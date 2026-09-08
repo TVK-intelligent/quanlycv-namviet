@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công việc phụ (Subtask) - Work Management</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Hệ thống -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/project/project.css">
+
+    <style>
+        .sub-stat-card {
+            background: #ffffff;
+            border-radius: var(--border-radius-md, 8px);
+            padding: 14px 18px;
+            border: 1px solid var(--border-color, #e8e8e8);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .sub-stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body data-breadcrumb-parent="Quản lý Công việc" data-breadcrumb-current="Công việc phụ (Subtask)">
+    <div class="app-container">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Header Container -->
+            <div id="header-container"></div>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <!-- Breadcrumb -->
+                <div class="breadcrumb" style="margin-bottom: 16px;">
+                    <a href="/index.html">Dashboard</a>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <span>Quản lý Công việc</span>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <span>Công việc phụ (Subtask)</span>
+                </div>
+
+                <!-- Page Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div>
+                        <h1 style="font-size: 22px; font-weight: 700; color: #262626; margin: 0 0 4px 0;">Công việc phụ (Subtask)</h1>
+                        <p style="font-size: 13px; color: #8c8c8c; margin: 0;">Theo dõi chi tiết tiến độ các đầu việc con trực thuộc các Task chính.</p>
+                    </div>
+                    <button id="btn-add-subtask" class="btn btn-primary" style="display: flex; align-items: center; gap: 8px; padding: 8px 18px; font-size: 13px; font-weight: 600; border-radius: 6px; border: none; cursor: pointer;">
+                        <i class="fa-solid fa-plus"></i> Thêm Sub Task
+                    </button>
+                </div>
+
+                <!-- Summary Stats -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px;">
+                    <div class="sub-stat-card">
+                        <div class="sub-stat-icon" style="background: #e6f7ff; color: #1890ff;">
+                            <i class="fa-solid fa-diagram-project"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 11px; color: #8c8c8c; text-transform: uppercase; font-weight: 600;">Tổng Subtask</div>
+                            <div id="stat-total-sub" style="font-size: 20px; font-weight: 700; color: #262626;">0</div>
+                        </div>
+                    </div>
+
+                    <div class="sub-stat-card">
+                        <div class="sub-stat-icon" style="background: #e6f7ff; color: #096dd9;">
+                            <i class="fa-solid fa-spinner"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 11px; color: #8c8c8c; text-transform: uppercase; font-weight: 600;">Đang làm</div>
+                            <div id="stat-doing-sub" style="font-size: 20px; font-weight: 700; color: #096dd9;">0</div>
+                        </div>
+                    </div>
+
+                    <div class="sub-stat-card">
+                        <div class="sub-stat-icon" style="background: #f6ffed; color: #52c41a;">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 11px; color: #8c8c8c; text-transform: uppercase; font-weight: 600;">Đã xong</div>
+                            <div id="stat-done-sub" style="font-size: 20px; font-weight: 700; color: #52c41a;">0</div>
+                        </div>
+                    </div>
+
+                    <div class="sub-stat-card">
+                        <div class="sub-stat-icon" style="background: #f5f5f5; color: #595959;">
+                            <i class="fa-solid fa-hourglass-start"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 11px; color: #8c8c8c; text-transform: uppercase; font-weight: 600;">Cần làm</div>
+                            <div id="stat-todo-sub" style="font-size: 20px; font-weight: 700; color: #595959;">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Card Container -->
+                <div class="table-card" style="background: #ffffff; border-radius: 8px; border: 1px solid #e8e8e8; box-shadow: 0 1px 3px rgba(0,0,0,0.03); overflow: hidden;">
+                    <!-- Filter Toolbar -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid #f0f0f0; flex-wrap: wrap; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            <div class="project-search-box" style="width: 220px;">
+                                <i class="fa fa-search"></i>
+                                <input type="text" id="subtask-search" class="form-control" placeholder="Tìm kiếm subtask...">
+                            </div>
+
+                            <select id="subtask-filter-parent" class="form-control" style="padding: 6px 12px; font-size: 13px; border-radius: 6px; border: 1px solid #d9d9d9; background: #fff; max-width: 280px;">
+                                <option value="ALL">Tất cả Task cha</option>
+                            </select>
+
+                            <select id="subtask-filter-status" class="form-control" style="padding: 6px 12px; font-size: 13px; border-radius: 6px; border: 1px solid #d9d9d9; background: #fff; width: 140px;">
+                                <option value="ALL">Tất cả trạng thái</option>
+                                <option value="TO_DO">Cần làm</option>
+                                <option value="IN_PROGRESS">Đang làm</option>
+                                <option value="DONE">Đã xong</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Table Data -->
+                    <div class="table-responsive" style="overflow-x: auto;">
+                        <table class="data-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+                            <thead>
+                                <tr style="background: #fafafa; border-bottom: 1px solid #f0f0f0; color: #595959; font-weight: 600;">
+                                    <th style="padding: 12px 14px; width: 40px; text-align: center;"><input type="checkbox"></th>
+                                    <th style="padding: 12px 14px; width: 110px;">Mã Subtask</th>
+                                    <th style="padding: 12px 14px;">Tiêu đề Subtask</th>
+                                    <th style="padding: 12px 14px;">Thuộc Task cha</th>
+                                    <th style="padding: 12px 14px;">Người làm</th>
+                                    <th style="padding: 12px 14px;">Trạng thái</th>
+                                    <th style="padding: 12px 14px;">Hạn chót</th>
+                                    <th style="padding: 12px 14px; text-align: right;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subtask-table-body">
+                                <!-- Rendered dynamically by subtask.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL THÊM SUBTASK MỚI -->
+    <div id="modal-create-subtask" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 9999;">
+        <div style="background: #ffffff; width: 100%; max-width: 520px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow: hidden; display: flex; flex-direction: column;">
+            <div style="padding: 16px 20px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #262626;">Thêm Công việc con (Subtask)</h3>
+                <button id="btn-close-subtask-modal" style="background: none; border: none; font-size: 16px; cursor: pointer; color: #8c8c8c;">&times;</button>
+            </div>
+            
+            <form id="form-create-subtask" style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+                <div>
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Chọn Task cha <span style="color: #ff4d4f;">*</span></label>
+                    <select id="new-sub-parent" required class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;"></select>
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Tiêu đề Subtask <span style="color: #ff4d4f;">*</span></label>
+                    <input type="text" id="new-sub-title" required class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;" placeholder="Nhập đầu việc cụ thể...">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Người thực hiện</label>
+                        <select id="new-sub-assignee" class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;">
+                            <option value="Trần Văn Minh">Trần Văn Minh (Dev)</option>
+                            <option value="Lê Gia Bách">Lê Gia Bách (Head)</option>
+                            <option value="Nguyễn Tuấn Bùi">Nguyễn Tuấn Bùi (Lead)</option>
+                            <option value="Hoàng Nam">Hoàng Nam (QA)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Trạng thái ban đầu</label>
+                        <select id="new-sub-status" class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;">
+                            <option value="TO_DO">Cần làm</option>
+                            <option value="IN_PROGRESS">Đang làm</option>
+                            <option value="DONE">Đã xong</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Ước tính (Giờ)</label>
+                        <input type="number" id="new-sub-hours" class="form-control" value="4" min="1" max="50" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Hạn hoàn thành</label>
+                        <input type="date" id="new-sub-due" class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;">
+                    </div>
+                </div>
+
+                <div style="padding-top: 10px; border-top: 1px solid #f0f0f0; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" id="btn-cancel-subtask-modal" style="padding: 7px 16px; border-radius: 6px; border: 1px solid #d9d9d9; background: #fff; cursor: pointer;">Hủy</button>
+                    <button type="submit" class="btn btn-primary" style="padding: 7px 20px; border-radius: 6px; border: none; background: #1890ff; color: #fff; font-weight: 600; cursor: pointer;">Lưu Subtask</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modals & Containers dùng chung -->
+    <div id="modal-container"></div>
+    <div id="loading-container"></div>
+
+    <!-- Scripts -->
+    <script src="/js/common.js"></script>
+    <script src="/js/subtask.js"></script>
+</body>
+</html>

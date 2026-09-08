@@ -106,6 +106,16 @@ function renderTable(tasks) {
                     <a href="javascript:void(0)" onclick="openTaskModal(${task.id})" style="font-weight: 600; color: #1F2937; text-decoration: none;">
                         ${task.title}
                     </a>
+                    ${task.status === 'BLOCKED' && task.blockedReason ? `
+                        <div style="font-size: 11px; color: #DC2626; margin-top: 3px;">
+                            <i class="fa-solid fa-triangle-exclamation"></i> <strong>Nghẽn:</strong> ${task.blockedReason}
+                        </div>
+                    ` : ''}
+                    ${task.proofUrl ? `
+                        <div style="font-size: 11px; color: #2563EB; margin-top: 3px;">
+                            <i class="fa-solid fa-link"></i> <a href="${task.proofUrl}" target="_blank" style="color: #2563EB; text-decoration: underline;">Bằng chứng nộp</a>
+                        </div>
+                    ` : ''}
                 </td>
                 <td style="color: #4B5563;" title="${task.project || ''}">${task.project || '---'}</td>
                 <td style="color: #4B5563;" title="${task.department || ''}">${task.department || '---'}</td>
@@ -282,6 +292,24 @@ window.openTaskModal = function(taskId = null) {
                 <input type="date" id="m-due" value="${task?.dueDate || ''}" required
                     style="width: 100%; height: 38px; padding: 0 12px; border: 1px solid #D1D5DB; border-radius: 6px; font-size: 13px; color: #1F2937; background: #FFFFFF; box-sizing: border-box; outline: none;">
             </div>
+
+            <!-- Row 5: Blocker Reason (Conditionally shown if BLOCKED) -->
+            <div id="m-blocker-container" style="display: ${task?.status === 'BLOCKED' ? 'flex' : 'none'}; flex-direction: column; gap: 6px;">
+                <label style="font-size: 13px; font-weight: 600; color: #DC2626;">
+                    Nguyên nhân bị nghẽn (Blocker Reason) <span style="color: #EF4444;">*</span>
+                </label>
+                <input type="text" id="m-blocker" value="${task?.blockedReason || ''}" placeholder="Nhập lý do khiến task bị nghẽn..."
+                    style="width: 100%; height: 38px; padding: 0 12px; border: 1px solid #FCA5A5; border-radius: 6px; font-size: 13px; color: #991B1B; background: #FEF2F2; box-sizing: border-box; outline: none;">
+            </div>
+
+            <!-- Row 6: Proof URL (Conditionally shown if IN_REVIEW or DONE) -->
+            <div id="m-proof-container" style="display: ${(task?.status === 'IN_REVIEW' || task?.status === 'DONE') ? 'flex' : 'none'}; flex-direction: column; gap: 6px;">
+                <label style="font-size: 13px; font-weight: 600; color: #2563EB;">
+                    Liên kết bằng chứng hoàn thành (GitHub PR, Figma, Demo)
+                </label>
+                <input type="url" id="m-proof" value="${task?.proofUrl || ''}" placeholder="https://github.com/... hoặc https://figma.com/..."
+                    style="width: 100%; height: 38px; padding: 0 12px; border: 1px solid #93C5FD; border-radius: 6px; font-size: 13px; color: #1E40AF; background: #EFF6FF; box-sizing: border-box; outline: none;">
+            </div>
         </form>
     `;
 
@@ -289,10 +317,23 @@ window.openTaskModal = function(taskId = null) {
         openModal(modalTitle, formHtml, () => {
             const title = document.getElementById('m-title').value.trim();
             const dueDate = document.getElementById('m-due').value;
+            const status = document.getElementById('m-status').value;
+            const blockerReason = document.getElementById('m-blocker').value.trim();
+            const proofUrl = document.getElementById('m-proof').value.trim();
 
             // Form Validation Gate
             if (!title || !dueDate) {
                 alert('Vui lòng nhập đầy đủ tên công việc và hạn chót!');
+                return;
+            }
+
+            if (status === 'BLOCKED' && !blockerReason) {
+                alert('Khi chọn trạng thái BLOCKED, bạn bắt buộc phải nhập nguyên nhân bị nghẽn!');
+                return;
+            }
+
+            if (status === 'IN_REVIEW' && proofUrl && !proofUrl.startsWith('http://') && !proofUrl.startsWith('https://')) {
+                alert('URL bằng chứng phải bắt đầu bằng http:// hoặc https://');
                 return;
             }
 
@@ -309,9 +350,13 @@ window.openTaskModal = function(taskId = null) {
                         department: document.getElementById('m-dept').value,
                         assignee: document.getElementById('m-assignee').value,
                         priority: document.getElementById('m-priority').value,
-                        status: document.getElementById('m-status').value,
+                        status,
                         estHours: Number(document.getElementById('m-est').value) || 0,
-                        dueDate
+                        dueDate,
+                        blockedReason: status === 'BLOCKED' ? blockerReason : '',
+                        proofUrl: proofUrl || allTasks[idx].proofUrl || '',
+                        dodDone: status === 'DONE' ? (allTasks[idx].dodTotal || 4) : allTasks[idx].dodDone,
+                        reviewStatus: status === 'DONE' ? 'APPROVED' : (status === 'IN_REVIEW' ? 'PENDING' : allTasks[idx].reviewStatus)
                     };
                 }
             } else {
@@ -325,16 +370,36 @@ window.openTaskModal = function(taskId = null) {
                     department: document.getElementById('m-dept').value,
                     assignee: document.getElementById('m-assignee').value,
                     priority: document.getElementById('m-priority').value,
-                    status: document.getElementById('m-status').value,
+                    status,
                     estHours: Number(document.getElementById('m-est').value) || 0,
-                    dueDate
+                    dueDate,
+                    blockedReason: status === 'BLOCKED' ? blockerReason : '',
+                    proofUrl: proofUrl || '',
+                    dodTotal: 4,
+                    dodDone: status === 'DONE' ? 4 : 0,
+                    reviewStatus: status === 'DONE' ? 'APPROVED' : (status === 'IN_REVIEW' ? 'PENDING' : null)
                 });
             }
 
             saveTasks(allTasks);
             loadAndRenderTasks();
             closeModal();
+            if (window.showToast) window.showToast('Đã lưu thông tin công việc thành công!', 'success');
         });
+
+        // Dynamic toggle of Blocker & Proof containers based on status selection
+        setTimeout(() => {
+            const statusSelect = document.getElementById('m-status');
+            const blockerBox = document.getElementById('m-blocker-container');
+            const proofBox = document.getElementById('m-proof-container');
+
+            if (statusSelect) {
+                statusSelect.addEventListener('change', function() {
+                    if (blockerBox) blockerBox.style.display = this.value === 'BLOCKED' ? 'flex' : 'none';
+                    if (proofBox) proofBox.style.display = (this.value === 'IN_REVIEW' || this.value === 'DONE') ? 'flex' : 'none';
+                });
+            }
+        }, 100);
     }
 };
 

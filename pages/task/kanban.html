@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng Kanban Công việc - Work Management</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Hệ thống -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/kanban.css">
+</head>
+<body data-breadcrumb-parent="Quản lý Công việc" data-breadcrumb-current="Bảng Kanban">
+    <div class="app-container">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Header Container -->
+            <div id="header-container"></div>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <!-- Breadcrumb -->
+                <div class="breadcrumb" style="margin-bottom: 14px;">
+                    <a href="/index.html">Dashboard</a>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <span>Quản lý Công việc</span>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <span>Bảng Kanban</span>
+                </div>
+
+                <div class="kanban-page">
+                    <!-- Toolbar & Filters -->
+                    <div class="kanban-toolbar">
+                        <div class="kanban-toolbar-left">
+                            <div class="kanban-search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="kanban-search" placeholder="Tìm kiếm mã hoặc tên task...">
+                            </div>
+
+                            <select id="kanban-filter-project" class="kanban-select">
+                                <option value="ALL">Tất cả dự án</option>
+                            </select>
+
+                            <select id="kanban-filter-priority" class="kanban-select">
+                                <option value="ALL">Độ ưu tiên (Tất cả)</option>
+                                <option value="P1">P1 - Khẩn cấp</option>
+                                <option value="P2">P2 - Ưu tiên cao</option>
+                                <option value="P3">P3 - Bình thường</option>
+                                <option value="P4">P4 - Thấp</option>
+                            </select>
+
+                            <select id="kanban-filter-assignee" class="kanban-select">
+                                <option value="ALL">Tất cả nhân sự</option>
+                            </select>
+                        </div>
+
+                        <div class="kanban-toolbar-right">
+                            <button id="btn-add-kanban-task" class="btn btn-primary" style="display: flex; align-items: center; gap: 6px; padding: 7px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; border: none; cursor: pointer;">
+                                <i class="fa-solid fa-plus"></i> Tạo Task mới
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 5 Columns Kanban Board -->
+                    <div class="kanban-board">
+                        <!-- Column 1: TO_DO -->
+                        <div class="kanban-col" data-status="TO_DO">
+                            <div class="kanban-col-header">
+                                <div class="col-title-wrap">
+                                    <span class="col-pill pill-todo"></span>
+                                    <span>CẦN LÀM (TO DO)</span>
+                                </div>
+                                <span class="col-count" id="count-todo">0</span>
+                            </div>
+                            <div class="kanban-cards-container" id="col-cards-todo"></div>
+                        </div>
+
+                        <!-- Column 2: IN_PROGRESS -->
+                        <div class="kanban-col" data-status="IN_PROGRESS">
+                            <div class="kanban-col-header">
+                                <div class="col-title-wrap">
+                                    <span class="col-pill pill-inprogress"></span>
+                                    <span>ĐANG LÀM (IN PROGRESS)</span>
+                                </div>
+                                <span class="col-count" id="count-inprogress">0</span>
+                            </div>
+                            <div class="kanban-cards-container" id="col-cards-inprogress"></div>
+                        </div>
+
+                        <!-- Column 3: BLOCKED -->
+                        <div class="kanban-col" data-status="BLOCKED">
+                            <div class="kanban-col-header">
+                                <div class="col-title-wrap">
+                                    <span class="col-pill pill-blocked"></span>
+                                    <span>BỊ NGHẼN (BLOCKED)</span>
+                                </div>
+                                <span class="col-count" id="count-blocked">0</span>
+                            </div>
+                            <div class="kanban-cards-container" id="col-cards-blocked"></div>
+                        </div>
+
+                        <!-- Column 4: IN_REVIEW -->
+                        <div class="kanban-col" data-status="IN_REVIEW">
+                            <div class="kanban-col-header">
+                                <div class="col-title-wrap">
+                                    <span class="col-pill pill-inreview"></span>
+                                    <span>CHỜ DUYỆT (IN REVIEW)</span>
+                                </div>
+                                <span class="col-count" id="count-inreview">0</span>
+                            </div>
+                            <div class="kanban-cards-container" id="col-cards-inreview"></div>
+                        </div>
+
+                        <!-- Column 5: DONE -->
+                        <div class="kanban-col" data-status="DONE">
+                            <div class="kanban-col-header">
+                                <div class="col-title-wrap">
+                                    <span class="col-pill pill-done"></span>
+                                    <span>HOÀN THÀNH (DONE)</span>
+                                </div>
+                                <span class="col-count" id="count-done">0</span>
+                            </div>
+                            <div class="kanban-cards-container" id="col-cards-done"></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL TẠO TASK MỚI -->
+    <div id="modal-create-task" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 9999;">
+        <div style="background: #ffffff; width: 100%; max-width: 540px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow: hidden; display: flex; flex-direction: column;">
+            <div style="padding: 16px 20px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #262626;">Tạo Công việc mới</h3>
+                <button id="btn-close-task-modal" style="background: none; border: none; font-size: 16px; cursor: pointer; color: #8c8c8c;">&times;</button>
+            </div>
+            
+            <form id="form-create-task" style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+                <div>
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Tiêu đề công việc <span style="color: #ff4d4f;">*</span></label>
+                    <input type="text" id="new-task-title" required class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;" placeholder="Nhập tóm tắt công việc...">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Dự án</label>
+                        <select id="new-task-project" class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;">
+                            <option value="Hệ thống ETRMS">Hệ thống ETRMS</option>
+                            <option value="Triển khai CRM">Triển khai CRM</option>
+                            <option value="Hệ thống Nội bộ">Hệ thống Nội bộ</option>
+                            <option value="Ứng dụng Mobile">Ứng dụng Mobile</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Người thực hiện</label>
+                        <select id="new-task-assignee" class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;">
+                            <option value="Trần Văn Minh">Trần Văn Minh (Dev)</option>
+                            <option value="Lê Gia Bách">Lê Gia Bách (Head)</option>
+                            <option value="Nguyễn Tuấn Bùi">Nguyễn Tuấn Bùi (Team Lead)</option>
+                            <option value="Hoàng Nam">Hoàng Nam (QA)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Độ ưu tiên</label>
+                        <select id="new-task-priority" class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;">
+                            <option value="P1">P1 - Khẩn cấp</option>
+                            <option value="P2" selected>P2 - Ưu tiên cao</option>
+                            <option value="P3">P3 - Bình thường</option>
+                            <option value="P4">P4 - Thấp</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Cột ban đầu</label>
+                        <select id="new-task-status" class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;">
+                            <option value="TO_DO">Cần làm (TO_DO)</option>
+                            <option value="IN_PROGRESS">Đang làm (IN_PROGRESS)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Ước tính (Giờ)</label>
+                        <input type="number" id="new-task-hours" class="form-control" value="8" min="1" max="100" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Hạn chót (Due Date)</label>
+                        <input type="date" id="new-task-due" class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #d9d9d9;">
+                    </div>
+                </div>
+
+                <div style="padding-top: 10px; border-top: 1px solid #f0f0f0; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" id="btn-cancel-task-modal" style="padding: 7px 16px; border-radius: 6px; border: 1px solid #d9d9d9; background: #fff; cursor: pointer;">Hủy</button>
+                    <button type="submit" class="btn btn-primary" style="padding: 7px 20px; border-radius: 6px; border: none; background: #1890ff; color: #fff; font-weight: 600; cursor: pointer;">Lưu Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modals & Containers dùng chung -->
+    <div id="modal-container"></div>
+    <div id="loading-container"></div>
+
+    <!-- Scripts -->
+    <script src="/js/common.js"></script>
+    <script src="/js/kanban.js"></script>
+</body>
+</html>

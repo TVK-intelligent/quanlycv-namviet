@@ -60,6 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Áp dụng theme giao diện (Light/Dark Mode) đã lưu từ cài đặt
     applySavedTheme();
 
+    // Tự động quét hạn chót toàn hệ thống và gắn cờ Quá hạn (Overdue)
+    scanAndFlagOverdueTasks();
+
     // 2. Component Loader
     async function loadComponent(elementId, filePath) {
         const element = document.getElementById(elementId);
@@ -888,6 +891,35 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
+
+    // 9. Bộ quét hạn chót và tự động gắn cờ Quá hạn (Realtime Overdue Scanner)
+    function scanAndFlagOverdueTasks() {
+        try {
+            const raw = localStorage.getItem('etrms_tasks');
+            if (!raw) return;
+            const tasks = JSON.parse(raw);
+            if (!Array.isArray(tasks) || tasks.length === 0) return;
+
+            const todayStr = new Date().toISOString().split('T')[0];
+            let hasChange = false;
+
+            tasks.forEach(t => {
+                const wasOverdue = !!t.isOverdue;
+                const shouldBeOverdue = Boolean(t.dueDate && t.dueDate < todayStr && t.status !== 'DONE');
+                if (wasOverdue !== shouldBeOverdue) {
+                    t.isOverdue = shouldBeOverdue;
+                    hasChange = true;
+                }
+            });
+
+            if (hasChange) {
+                localStorage.setItem('etrms_tasks', JSON.stringify(tasks));
+            }
+        } catch(e) {
+            console.warn('[common] Lỗi quét overdue tasks:', e);
+        }
+    }
+    window.scanAndFlagOverdueTasks = scanAndFlagOverdueTasks;
 
     // 8. Load các component layout chung
     Promise.all([

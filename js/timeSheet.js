@@ -1,452 +1,577 @@
-const TIMESHEET_KEY = "etrms_timesheet_data";
-const SUBMISSION_KEY = "etrms_timesheet_submission";
-const TARGET_HOURS = 40;
-
-let currentWeek = getMonday(new Date());
-
-const timesheetBody = document.getElementById("timesheet-body");
-
-const emptyTimesheet = document.getElementById("empty-timesheet");
-
-const weekRange = document.getElementById("week-range");
-
-const weekNumber = document.getElementById("week-number");
-
-const totalHours = document.getElementById("total-hours");
-
-const missingHours = document.getElementById("missing-hours");
-
-const modal = document.getElementById("timesheet-modal");
-
-const form = document.getElementById("timesheet-form");
-
-const editId = document.getElementById("edit-id");
-
-const taskName = document.getElementById("task-name");
-
-const workDate = document.getElementById("work-date");
-
-const workHours = document.getElementById("work-hours");
-
-const workDescription = document.getElementById("work-description");
-
-const formError = document.getElementById("form-error");
-
-const modalTitle = document.getElementById("modal-title");
-
-function getMonday(date) {
-  const result = new Date(date);
-
-  result.setHours(0, 0, 0, 0);
-
-  const day = result.getDay();
-
-  result.setDate(result.getDate() - (day === 0 ? 6 : day - 1));
-
-  return result;
-}
-
-function addDays(date, days) {
-  const result = new Date(date);
-
-  result.setDate(result.getDate() + days);
-
-  return result;
-}
-
-function formatDateISO(date) {
-  return date.toISOString().slice(0, 10);
-}
-
-function formatVietnameseDate(date) {
-  return date.toLocaleDateString("vi-VN", {
-    weekday: "long",
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-}
-
-function getWeekDays() {
-  return [0, 1, 2, 3, 4].map((index) => addDays(currentWeek, index));
-}
-
-function seedData() {
-  const weekDays = getWeekDays();
-
-  return [
-    {
-      id: Date.now() + 1,
-      date: formatDateISO(weekDays[0]),
-      task: "PRJ-042: Chuyển đổi cơ sở dữ liệu",
-      hours: 8,
-      description: "Thực hiện chuyển đổi và kiểm tra dữ liệu",
-    },
-    {
-      id: Date.now() + 2,
-      date: formatDateISO(weekDays[1]),
-      task: "PRJ-045: Thiết kế lại giao diện",
-      hours: 8,
-      description: "Cập nhật giao diện trang quản lý",
-    },
-    {
-      id: Date.now() + 3,
-      date: formatDateISO(weekDays[3]),
-      task: "INT-001: Họp nội bộ",
-      hours: 6,
-      description: "Họp nhóm và trao đổi tiến độ dự án",
-    },
-  ];
-}
-
-function getData() {
-  const storedData = localStorage.getItem(TIMESHEET_KEY);
-
-  if (!storedData) {
-    const initialData = seedData();
-
-    saveData(initialData);
-
-    return initialData;
-  }
-
-  return JSON.parse(storedData);
-}
-
-function saveData(data) {
-  localStorage.setItem(TIMESHEET_KEY, JSON.stringify(data));
-}
-
-function updateWeekInformation() {
-  const weekEnd = addDays(currentWeek, 6);
-
-  weekRange.textContent =
-    `Tuần từ ${currentWeek.toLocaleDateString("vi-VN")} - ` +
-    `${weekEnd.toLocaleDateString("vi-VN")}`;
-
-  weekNumber.textContent = `Tuần ${getWeekOfYear(currentWeek)}`;
-}
-
-function getWeekOfYear(date) {
-  const firstDay = new Date(date.getFullYear(), 0, 1);
-
-  const days = Math.floor((date - firstDay) / 86400000);
-
-  return Math.ceil((days + firstDay.getDay() + 1) / 7);
-}
-
-function renderTimesheet() {
-  const data = getData();
-
-  const weekDays = getWeekDays();
-
-  const weekDates = weekDays.map(formatDateISO);
-
-  const weekEntries = data.filter((entry) => weekDates.includes(entry.date));
-
-  const total = weekEntries.reduce(
-    (sum, entry) => sum + Number(entry.hours),
-    0,
-  );
-
-  const missing = Math.max(0, TARGET_HOURS - total);
-
-  updateWeekInformation();
-
-  totalHours.textContent = `${total.toFixed(1)}h`;
-
-  missingHours.textContent = `${missing.toFixed(1)}h`;
-
-  renderRows(weekEntries);
-
-  updateDateFilter(weekDays);
-}
-
-function renderRows(entries) {
-  const searchText = document
-    .getElementById("timesheet-search")
-    .value.toLowerCase();
-
-  const selectedDate = document.getElementById("timesheet-date-filter").value;
-
-  const filteredEntries = entries.filter((entry) => {
-    const text = `${entry.task} ${entry.description}`.toLowerCase();
-
-    const matchSearch = text.includes(searchText);
-
-    const matchDate = selectedDate === "all" || entry.date === selectedDate;
-
-    return matchSearch && matchDate;
-  });
-
-  timesheetBody.innerHTML = "";
-
-  if (filteredEntries.length === 0) {
-    emptyTimesheet.style.display = "block";
-    return;
-  }
-
-  emptyTimesheet.style.display = "none";
-
-  filteredEntries.forEach((entry) => {
-    const row = document.createElement("tr");
-
-    row.innerHTML = `
-      <td>
-        ${new Date(entry.date + "T00:00:00").toLocaleDateString("vi-VN")}
-      </td>
-
-      <td>
-        <strong>${entry.task}</strong>
-      </td>
-
-      <td>
-        ${entry.description || "-"}
-      </td>
-
-      <td>
-        ${Number(entry.hours).toFixed(1)} giờ
-      </td>
-
-      <td>
-        <div class="action-buttons">
-
-          <button
-            class="btn-action"
-            onclick="editEntry('${entry.id}')"
-            title="Chỉnh sửa"
-          >
-            <i class="fa-solid fa-pen"></i>
-          </button>
-
-          <button
-            class="btn-action btn-delete"
-            onclick="deleteEntry('${entry.id}')"
-            title="Xóa"
-          >
-            <i class="fa-solid fa-trash"></i>
-          </button>
-
-        </div>
-      </td>
-    `;
-
-    timesheetBody.appendChild(row);
-  });
-}
-
-function updateDateFilter(days) {
-  const select = document.getElementById("timesheet-date-filter");
-
-  const currentValue = select.value;
-
-  select.innerHTML = `<option value="all">Tất cả ngày</option>`;
-
-  days.forEach((day) => {
-    const option = document.createElement("option");
-
-    option.value = formatDateISO(day);
-
-    option.textContent = formatVietnameseDate(day);
-
-    select.appendChild(option);
-  });
-
-  if ([...select.options].some((option) => option.value === currentValue)) {
-    select.value = currentValue;
-  }
-}
-
-function openModal(date = "") {
-  modal.classList.add("show");
-
-  modalTitle.textContent = "Thêm thời gian làm việc";
-
-  editId.value = "";
-
-  form.reset();
-
-  workDate.value = date || formatDateISO(currentWeek);
-
-  formError.classList.remove("show");
-}
-
-function closeModal() {
-  modal.classList.remove("show");
-
-  form.reset();
-
-  editId.value = "";
-
-  formError.classList.remove("show");
-}
-
-function editEntry(id) {
-  const entry = getData().find((item) => String(item.id) === String(id));
-
-  if (!entry) {
-    return;
-  }
-
-  modal.classList.add("show");
-
-  modalTitle.textContent = "Chỉnh sửa thời gian làm việc";
-
-  editId.value = entry.id;
-
-  taskName.value = entry.task;
-
-  workDate.value = entry.date;
-
-  workHours.value = entry.hours;
-
-  workDescription.value = entry.description || "";
-
-  formError.classList.remove("show");
-}
-
-function deleteEntry(id) {
-  const confirmDelete = confirm(
-    "Bạn có chắc chắn muốn xóa thời gian làm việc này không?",
-  );
-
-  if (!confirmDelete) {
-    return;
-  }
-
-  const newData = getData().filter((entry) => String(entry.id) !== String(id));
-
-  saveData(newData);
-
-  renderTimesheet();
-
-  showToast("Đã xóa thời gian làm việc.");
-}
-
-form.addEventListener("submit", function (event) {
-  event.preventDefault();
-
-  const task = taskName.value;
-
-  const date = workDate.value;
-
-  const hours = Number(workHours.value);
-
-  const description = workDescription.value.trim();
-
-  if (!task || !date || !hours || hours < 0.5 || hours > 16) {
-    formError.textContent =
-      "Vui lòng nhập đầy đủ thông tin. Số giờ phải từ 0.5 đến 16 giờ.";
-
-    formError.classList.add("show");
-
-    return;
-  }
-
-  const data = getData();
-
-  const id = editId.value;
-
-  const newEntry = {
-    id: id || Date.now(),
-    task,
-    date,
-    hours,
-    description,
-  };
-
-  if (id) {
-    const index = data.findIndex((entry) => String(entry.id) === String(id));
-
-    if (index !== -1) {
-      data[index] = newEntry;
+/**
+ * TIMESHEET WORKSPACE JAVASCRIPT (js/timeSheet.js)
+ * Enterprise Daily Work Logging & Weekly Submission Engine
+ */
+
+(function () {
+    'use strict';
+
+    const TIMESHEET_KEY = 'etrms_timesheet_data';
+    const SUBMISSION_KEY = 'etrms_timesheet_submissions';
+    const TARGET_HOURS = 40.0;
+
+    let currentWeekMonday = getMonday(new Date());
+
+    // 1. DATE UTILITIES
+    function getMonday(date) {
+        const d = new Date(date);
+        d.setHours(0, 0, 0, 0);
+        const day = d.getDay();
+        const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Thứ 2 là ngày bắt đầu tuần
+        return new Date(d.setDate(diff));
     }
-  } else {
-    data.push(newEntry);
-  }
 
-  saveData(data);
+    function addDays(date, days) {
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+    }
 
-  closeModal();
+    function formatDateISO(date) {
+        return date.toISOString().split('T')[0];
+    }
 
-  renderTimesheet();
+    function formatVietnameseDate(date) {
+        return date.toLocaleDateString('vi-VN', {
+            weekday: 'long',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    }
 
-  showToast(
-    id ? "Đã cập nhật thời gian làm việc." : "Đã thêm thời gian làm việc.",
-  );
-});
+    function getWeekNumber(date) {
+        const firstDay = new Date(date.getFullYear(), 0, 1);
+        const pastDays = (date - firstDay) / 86400000;
+        return Math.ceil((pastDays + firstDay.getDay() + 1) / 7);
+    }
 
-function showToast(message) {
-  const toast = document.getElementById("toast");
+    function getWeekKey(date) {
+        return `${date.getFullYear()}-W${getWeekNumber(date)}`;
+    }
 
-  toast.textContent = message;
+    function getWeekDays() {
+        return [0, 1, 2, 3, 4, 5, 6].map(offset => addDays(currentWeekMonday, offset));
+    }
 
-  toast.classList.add("show");
+    // 2. DATA LAYER & SEEDING
+    function getTasks() {
+        try {
+            return JSON.parse(localStorage.getItem('etrms_tasks')) || [];
+        } catch (e) {
+            return [];
+        }
+    }
 
-  clearTimeout(window.toastTimer);
+    function getTimesheetData() {
+        try {
+            const raw = localStorage.getItem(TIMESHEET_KEY);
+            if (!raw) {
+                const initial = seedInitialTimesheet();
+                saveTimesheetData(initial);
+                return initial;
+            }
+            return JSON.parse(raw) || [];
+        } catch (e) {
+            return [];
+        }
+    }
 
-  window.toastTimer = setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2500);
-}
+    function saveTimesheetData(data) {
+        try {
+            localStorage.setItem(TIMESHEET_KEY, JSON.stringify(data));
+        } catch (e) {
+            console.error('Lỗi lưu timesheet data:', e);
+        }
+    }
 
-/* Event */
+    function getSubmissions() {
+        try {
+            return JSON.parse(localStorage.getItem(SUBMISSION_KEY)) || {};
+        } catch (e) {
+            return {};
+        }
+    }
 
-document.getElementById("prev-week").addEventListener("click", function () {
-  currentWeek = addDays(currentWeek, -7);
+    function saveSubmissions(subs) {
+        try {
+            localStorage.setItem(SUBMISSION_KEY, JSON.stringify(subs));
+        } catch (e) {
+            console.error('Lỗi lưu submissions:', e);
+        }
+    }
 
-  renderTimesheet();
-});
+    function seedInitialTimesheet() {
+        const days = getWeekDays();
+        const tasks = getTasks();
+        const task1 = tasks[0] || { id: 101, code: 'TASK-101', title: 'Dev Backend API Xác thực', project: 'Triển khai CRM', assignee: 'Trần Văn Minh' };
+        const task2 = tasks[1] || { id: 102, code: 'TASK-102', title: 'Thiết kế Mockup UI Dashboard', project: 'Hệ thống ETRMS', assignee: 'Lê Gia Bách' };
 
-document.getElementById("next-week").addEventListener("click", function () {
-  currentWeek = addDays(currentWeek, 7);
+        return [
+            {
+                id: 1,
+                taskId: task1.id,
+                taskCode: task1.code || 'TASK-101',
+                taskTitle: task1.title,
+                project: task1.project || 'Triển khai CRM',
+                assignee: task1.assignee || 'Khải Trần Văn',
+                date: formatDateISO(days[0]), // Thứ 2
+                hours: 8,
+                description: 'Triển khai module xác thực OAuth2 và phân quyền JWT access token.'
+            },
+            {
+                id: 2,
+                taskId: task1.id,
+                taskCode: task1.code || 'TASK-101',
+                taskTitle: task1.title,
+                project: task1.project || 'Triển khai CRM',
+                assignee: task1.assignee || 'Khải Trần Văn',
+                date: formatDateISO(days[1]), // Thứ 3
+                hours: 8,
+                description: 'Viết unit test cho các endpoint /auth/login, /auth/refresh và fix bug CORS.'
+            },
+            {
+                id: 3,
+                taskId: task2.id,
+                taskCode: task2.code || 'TASK-102',
+                taskTitle: task2.title,
+                project: task2.project || 'Hệ thống ETRMS',
+                assignee: task2.assignee || 'Lê Gia Bách',
+                date: formatDateISO(days[2]), // Thứ 4
+                hours: 8,
+                description: 'Hoàn thiện layout chuẩn Kanban Board, tối ưu drag & drop trên mobile.'
+            },
+            {
+                id: 4,
+                taskId: task2.id,
+                taskCode: task2.code || 'TASK-102',
+                taskTitle: task2.title,
+                project: task2.project || 'Hệ thống ETRMS',
+                assignee: task2.assignee || 'Lê Gia Bách',
+                date: formatDateISO(days[3]), // Thứ 5
+                hours: 8.5,
+                description: 'Họp rà soát tiến độ với PM và kết nối API Timesheet.'
+            }
+        ];
+    }
 
-  renderTimesheet();
-});
+    // 3. RENDER FUNCTION
+    function renderTimesheet() {
+        const weekDays = getWeekDays();
+        const weekDates = weekDays.map(formatDateISO);
+        const weekSunday = weekDays[6];
 
-document
-  .getElementById("btn-open-modal")
-  .addEventListener("click", function () {
-    openModal();
-  });
+        // Cập nhật thông tin tiêu đề tuần
+        const weekRangeEl = document.getElementById('week-range');
+        const weekNumberEl = document.getElementById('week-number');
+        if (weekRangeEl) {
+            weekRangeEl.textContent = `Tuần từ ${currentWeekMonday.toLocaleDateString('vi-VN')} - ${weekSunday.toLocaleDateString('vi-VN')}`;
+        }
+        if (weekNumberEl) {
+            weekNumberEl.textContent = `Tuần ${getWeekNumber(currentWeekMonday)} / ${currentWeekMonday.getFullYear()}`;
+        }
 
-document.getElementById("close-modal").addEventListener("click", closeModal);
+        // Đọc dữ liệu tuần hiện tại
+        const allData = getTimesheetData();
+        const weekEntries = allData.filter(item => weekDates.includes(item.date));
 
-document.getElementById("cancel-modal").addEventListener("click", closeModal);
+        // Tính toán KPI
+        const totalHours = weekEntries.reduce((sum, item) => sum + (parseFloat(item.hours) || 0), 0);
+        const missing = TARGET_HOURS - totalHours;
 
-document.querySelector(".modal-overlay").addEventListener("click", closeModal);
+        const totalHoursEl = document.getElementById('total-hours');
+        const missingHoursEl = document.getElementById('missing-hours');
+        const missingLabelEl = document.getElementById('missing-label');
 
-document
-  .getElementById("timesheet-search")
-  .addEventListener("input", renderTimesheet);
+        if (totalHoursEl) totalHoursEl.textContent = `${totalHours.toFixed(1)}h`;
 
-document
-  .getElementById("timesheet-date-filter")
-  .addEventListener("change", renderTimesheet);
+        if (missingHoursEl) {
+            if (missing > 0) {
+                missingHoursEl.textContent = `${missing.toFixed(1)}h`;
+                missingHoursEl.style.color = '#d97706'; // amber
+                if (missingLabelEl) missingLabelEl.textContent = 'Cần log thêm để đủ chỉ tiêu 40h';
+            } else {
+                missingHoursEl.textContent = `+${Math.abs(missing).toFixed(1)}h`;
+                missingHoursEl.style.color = '#16a34a'; // green
+                if (missingLabelEl) missingLabelEl.textContent = 'Đã đạt và vượt chỉ tiêu tuần!';
+            }
+        }
 
-document
-  .getElementById("submit-timesheet")
-  .addEventListener("click", function () {
-    const weekDays = getWeekDays().map(formatDateISO);
+        // Trạng thái nộp tuần
+        const weekKey = getWeekKey(currentWeekMonday);
+        const submissions = getSubmissions();
+        const subStatusEl = document.getElementById('submission-status');
+        const subTimeEl = document.getElementById('submission-time');
 
-    const total = getData()
-      .filter((entry) => weekDays.includes(entry.date))
-      .reduce((sum, entry) => sum + Number(entry.hours), 0);
+        if (submissions[weekKey] && submissions[weekKey].status === 'SUBMITTED') {
+            if (subStatusEl) {
+                subStatusEl.textContent = 'Đã gửi duyệt';
+                subStatusEl.style.color = '#1677ff';
+            }
+            if (subTimeEl) subTimeEl.textContent = `Nộp lúc: ${submissions[weekKey].submittedAt}`;
+        } else {
+            if (subStatusEl) {
+                subStatusEl.textContent = 'Bản nháp';
+                subStatusEl.style.color = '#374151';
+            }
+            if (subTimeEl) subTimeEl.textContent = 'Chưa nộp phê duyệt';
+        }
 
-    localStorage.setItem(
-      SUBMISSION_KEY,
-      JSON.stringify({
-        weekStart: formatDateISO(currentWeek),
+        // Cập nhật bộ lọc ngày
+        updateDateFilterDropdown(weekDays);
 
-        totalHours: total,
+        // Cập nhật bộ lọc dự án
+        updateProjectFilterDropdown(allData);
 
-        status: "Chờ phê duyệt",
+        // Render danh sách dòng trong bảng
+        renderTableRows(weekEntries);
+    }
 
-        submittedAt: new Date().toISOString(),
-      }),
-    );
+    function updateDateFilterDropdown(weekDays) {
+        const select = document.getElementById('timesheet-date-filter');
+        if (!select) return;
 
-    showToast("Đã gửi bảng chấm công để phê duyệt.");
-  });
+        const curVal = select.value;
+        let html = '<option value="all">Tất cả ngày trong tuần</option>';
 
-renderTimesheet();
+        weekDays.forEach(day => {
+            const iso = formatDateISO(day);
+            const vnDate = formatVietnameseDate(day);
+            html += `<option value="${iso}">${vnDate}</option>`;
+        });
+
+        select.innerHTML = html;
+        if ([...select.options].some(o => o.value === curVal)) {
+            select.value = curVal;
+        }
+    }
+
+    function updateProjectFilterDropdown(entries) {
+        const select = document.getElementById('timesheet-project-filter');
+        if (!select) return;
+
+        const curVal = select.value;
+        const projects = Array.from(new Set(entries.map(e => e.project).filter(Boolean)));
+
+        let html = '<option value="all">Tất cả dự án</option>';
+        projects.forEach(p => {
+            html += `<option value="${p}">${p}</option>`;
+        });
+
+        select.innerHTML = html;
+        if (projects.includes(curVal)) {
+            select.value = curVal;
+        }
+    }
+
+    function renderTableRows(weekEntries) {
+        const tbody = document.getElementById('timesheet-body');
+        const emptyState = document.getElementById('empty-timesheet');
+        if (!tbody) return;
+
+        const searchInput = document.getElementById('timesheet-search');
+        const dateFilter = document.getElementById('timesheet-date-filter');
+        const projFilter = document.getElementById('timesheet-project-filter');
+
+        const kw = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        const selectedDate = dateFilter ? dateFilter.value : 'all';
+        const selectedProj = projFilter ? projFilter.value : 'all';
+
+        const filtered = weekEntries.filter(item => {
+            const matchKw = !kw ||
+                (item.taskTitle || '').toLowerCase().includes(kw) ||
+                (item.taskCode || '').toLowerCase().includes(kw) ||
+                (item.description || '').toLowerCase().includes(kw) ||
+                (item.project || '').toLowerCase().includes(kw);
+
+            const matchDate = selectedDate === 'all' || item.date === selectedDate;
+            const matchProj = selectedProj === 'all' || item.project === selectedProj;
+
+            return matchKw && matchDate && matchProj;
+        });
+
+        tbody.innerHTML = '';
+
+        if (filtered.length === 0) {
+            if (emptyState) emptyState.style.display = 'block';
+            return;
+        }
+
+        if (emptyState) emptyState.style.display = 'none';
+
+        // Sắp xếp theo ngày tăng dần
+        filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        filtered.forEach(item => {
+            const itemDate = new Date(item.date + 'T00:00:00');
+            const dateStr = itemDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const weekdayStr = itemDate.toLocaleDateString('vi-VN', { weekday: 'long' });
+
+            const avatarLetter = (item.assignee || 'U').trim().split(' ').pop().substring(0, 2).toUpperCase();
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    <div class="ts-date-cell">${dateStr}</div>
+                    <div class="ts-date-sub">${weekdayStr}</div>
+                </td>
+                <td>
+                    <div class="ts-task-cell">
+                        <span class="ts-task-code">#${item.taskCode || 'TASK-' + item.taskId}</span>
+                        <span class="ts-task-title">${escapeHtml(item.taskTitle || 'Công việc')}</span>
+                        <span class="ts-task-project"><i class="fa-solid fa-folder" style="margin-right: 4px;"></i>${escapeHtml(item.project || 'Chung')}</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="ts-user-badge">
+                        <div class="ts-avatar-circle">${avatarLetter}</div>
+                        <span>${escapeHtml(item.assignee || 'Khải Trần')}</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="ts-desc-cell">${escapeHtml(item.description || 'Không có mô tả')}</div>
+                </td>
+                <td style="text-align: center;">
+                    <span class="ts-hours-badge">${parseFloat(item.hours).toFixed(1)}h</span>
+                </td>
+                <td style="text-align: right; padding-right: 20px;">
+                    <div class="ts-actions" style="justify-content: flex-end;">
+                        <button class="btn-ts-action btn-ts-edit" onclick="window.editTimesheetEntry(${item.id})" title="Chỉnh sửa">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button class="btn-ts-action btn-ts-delete" onclick="window.deleteTimesheetEntry(${item.id})" title="Xóa">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+
+            tbody.appendChild(tr);
+        });
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    // 4. MODAL FORM: GHI NHẬN / SỬA THỜI GIAN
+    function openTimesheetModal(entryId = null) {
+        const isEdit = !!entryId;
+        const allData = getTimesheetData();
+        const entry = isEdit ? allData.find(e => e.id === entryId) : null;
+        const modalTitle = isEdit ? 'Chỉnh sửa Thời gian Làm việc' : 'Ghi nhận Thời gian Làm việc';
+
+        const tasks = getTasks();
+        const activeTasks = tasks.length > 0 ? tasks : [
+            { id: 101, code: 'TASK-101', title: 'Dev Backend API Xác thực', project: 'Triển khai CRM', assignee: 'Trần Văn Minh' },
+            { id: 102, code: 'TASK-102', title: 'Thiết kế Mockup UI Dashboard', project: 'Hệ thống ETRMS', assignee: 'Lê Gia Bách' },
+            { id: 103, code: 'TASK-103', title: 'Khảo sát DoR/DoD các phòng ban', project: 'Hệ thống Nội bộ', assignee: 'Nguyễn Tuấn Bùi' }
+        ];
+
+        let taskOptionsHtml = activeTasks.map(t => {
+            const isSelected = entry ? (entry.taskId === t.id || entry.taskTitle === t.title) : false;
+            return `
+                <option value="${t.id}" data-code="${t.code || 'TASK-' + t.id}" data-project="${t.project || ''}" data-assignee="${t.assignee || ''}" ${isSelected ? 'selected' : ''}>
+                    [${t.code || t.id}] ${t.title} (${t.project || 'Dự án'})
+                </option>
+            `;
+        }).join('');
+
+        const defaultDate = entry ? entry.date : formatDateISO(new Date());
+
+        const formHtml = `
+            <form id="ts-entry-form" style="display: flex; flex-direction: column; gap: 14px; text-align: left;">
+                <div>
+                    <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: #262626;">
+                        Công việc thực hiện <span style="color: #ff4d4f;">*</span>
+                    </label>
+                    <select id="ts-task-select" class="form-control" style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #d9d9d9; border-radius: 6px; font-size: 13px;">
+                        ${taskOptionsHtml}
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: #262626;">
+                            Ngày làm việc <span style="color: #ff4d4f;">*</span>
+                        </label>
+                        <input type="date" id="ts-date" value="${defaultDate}" required
+                            style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #d9d9d9; border-radius: 6px; font-size: 13px;" />
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: #262626;">
+                            Số giờ ghi nhận (Hours) <span style="color: #ff4d4f;">*</span>
+                        </label>
+                        <input type="number" id="ts-hours" value="${entry ? entry.hours : 8}" min="0.5" max="24" step="0.5" required
+                            style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #d9d9d9; border-radius: 6px; font-size: 13px;" />
+                    </div>
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: #262626;">
+                        Nội dung công việc chi tiết <span style="color: #ff4d4f;">*</span>
+                    </label>
+                    <textarea id="ts-desc" rows="3" placeholder="Mô tả cụ thể các module đã hoàn thành, lỗi đã fix, hoặc nội dung buổi họp..." required
+                        style="width: 100%; padding: 8px 10px; border: 1px solid #d9d9d9; border-radius: 6px; font-size: 13px; box-sizing: border-box; font-family: inherit;">${entry ? escapeHtml(entry.description) : ''}</textarea>
+                </div>
+            </form>
+        `;
+
+        if (typeof openModal === 'function') {
+            openModal(modalTitle, formHtml, function () {
+                const taskSelect = document.getElementById('ts-task-select');
+                const selectedTaskId = parseInt(taskSelect.value, 10);
+                const selectedOpt = taskSelect.options[taskSelect.selectedIndex];
+
+                const dateVal = document.getElementById('ts-date').value;
+                const hoursVal = parseFloat(document.getElementById('ts-hours').value);
+                const descVal = document.getElementById('ts-desc').value.trim();
+
+                if (!dateVal || isNaN(hoursVal) || hoursVal <= 0 || !descVal) {
+                    alert('Vui lòng điền đầy đủ ngày làm việc, số giờ hợp lệ (> 0) và mô tả công việc!');
+                    return;
+                }
+
+                const rawTitle = selectedOpt ? selectedOpt.text.split('] ')[1] || selectedOpt.text : '';
+                const taskTitle = rawTitle.split(' (')[0] || rawTitle;
+                const taskCode = selectedOpt ? selectedOpt.dataset.code : 'TASK-' + selectedTaskId;
+                const project = selectedOpt ? selectedOpt.dataset.project : 'Triển khai CRM';
+                const assignee = selectedOpt ? selectedOpt.dataset.assignee : 'Khải Trần Văn';
+
+                const data = getTimesheetData();
+
+                if (isEdit) {
+                    const idx = data.findIndex(e => e.id === entryId);
+                    if (idx !== -1) {
+                        data[idx] = {
+                            ...data[idx],
+                            taskId: selectedTaskId,
+                            taskCode,
+                            taskTitle,
+                            project,
+                            assignee: assignee || data[idx].assignee,
+                            date: dateVal,
+                            hours: hoursVal,
+                            description: descVal
+                        };
+                    }
+                } else {
+                    const nextId = data.length > 0 ? Math.max(...data.map(e => e.id)) + 1 : 1;
+                    data.push({
+                        id: nextId,
+                        taskId: selectedTaskId,
+                        taskCode,
+                        taskTitle,
+                        project,
+                        assignee: assignee || 'Khải Trần Văn',
+                        date: dateVal,
+                        hours: hoursVal,
+                        description: descVal
+                    });
+                }
+
+                saveTimesheetData(data);
+                if (typeof closeModal === 'function') closeModal();
+                renderTimesheet();
+
+                if (window.showToast) {
+                    window.showToast(isEdit ? 'Đã cập nhật nhật ký thời gian thành công!' : 'Đã ghi nhận thời gian làm việc thành công!', 'success');
+                } else {
+                    alert('Đã lưu thời gian làm việc thành công!');
+                }
+            });
+        } else {
+            alert('Không tìm thấy modal component. Vui lòng tải lại trang!');
+        }
+    }
+
+    // 5. GLOBAL ACTIONS
+    window.editTimesheetEntry = function (id) {
+        openTimesheetModal(id);
+    };
+
+    window.deleteTimesheetEntry = function (id) {
+        if (!confirm('Bạn có chắc chắn muốn xóa dòng nhật ký thời gian này?')) return;
+        let data = getTimesheetData();
+        data = data.filter(e => e.id !== id);
+        saveTimesheetData(data);
+        renderTimesheet();
+        if (window.showToast) window.showToast('Đã xóa dòng nhật ký thời gian thành công.', 'info');
+    };
+
+    // 6. EVENT BINDINGS
+    document.addEventListener('DOMContentLoaded', function () {
+        renderTimesheet();
+
+        // Nút mở modal thêm thời gian
+        const btnOpenModal = document.getElementById('btn-open-modal');
+        if (btnOpenModal) {
+            btnOpenModal.addEventListener('click', () => openTimesheetModal(null));
+        }
+
+        // Tuần trước
+        const btnPrev = document.getElementById('prev-week');
+        if (btnPrev) {
+            btnPrev.addEventListener('click', () => {
+                currentWeekMonday = addDays(currentWeekMonday, -7);
+                renderTimesheet();
+            });
+        }
+
+        // Tuần sau
+        const btnNext = document.getElementById('next-week');
+        if (btnNext) {
+            btnNext.addEventListener('click', () => {
+                currentWeekMonday = addDays(currentWeekMonday, 7);
+                renderTimesheet();
+            });
+        }
+
+        // Về tuần hiện tại
+        const btnToday = document.getElementById('btn-today');
+        if (btnToday) {
+            btnToday.addEventListener('click', () => {
+                currentWeekMonday = getMonday(new Date());
+                renderTimesheet();
+            });
+        }
+
+        // Filter events
+        const searchInput = document.getElementById('timesheet-search');
+        const dateFilter = document.getElementById('timesheet-date-filter');
+        const projFilter = document.getElementById('timesheet-project-filter');
+
+        if (searchInput) searchInput.addEventListener('input', () => renderTableRows(getTimesheetData().filter(i => getWeekDays().map(formatDateISO).includes(i.date))));
+        if (dateFilter) dateFilter.addEventListener('change', () => renderTableRows(getTimesheetData().filter(i => getWeekDays().map(formatDateISO).includes(i.date))));
+        if (projFilter) projFilter.addEventListener('change', () => renderTableRows(getTimesheetData().filter(i => getWeekDays().map(formatDateISO).includes(i.date))));
+
+        // Gửi duyệt tuần
+        const btnSubmit = document.getElementById('btn-submit-timesheet');
+        if (btnSubmit) {
+            btnSubmit.addEventListener('click', () => {
+                const weekKey = getWeekKey(currentWeekMonday);
+                const confirmMsg = `Bạn có chắc chắn muốn gửi duyệt Bảng chấm công cho ${document.getElementById('week-number')?.textContent || 'tuần này'}?\n\nTổng thời gian: ${document.getElementById('total-hours')?.textContent || '0h'}`;
+                if (!confirm(confirmMsg)) return;
+
+                const subs = getSubmissions();
+                subs[weekKey] = {
+                    status: 'SUBMITTED',
+                    submittedAt: new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
+                };
+                saveSubmissions(subs);
+                renderTimesheet();
+
+                if (window.showToast) {
+                    window.showToast('Đã gửi bảng chấm công tuần này lên cấp Quản lý phê duyệt!', 'success');
+                } else {
+                    alert('Đã gửi bảng chấm công tuần này lên cấp Quản lý phê duyệt!');
+                }
+            });
+        }
+    });
+})();
