@@ -13,61 +13,81 @@
     
     <!-- File CSS gốc của dự án -->
     <link rel="stylesheet" href="../../css/style.css">
+    <!-- Bắt buộc phải có file layout.css để Sidebar và Header vào đúng vị trí -->
+    <link rel="stylesheet" href="../../css/layout.css">
 </head>
 <body class="bg-surface-bright font-body text-on-surface">
-    <!-- NỘI DUNG CHÍNH (Main Content) -->
-    <div class="flex flex-col w-full gap-8 p-6">
+    
+    <!-- KHUNG CHUẨN CỦA DỰ ÁN (App Container) -->
+    <div class="app-container">
         
-        <!-- Main List Card -->
-        <div class="bg-surface-container-lowest rounded-xl shadow-md p-6 flex flex-col gap-6">
-            <!-- Header -->
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <h2 class="text-2xl font-semibold text-on-surface">Danh sách Nhân viên</h2>
-                <button id="btn-add-emp" class="bg-primary text-white rounded-lg font-semibold px-4 py-2 flex items-center gap-1 hover:opacity-90 transition-colors shadow-sm">
-                    <span class="material-symbols-outlined text-[18px]">add</span>
-                    Thêm nhân viên
-                </button>
-            </div>
+        <!-- 1. Vùng chứa Sidebar -->
+        <div id="sidebar-container"></div>
 
-            <!-- Toolbar (Task 55, 56) -->
-            <div class="flex flex-col sm:flex-row gap-4 bg-surface-bright p-2 rounded-lg">
-                <div class="flex-1 relative">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
-                    <input type="text" id="search-emp" class="w-full bg-surface-container-lowest pl-10 pr-4 py-2 rounded-lg text-on-surface outline-none shadow-sm transition-all" placeholder="Tìm kiếm nhân viên, email...">
-                </div>
-                <div class="flex gap-4">
-                    <select id="filter-dept" class="bg-surface-container-lowest px-4 py-2 rounded-lg text-on-surface outline-none shadow-sm cursor-pointer min-w-[150px]">
-                        <option value="ALL">Tất cả phòng ban</option>
-                        <option value="DEPT_DEV">Phòng Phát triển</option>
-                        <option value="DEPT_QA">Phòng Kiểm thử</option>
-                    </select>
-                </div>
-            </div>
+        <div class="main-wrapper">
+            <!-- 2. Vùng chứa Header -->
+            <div id="header-container"></div>
 
-            <!-- Data Table (Task 50) -->
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-gray-100 text-on-surface-variant text-xs font-semibold uppercase tracking-wider">
-                            <th class="p-4 rounded-tl-lg">Nhân viên</th>
-                            <th class="p-4">Email</th>
-                            <th class="p-4">Phòng ban</th>
-                            <th class="p-4">Vai trò</th>
-                            <th class="p-4">Sức tải (WSI)</th>
-                            <th class="p-4 text-right rounded-tr-lg">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <!-- LƯU Ý: Thẻ tbody đã được làm trống và gắn ID để JS đổ dữ liệu vào -->
-                    <tbody id="employee-table-body" class="text-sm text-on-surface">
-                        <!-- JS Render Here -->
-                    </tbody>
-                </table>
-            </div>
+            <!-- 3. NỘI DUNG CHÍNH (Main Content) -->
+            <main class="main-content">
+                <div class="flex flex-col w-full gap-8 p-6">
+                    
+                    <!-- Main List Card -->
+                    <div class="bg-surface-container-lowest rounded-xl shadow-md p-6 flex flex-col gap-6">
+                        <!-- Header -->
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <h2 class="text-2xl font-semibold text-on-surface">Danh sách Nhân viên</h2>
+                            <button id="btn-add-emp" class="bg-primary text-white rounded-lg font-semibold px-4 py-2 flex items-center gap-1 hover:opacity-90 transition-colors shadow-sm">
+                                <span class="material-symbols-outlined text-[18px]">add</span>
+                                Thêm nhân viên
+                            </button>
+                        </div>
+
+                        <!-- Toolbar (Task 55, 56) -->
+                        <div class="flex flex-col sm:flex-row gap-4 bg-surface-bright p-2 rounded-lg">
+                            <div class="flex-1 relative">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+                                <input type="text" id="search-emp" class="w-full bg-surface-container-lowest pl-10 pr-4 py-2 rounded-lg text-on-surface outline-none shadow-sm transition-all" placeholder="Tìm kiếm nhân viên, email...">
+                            </div>
+                            <div class="flex gap-4">
+                                <select id="filter-dept" class="bg-surface-container-lowest px-4 py-2 rounded-lg text-on-surface outline-none shadow-sm cursor-pointer min-w-[150px]">
+                                    <option value="ALL">Tất cả phòng ban</option>
+                                    <option value="DEPT_DEV">Phòng Phát triển</option>
+                                    <option value="DEPT_QA">Phòng Kiểm thử</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Data Table (Task 50) -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-gray-100 text-on-surface-variant text-xs font-semibold uppercase tracking-wider">
+                                        <th class="p-4 rounded-tl-lg">Nhân viên</th>
+                                        <th class="p-4">Email</th>
+                                        <th class="p-4">Phòng ban</th>
+                                        <th class="p-4">Vai trò</th>
+                                        <th class="p-4">Sức tải (WSI)</th>
+                                        <th class="p-4 text-right rounded-tr-lg">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <!-- LƯU Ý: Thẻ tbody đã được làm trống và gắn ID để JS đổ dữ liệu vào -->
+                                <tbody id="employee-table-body" class="text-sm text-on-surface">
+                                    <!-- JS Render Here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- 4. Vùng chứa Footer (Tùy chọn) -->
+            <div id="footer-container"></div>
         </div>
     </div>
 
     <!-- BẮT ĐẦU: MODAL THÊM/SỬA NHÂN VIÊN (Task 51, 52) -->
-    <!-- Mặc định class 'hidden' để ẩn modal đi -->
+    <!-- Mặc định class 'hidden' để ẩn modal đi, đặt ngoài cùng để overlay phủ kín toàn màn hình -->
     <div id="employee-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity">
         <div class="bg-surface-container-lowest rounded-xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col">
             
@@ -129,6 +149,10 @@
     </div>
     <!-- KẾT THÚC MODAL -->
 
+    <!-- CÁC FILE SCRIPT -->
+    <!-- 5. Bắt buộc phải có common.js gọi TRƯỚC để tự động render Sidebar/Header -->
+    <script src="../../js/common.js"></script>
+    
     <!-- Nhúng file JS người điều phối -->
     <script src="../../js/employee.js"></script>
 </body>

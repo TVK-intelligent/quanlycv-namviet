@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETRMS - Phân quyền</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/layout.css">
+    <link rel="stylesheet" href="../../css/rbac.css">
+</head>
+<body>
+    <!-- KHUNG CHUẨN CỦA DỰ ÁN -->
+    <div class="app-container">
+        <!-- Vùng chứa Sidebar -->
+        <div id="sidebar-container"></div>
+
+        <div class="main-wrapper">
+            <!-- Vùng chứa Header -->
+            <div id="header-container"></div>
+
+            <main class="main-content">
+                <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <div>
+                        <div class="breadcrumb" style="color: var(--text-muted); font-size: 13px; margin-bottom: 8px;">
+                            <span>Quản lý Nhân sự</span> > <strong style="color: var(--text-main);">Phân quyền</strong>
+                        </div>
+                        <h1 class="page-title" style="margin: 0;">Quản lý Phân quyền ma trận</h1>
+                    </div>
+                    <div class="action-buttons" style="display: flex; gap: 12px;">
+                        <button id="btn-reset" class="btn btn-secondary">Khôi phục mặc định</button>
+                        <button id="btn-save" class="btn btn-primary">Lưu thay đổi</button>
+                    </div>
+                </div>
+
+                <div class="card table-card">
+                    <div class="table-wrapper">
+                        <table class="data-table rbac-matrix-table">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 250px;">Tính năng / Chức năng</th>
+                                    <th class="text-center">Quản trị viên (Admin)</th>
+                                    <th class="text-center">Trưởng phòng (Head)</th>
+                                    <th class="text-center">Quản lý dự án (PM)</th>
+                                    <th class="text-center">Nhân viên (Employee)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="group-row">
+                                    <td colspan="5">Quản lý Dự án & Tài nguyên</td>
+                                </tr>
+                                <tr>
+                                    <td>Tạo và sửa thông tin dự án</td>
+                                    <td class="text-center"><input type="checkbox" checked disabled title="Mặc định có quyền"></td>
+                                    <td class="text-center"><input type="checkbox"></td>
+                                    <td class="text-center"><input type="checkbox" checked></td>
+                                    <td class="text-center"><input type="checkbox" disabled></td>
+                                </tr>
+                                <tr>
+                                    <td>Phê duyệt đơn mượn nhân sự</td>
+                                    <td class="text-center"><input type="checkbox" checked disabled></td>
+                                    <td class="text-center"><input type="checkbox" checked></td>
+                                    <td class="text-center"><input type="checkbox"></td>
+                                    <td class="text-center"><input type="checkbox" disabled></td>
+                                </tr>
+
+                                <tr class="group-row">
+                                    <td colspan="5">Quản lý Công việc (Task)</td>
+                                </tr>
+                                <tr>
+                                    <td>Khởi tạo Task & Gán người thực hiện</td>
+                                    <td class="text-center"><input type="checkbox" checked disabled></td>
+                                    <td class="text-center"><input type="checkbox" checked></td>
+                                    <td class="text-center"><input type="checkbox" checked></td>
+                                    <td class="text-center"><input type="checkbox"></td>
+                                </tr>
+                                <tr>
+                                    <td>Báo cáo hoàn thành (Submit + Proof URL)</td>
+                                    <td class="text-center"><input type="checkbox" checked disabled></td>
+                                    <td class="text-center"><input type="checkbox" checked></td>
+                                    <td class="text-center"><input type="checkbox" checked></td>
+                                    <td class="text-center"><input type="checkbox" checked></td>
+                                </tr>
+                                <tr>
+                                    <td>Phê duyệt chất lượng Task (Approve/Reject)</td>
+                                    <td class="text-center"><input type="checkbox" checked disabled></td>
+                                    <td class="text-center"><input type="checkbox" checked></td>
+                                    <td class="text-center"><input type="checkbox" checked></td>
+                                    <td class="text-center"><input type="checkbox"></td>
+                                </tr>
+                                <tr class="group-row">
+                                    <td colspan="5">Quản lý Nhân sự & Vận hành</td>
+                                </tr>
+                                <tr>
+                                    <td>Thêm / Sửa thông tin nhân sự</td>
+                                    <td class="text-center"><input type="checkbox" checked disabled></td>
+                                    <td class="text-center"><input type="checkbox" checked></td>
+                                    <td class="text-center"><input type="checkbox"></td>
+                                    <td class="text-center"><input type="checkbox" disabled></td>
+                                </tr>
+                                <tr>
+                                    <td>Phê duyệt gia hạn Task</td>
+                                    <td class="text-center"><input type="checkbox" checked disabled></td>
+                                    <td class="text-center"><input type="checkbox" checked></td>
+                                    <td class="text-center"><input type="checkbox" checked></td>
+                                    <td class="text-center"><input type="checkbox" disabled></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+            
+            <div id="footer-container"></div>
+        </div>
+    </div>
+
+    <!-- BẮT BUỘC: Gọi file common.js để tự động render Sidebar và Header -->
+    <script src="../../js/common.js"></script>
+
+    <!-- Script xử lý LocalStorage cho RBAC -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('.rbac-matrix-table input[type="checkbox"]');
+            const btnSave = document.getElementById('btn-save');
+            const btnReset = document.getElementById('btn-reset');
+
+            const savedData = localStorage.getItem('rbac_demo_state');
+            if (savedData) {
+                const stateArray = JSON.parse(savedData);
+                checkboxes.forEach((cb, index) => {
+                    if (!cb.disabled && stateArray[index] !== undefined) {
+                        cb.checked = stateArray[index];
+                    }
+                });
+            }
+
+            btnSave.addEventListener('click', function() {
+                const stateArray = [];
+                checkboxes.forEach(cb => {
+                    stateArray.push(cb.checked);
+                });
+                localStorage.setItem('rbac_demo_state', JSON.stringify(stateArray));
+                alert('Lưu phân quyền thành công! Bạn có thể F5 để kiểm tra.');
+            });
+
+            btnReset.addEventListener('click', function() {
+                const confirmReset = confirm('Bạn có chắc chắn muốn hủy mọi thay đổi và khôi phục về mặc định gốc?');
+                if (confirmReset) {
+                    localStorage.removeItem('rbac_demo_state');
+                    location.reload(); 
+                }
+            });
+        });
+    </script>
+</body>
+</html>

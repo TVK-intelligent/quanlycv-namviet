@@ -1,0 +1,31 @@
+.text-center {
+    text-align: center !important;
+}
+
+.rbac-matrix-table input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+}
+
+.rbac-matrix-table input[type="checkbox"]:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.rbac-matrix-table .group-row {
+    background-color: #F0F2F5 !important;
+}
+
+.rbac-matrix-table .group-row td {
+    font-weight: 700;
+    color: var(--primary-active);
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+
+.rbac-matrix-table tbody tr:not(.group-row) td:first-child {
+    padding-left: 32px;
+}

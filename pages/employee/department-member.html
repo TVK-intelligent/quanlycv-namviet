@@ -2,55 +2,83 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thành viên Phòng ban - ETRMS</title>
+    
+    <!-- Thư viện Tailwind & Icon của bạn -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+    
+    <!-- Bắt buộc: Base CSS và Layout CSS để giữ khung chuẩn -->
     <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/layout.css">
 </head>
 <body class="bg-[#f9f9f9] font-sans text-[#1a1c1c]">
     
-    <div class="flex flex-col w-full gap-8 p-6">
-        <div class="bg-white rounded-xl shadow-sm p-6 w-full min-h-[500px]">
-            
-            <!-- Header & Filter -->
-            <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
-                <h1 class="text-2xl font-semibold text-gray-800">Danh sách Thành viên</h1>
-                
-                <div class="flex items-center gap-3">
-                    <label class="font-semibold text-sm text-gray-600">Chọn phòng ban:</label>
-                    <select id="select-dept-view" class="bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg text-sm focus:outline-none focus:border-[#005daa] min-w-[250px] shadow-sm cursor-pointer transition-all">
-                        <!-- JS sẽ đổ danh sách phòng ban vào đây -->
-                    </select>
+    <!-- KHUNG CHUẨN CỦA DỰ ÁN (Boilerplate) -->
+    <div class="app-container">
+        
+        <!-- 1. Vùng chứa Sidebar -->
+        <div id="sidebar-container"></div>
+
+        <div class="main-wrapper">
+            <!-- 2. Vùng chứa Header -->
+            <div id="header-container"></div>
+
+            <!-- 3. NỘI DUNG RIÊNG CỦA TRANG NÀY -->
+            <main class="main-content">
+                <div class="flex flex-col w-full gap-8 p-6">
+                    <div class="bg-white rounded-xl shadow-sm p-6 w-full min-h-[500px]">
+                        
+                        <!-- Header & Filter -->
+                        <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+                            <h1 class="text-2xl font-semibold text-gray-800">Danh sách Thành viên</h1>
+                            
+                            <div class="flex items-center gap-3">
+                                <label class="font-semibold text-sm text-gray-600">Chọn phòng ban:</label>
+                                <select id="select-dept-view" class="bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg text-sm focus:outline-none focus:border-[#005daa] min-w-[250px] shadow-sm cursor-pointer transition-all">
+                                    <!-- JS sẽ đổ danh sách phòng ban vào đây -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Table -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-gray-100 text-gray-600 uppercase text-xs font-semibold tracking-wider">
+                                        <th class="py-3 px-4 rounded-tl-lg">Nhân viên</th>
+                                        <th class="py-3 px-4">Email</th>
+                                        <th class="py-3 px-4">Chức vụ</th>
+                                        <th class="py-3 px-4 rounded-tr-lg">WSI (Sức tải)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-sm text-gray-700" id="member-table-body">
+                                    <!-- JS sẽ đổ dữ liệu nhân viên vào đây -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Trạng thái trống (Hiển thị khi phòng ban không có ai) -->
+                        <div id="empty-state" class="hidden flex-col items-center justify-center py-12 text-gray-400">
+                            <span class="material-symbols-outlined text-[48px] mb-3">group_off</span>
+                            <p class="text-base">Phòng ban này hiện chưa có nhân sự nào.</p>
+                        </div>
+
+                    </div>
                 </div>
-            </div>
+            </main>
 
-            <!-- Table -->
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-gray-100 text-gray-600 uppercase text-xs font-semibold tracking-wider">
-                            <th class="py-3 px-4 rounded-tl-lg">Nhân viên</th>
-                            <th class="py-3 px-4">Email</th>
-                            <th class="py-3 px-4">Chức vụ</th>
-                            <th class="py-3 px-4 rounded-tr-lg">WSI (Sức tải)</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-sm text-gray-700" id="member-table-body">
-                        <!-- JS sẽ đổ dữ liệu nhân viên vào đây -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Trạng thái trống (Hiển thị khi phòng ban không có ai) -->
-            <div id="empty-state" class="hidden flex-col items-center justify-center py-12 text-gray-400">
-                <span class="material-symbols-outlined text-[48px] mb-3">group_off</span>
-                <p class="text-base">Phòng ban này hiện chưa có nhân sự nào.</p>
-            </div>
-
+            <!-- 4. Vùng chứa Footer -->
+            <div id="footer-container"></div>
         </div>
     </div>
 
-    <!-- Nhúng file JS mới -->
+    <!-- CÁC FILE SCRIPT -->
+    <!-- Bắt buộc phải có common.js để tự động render Sidebar/Header -->
+    <script src="../../js/common.js"></script>
+    
+    <!-- Script xử lý logic riêng của trang này -->
     <script src="../../js/department-member.js"></script>
 </body>
 </html>
