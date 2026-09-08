@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết Dự án | ETRMS</title>
+    <meta name="description"
+        content="Xem chi tiết thông tin dự án bao gồm PM phụ trách, ngân sách, tiến độ và thành viên.">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/project/project.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <div id="sidebar-container"></div>
+        <div class="main-wrapper">
+            <div id="header-container"></div>
+            <main class="main-content">
+
+                <!-- Breadcrumb -->
+                <div class="breadcrumb">
+                    <a href="/index.html">Dashboard</a>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <a href="/pages/project/project-list.html">Quản lý Dự án</a>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <span id="breadcrumb-project-name">Chi tiết Dự án</span>
+                </div>
+
+                <!-- Not-Found State (hidden by default) -->
+                <div id="project-not-found" style="display:none;">
+                    <div class="empty-state">
+                        <div class="empty-state-icon"><i class="fa fa-triangle-exclamation"></i></div>
+                        <div class="empty-state-text">Không tìm thấy dự án</div>
+                        <div class="empty-state-sub">Dự án này có thể đã bị xóa hoặc không tồn tại.</div>
+                        <a href="/pages/project/project-list.html" class="btn btn-primary" style="margin-top:16px;">
+                            <i class="fa fa-arrow-left"></i> Quay lại danh sách
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Detail Content (hidden until loaded) -->
+                <div id="project-detail-content" style="display:none;">
+
+                    <!-- Detail Header -->
+                    <div class="detail-header">
+                        <div class="detail-header-left">
+                            <div class="detail-header-title" id="detail-project-name">—</div>
+                            <div class="detail-header-meta">
+                                <span id="detail-project-code" style="color:var(--text-muted); font-size:13px;"></span>
+                                <span id="detail-status"></span>
+                                <span id="detail-priority"></span>
+                            </div>
+                        </div>
+                        <div class="detail-header-actions">
+                            <button id="btn-back" class="btn btn-secondary">
+                                <i class="fa fa-arrow-left"></i> Quay lại
+                            </button>
+                            <button id="btn-view-members" class="btn btn-secondary">
+                                <i class="fa fa-users"></i> Xem thành viên
+                            </button>
+                            <button id="btn-edit-from-detail" class="btn btn-primary">
+                                <i class="fa fa-pen"></i> Chỉnh sửa
+                            </button>
+                            <button id="btn-delete-from-detail" class="btn btn-danger">
+                                <i class="fa fa-trash"></i> Xóa
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Info Grid -->
+                    <div class="detail-section">
+                        <div class="detail-section-title">
+                            <i class="fa fa-circle-info"></i> Thông tin chung
+                        </div>
+                        <div class="detail-info-grid" id="detail-info-container">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Progress Section -->
+                    <div class="detail-section">
+                        <div class="detail-section-title">
+                            <i class="fa fa-chart-line"></i> Tiến độ &amp; Ngân sách
+                        </div>
+                        <div class="detail-info-grid" id="detail-progress-container">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Description Section -->
+                    <div class="detail-section" id="detail-desc-section" style="display:none;">
+                        <div class="detail-section-title">
+                            <i class="fa fa-align-left"></i> Mô tả
+                        </div>
+                        <p id="detail-description" style="font-size:14px; color:var(--text-main); line-height:1.7;"></p>
+                    </div>
+
+                </div><!-- /#project-detail-content -->
+
+            </main>
+            <div id="footer-container"></div>
+        </div>
+    </div>
+
+    <div id="modal-container"></div>
+    <div id="loading-container"></div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/project/project-data.js"></script>
+    <script src="/js/project/project-detail.js"></script>
+</body>
+
+</html>
