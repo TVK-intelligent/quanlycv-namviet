@@ -150,7 +150,7 @@ function renderMemberTable() {
 
         return `<tr data-member-id="${m.id}">
             <td>
-                <div class="member-avatar" style="background:${avatarBg};" title="${escHtml(displayName)}">
+                <div class="avatar-circle" style="background:${avatarBg};" title="${escHtml(displayName)}">
                     ${escHtml(initials)}
                 </div>
             </td>
@@ -247,12 +247,17 @@ function openAddMemberModal() {
 
     <div class="form-group">
         <label class="form-label">Vai trò trong dự án</label>
-        <input id="mfm-role" type="text" class="form-control" placeholder="VD: Developer, Tester..." maxlength="80">
+        <select id="mfm-role" class="form-control">
+            <option value="PM">PM</option>
+            <option value="Dev" selected>Dev</option>
+            <option value="Tester">Tester</option>
+            <option value="Client">Client</option>
+        </select>
     </div>
 
     <div class="form-group">
         <label class="form-label">Allocated Capacity (%)</label>
-        <input id="mfm-capacity" type="number" class="form-control" value="100" min="0" max="200" step="5">
+        <input id="mfm-capacity" type="number" class="form-control" value="100" min="0" max="100" step="5">
         <span class="field-error" id="merr-capacity"></span>
     </div>
 
@@ -272,7 +277,7 @@ function handleSaveAddMember() {
 
     const projectId = document.getElementById('mfm-project').value;
     const userId = document.getElementById('mfm-user').value;
-    const role = document.getElementById('mfm-role').value.trim();
+    const role = document.getElementById('mfm-role').value;
     const capacity = parseInt(document.getElementById('mfm-capacity').value, 10);
     const joined = document.getElementById('mfm-joined').value;
 
@@ -298,14 +303,19 @@ function handleSaveAddMember() {
         if (existing) showErr('merr-user', 'Người dùng này đã là thành viên của dự án.');
     }
 
-    if (isNaN(capacity) || capacity < 0)
-        showErr('merr-capacity', 'Capacity phải từ 0 trở lên.');
+    if (isNaN(capacity) || capacity < 0 || capacity > 100)
+        showErr('merr-capacity', 'Capacity phải từ 0 đến 100.');
 
     if (hasError) { if (btn) btn.disabled = false; return; }
 
-    addProjectMember({
+    // Resolve user for denormalized fields required by domain model §4.2
+    const selectedUser = getUserById(userId);
+
+    saveMember({
         projectId,
         userId,
+        fullName: selectedUser ? selectedUser.fullName : '',
+        email: selectedUser ? (selectedUser.email || '') : '',
         role,
         allocatedCapacity: capacity,
         joinedDate: joined
@@ -336,19 +346,15 @@ function openEditCapacityModal(memberId) {
             ${escHtml(project ? project.projectName : '—')}
         </div>
     </div>
-    <div class="form-group">
-        <label class="form-label">Vai trò</label>
-        <input id="ecm-role" type="text" class="form-control" value="${escHtml(member.role || '')}" maxlength="80">
-    </div>
-    <div class="form-group">
+    <div class="form-group modal-form-full">
         <label class="form-label">Allocated Capacity (%)</label>
         <input id="ecm-capacity" type="number" class="form-control"
-               value="${member.allocatedCapacity ?? 100}" min="0" max="200" step="5">
+               value="${member.allocatedCapacity ?? 100}" min="0" max="100" step="5">
         <span class="field-error" id="ecm-err-cap"></span>
     </div>
 </div>`;
 
-    openModal('Sửa Thông tin Thành viên', formHtml, () => handleSaveCapacity(memberId));
+    openModal('Sửa Capacity Thành viên', formHtml, () => handleSaveCapacity(memberId));
 }
 
 function handleSaveCapacity(memberId) {
@@ -356,16 +362,20 @@ function handleSaveCapacity(memberId) {
     if (btn) btn.disabled = true;
 
     const capacity = parseInt(document.getElementById('ecm-capacity').value, 10);
-    const role = document.getElementById('ecm-role').value.trim();
 
     const errEl = document.getElementById('ecm-err-cap');
-    if (isNaN(capacity) || capacity < 0) {
-        if (errEl) { errEl.textContent = 'Capacity phải từ 0 trở lên.'; errEl.classList.add('visible'); }
+    if (isNaN(capacity) || capacity < 0 || capacity > 100) {
+        if (errEl) { errEl.textContent = 'Capacity phải từ 0 đến 100.'; errEl.classList.add('visible'); }
         if (btn) btn.disabled = false;
         return;
     }
 
-    updateMemberCapacity(memberId, capacity, role);
+    // Update capacity only — role is not editable through this modal (plan §5.2.2)
+    const member = getProjectMemberById(memberId);
+    if (member) {
+        member.allocatedCapacity = capacity;
+        saveMember(member);
+    }
     closeModal();
     renderMemberTable();
 }
@@ -385,7 +395,7 @@ function handleRemoveMember(memberId) {
         'Xác nhận gỡ thành viên',
         `<p>Bạn có chắc muốn gỡ <strong>${escHtml(name)}</strong> khỏi dự án <strong>${escHtml(proj)}</strong>?</p>`,
         () => {
-            removeProjectMember(memberId);
+            deleteMember(memberId);
             closeModal();
             renderMemberTable();
         }
