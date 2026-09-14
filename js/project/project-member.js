@@ -138,7 +138,7 @@ function renderMemberTable() {
 
         const displayName = user ? user.fullName : 'Người dùng không xác định';
         const email = user ? (user.email || '—') : '—';
-        const projectName = project ? project.projectName : 'Dự án không xác định';
+        const projectName = project ? project.projectName : null;
 
         // Capacity colour indicator
         const cap = m.allocatedCapacity ?? 0;
@@ -157,10 +157,10 @@ function renderMemberTable() {
             <td><strong>${escHtml(displayName)}</strong></td>
             <td style="font-size:13px; color:var(--text-muted);">${escHtml(email)}</td>
             <td>
-                <a href="/pages/project/project-detail.html?id=${encodeURIComponent(m.projectId)}"
-                   style="color:var(--primary-color); text-decoration:none; font-size:13px;">
-                   ${escHtml(projectName)}
-                </a>
+                ${projectName
+                ? `<a href="/pages/project/project-detail.html?id=${encodeURIComponent(m.projectId)}"
+                          style="color:var(--primary-color); text-decoration:none; font-size:13px;">${escHtml(projectName)}</a>`
+                : '<span class="text-deleted">[Đã xóa]</span>'}
             </td>
             <td><span class="badge badge-role">${escHtml(m.role || '—')}</span></td>
             <td style="text-align:right;">
@@ -395,6 +395,9 @@ function handleRemoveMember(memberId) {
         'Xác nhận gỡ thành viên',
         `<p>Bạn có chắc muốn gỡ <strong>${escHtml(name)}</strong> khỏi dự án <strong>${escHtml(proj)}</strong>?</p>`,
         () => {
+            // Guard: disable confirm button immediately to prevent double-submission (06-03)
+            const confirmBtn = document.getElementById('modal-confirm-btn');
+            if (confirmBtn) confirmBtn.disabled = true;
             deleteMember(memberId);
             closeModal();
             renderMemberTable();

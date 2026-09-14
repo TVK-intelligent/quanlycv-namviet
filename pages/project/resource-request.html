@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yêu cầu Nhân lực | ETRMS</title>
+    <meta name="description"
+        content="Quản lý yêu cầu mượn nhân sự giữa các phòng ban, bao gồm tạo, duyệt và từ chối yêu cầu.">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/project/project.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <div id="sidebar-container"></div>
+        <div class="main-wrapper">
+            <div id="header-container"></div>
+            <main class="main-content">
+
+                <!-- Breadcrumb -->
+                <div class="breadcrumb">
+                    <a href="/index.html">Dashboard</a>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <a href="/pages/project/project-list.html">Quản lý Dự án</a>
+                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                    <span>Yêu cầu Nhân lực</span>
+                </div>
+
+                <h1 class="page-title">Yêu cầu Nhân lực</h1>
+
+                <div class="table-card">
+
+                    <!-- Toolbar (E08) -->
+                    <div class="project-toolbar table-toolbar">
+                        <div class="project-toolbar-left">
+                            <select id="rr-status-filter" class="project-filter-select">
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="PENDING">Chờ duyệt</option>
+                                <option value="APPROVED">Đã duyệt</option>
+                                <option value="REJECTED">Từ chối</option>
+                            </select>
+                            <div class="project-search-box">
+                                <i class="fa fa-search"></i>
+                                <input type="text" id="rr-search" class="form-control" placeholder="Tìm theo dự án..."
+                                    autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="project-toolbar-right">
+                            <button id="btn-create-rr" class="btn btn-primary">
+                                <i class="fa fa-plus"></i> Tạo yêu cầu
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Table (E09) -->
+                    <div style="overflow-x:auto;">
+                        <table class="data-table" id="rr-table">
+                            <thead>
+                                <tr>
+                                    <th style="min-width:110px;">Mã đơn</th>
+                                    <th style="min-width:190px;">Dự án</th>
+                                    <th style="min-width:170px;">Phòng ban bị mượn</th>
+                                    <th style="min-width:110px;">Vai trò cần</th>
+                                    <th style="width:80px; text-align:right;">Số lượng</th>
+                                    <th style="width:100px; text-align:right;">Capacity %</th>
+                                    <th style="min-width:200px;">Thời gian mượn</th>
+                                    <th style="min-width:120px;">Trạng thái</th>
+                                    <th style="width:130px; text-align:center;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rr-table-body">
+                                <!-- rows injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="empty-state" id="rr-empty-state" style="display:none;">
+                        <div class="empty-state-icon"><i class="fa fa-file-circle-question"></i></div>
+                        <div class="empty-state-text">Chưa có yêu cầu nhân lực nào</div>
+                        <div class="empty-state-sub">Nhấn "+ Tạo yêu cầu" để gửi yêu cầu mượn nhân sự.</div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination" id="rr-pagination"></div>
+
+                </div><!-- /.table-card -->
+
+            </main>
+            <div id="footer-container"></div>
+        </div>
+    </div>
+
+    <div id="modal-container"></div>
+    <div id="loading-container"></div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/project/project-data.js"></script>
+    <script src="/js/project/resource-request.js"></script>
+</body>
+
+</html>
