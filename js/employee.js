@@ -74,53 +74,62 @@ function renderEmployeeList(dataToRender) {
     tbody.innerHTML = ''; 
 
     dataToRender.forEach(emp => {
-        let wsiColorClass = 'bg-[#52C41A]'; 
-        let wsiTextClass = 'text-on-surface-variant';
+        let wsiColor = '#52c41a'; 
         let wsiLabel = 'Tối ưu';
         
         if (emp.wsiCapacity === 100) {
-            wsiColorClass = 'bg-[#FAAD14]'; 
-            wsiTextClass = 'text-[#FAAD14]';
+            wsiColor = '#faad14'; 
             wsiLabel = 'Đầy tải';
         } else if (emp.wsiCapacity > 100) {
-            wsiColorClass = 'bg-[#FF4D4F]'; 
-            wsiTextClass = 'text-[#FF4D4F]';
-            wsiLabel = '<span class="material-symbols-outlined text-[14px] align-middle">warning</span> Quá tải';
+            wsiColor = '#ff4d4f'; 
+            wsiLabel = '<i class="fa-solid fa-triangle-exclamation" style="margin-right: 3px;"></i> Quá tải';
+        }
+
+        let roleBadgeBg = '#e6f7ff';
+        let roleBadgeColor = '#1890ff';
+        if (emp.deptRole === 'HEAD') {
+            roleBadgeBg = '#fff7e6';
+            roleBadgeColor = '#fa8c16';
+        } else if (emp.deptRole === 'TEAM_LEAD') {
+            roleBadgeBg = '#f6ffed';
+            roleBadgeColor = '#52c41a';
         }
 
         const tr = document.createElement('tr');
-        tr.className = 'group transition-colors hover:bg-surface-bright cursor-pointer border-b border-gray-100 last:border-none';
+        tr.style.cssText = 'border-bottom: 1px solid #f0f0f0; transition: background-color 0.2s;';
+        tr.onmouseenter = () => tr.style.backgroundColor = '#fafafa';
+        tr.onmouseleave = () => tr.style.backgroundColor = '#ffffff';
         
         tr.innerHTML = `
-            <td class="p-4">
-                <div class="flex items-center gap-3">
-                    <img class="w-8 h-8 rounded-full object-cover shadow-sm" src="${emp.avatar}" alt="Avatar">
-                    <span class="font-semibold text-on-surface">${emp.fullName}</span>
+            <td style="padding: 12px 16px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid #f0f0f0;" src="${emp.avatar}" alt="Avatar" onerror="this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent('${emp.fullName}') + '&background=1890ff&color=fff'">
+                    <span style="font-weight: 600; color: #262626;">${emp.fullName}</span>
                 </div>
             </td>
-            <td class="p-4 text-on-surface-variant">${emp.email}</td>
-            <td class="p-4">${getDeptName(emp.deptId)}</td>
-            <td class="p-4">
-                <span class="inline-flex items-center px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-[11px] font-semibold">${emp.deptRole}</span>
+            <td style="padding: 12px 16px; color: #595959;">${emp.email}</td>
+            <td style="padding: 12px 16px; color: #262626;">${getDeptName(emp.deptId)}</td>
+            <td style="padding: 12px 16px;">
+                <span style="display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; background: ${roleBadgeBg}; color: ${roleBadgeColor}; font-size: 11px; font-weight: 600;">${emp.deptRole}</span>
             </td>
-            <td class="p-4 w-48">
-                <div class="flex flex-col gap-1">
-                    <div class="flex justify-between text-xs text-on-surface-variant">
-                        <span class="flex items-center gap-1 ${emp.wsiCapacity > 100 ? 'text-[#FF4D4F]' : ''}">${wsiLabel}</span>
-                        <span class="font-semibold ${wsiTextClass}">${emp.wsiCapacity}%</span>
+            <td style="padding: 12px 16px; width: 220px;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #8c8c8c;">
+                        <span style="display: flex; align-items: center; ${emp.wsiCapacity > 100 ? 'color: #ff4d4f; font-weight: 600;' : ''}">${wsiLabel}</span>
+                        <span style="font-weight: 600; color: ${wsiColor};">${emp.wsiCapacity}%</span>
                     </div>
-                    <div class="w-full bg-gray-200 rounded-full h-[6px] overflow-hidden">
-                        <div class="${wsiColorClass} h-full rounded-full transition-all duration-1000" style="width: ${Math.min(emp.wsiCapacity, 100)}%"></div>
+                    <div style="width: 100%; background: #f0f0f0; border-radius: 99px; height: 6px; overflow: hidden;">
+                        <div style="width: ${Math.min(emp.wsiCapacity, 100)}%; background: ${wsiColor}; height: 100%; border-radius: 99px; transition: width 0.4s ease;"></div>
                     </div>
                 </div>
             </td>
-            <td class="p-4 text-right">
-                <div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button class="w-8 h-8 rounded hover:bg-gray-200 flex items-center justify-center text-primary transition-colors" onclick="editEmployee('${emp.id}')" title="Sửa">
-                        <span class="material-symbols-outlined text-[18px]">edit</span>
+            <td style="padding: 12px 16px; text-align: right;">
+                <div style="display: flex; justify-content: flex-end; gap: 6px;">
+                    <button type="button" style="width: 30px; height: 30px; border-radius: 4px; border: 1px solid #d9d9d9; background: #fff; color: #1890ff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;" onclick="editEmployee('${emp.id}')" title="Sửa">
+                        <i class="fa-solid fa-pen-to-square" style="font-size: 13px;"></i>
                     </button>
-                    <button class="w-8 h-8 rounded hover:bg-red-100 flex items-center justify-center text-[#FF4D4F] transition-colors" onclick="deleteEmployee('${emp.id}')" title="Xóa">
-                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                    <button type="button" style="width: 30px; height: 30px; border-radius: 4px; border: 1px solid #ffccc7; background: #fff1f0; color: #ff4d4f; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;" onclick="deleteEmployee('${emp.id}')" title="Xóa">
+                        <i class="fa-solid fa-trash-can" style="font-size: 13px;"></i>
                     </button>
                 </div>
             </td>

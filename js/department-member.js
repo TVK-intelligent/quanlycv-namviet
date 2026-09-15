@@ -43,35 +43,62 @@ document.addEventListener('DOMContentLoaded', () => {
         // Xử lý giao diện nếu không có ai
         if (members.length === 0) {
             emptyState.classList.remove('hidden');
-            emptyState.classList.add('flex');
+            emptyState.style.display = 'flex';
             return;
         } else {
             emptyState.classList.add('hidden');
-            emptyState.classList.remove('flex');
+            emptyState.style.display = 'none';
         }
 
         // Vẽ từng người ra bảng
         members.forEach(emp => {
-            // Xử lý màu sắc WSI
-            let wsiColor = emp.wsiCapacity > 100 ? 'text-red-500' : (emp.wsiCapacity === 100 ? 'text-yellow-500' : 'text-green-500');
+            let wsiColor = '#52c41a';
+            let wsiLabel = 'Tối ưu';
+            if (emp.wsiCapacity === 100) {
+                wsiColor = '#faad14';
+                wsiLabel = 'Đầy tải';
+            } else if (emp.wsiCapacity > 100) {
+                wsiColor = '#ff4d4f';
+                wsiLabel = '<i class="fa-solid fa-triangle-exclamation" style="margin-right: 3px;"></i> Quá tải';
+            }
+
+            let roleBadgeBg = '#e6f7ff';
+            let roleBadgeColor = '#1890ff';
+            if (emp.deptRole === 'HEAD') {
+                roleBadgeBg = '#fff7e6';
+                roleBadgeColor = '#fa8c16';
+            } else if (emp.deptRole === 'TEAM_LEAD') {
+                roleBadgeBg = '#f6ffed';
+                roleBadgeColor = '#52c41a';
+            }
             
             const tr = document.createElement('tr');
-            tr.className = 'border-b border-gray-100 hover:bg-gray-50 transition-colors';
+            tr.style.cssText = 'border-bottom: 1px solid #f0f0f0; transition: background-color 0.2s;';
+            tr.onmouseenter = () => tr.style.backgroundColor = '#fafafa';
+            tr.onmouseleave = () => tr.style.backgroundColor = '#ffffff';
             tr.innerHTML = `
-                <td class="py-3 px-4">
-                    <div class="flex items-center gap-3">
-                        <img class="w-8 h-8 rounded-full object-cover shadow-sm" src="${emp.avatar}" alt="Avatar">
-                        <span class="font-semibold text-gray-800">${emp.fullName}</span>
+                <td style="padding: 12px 16px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid #f0f0f0;" src="${emp.avatar}" alt="Avatar" onerror="this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent('${emp.fullName}') + '&background=1890ff&color=fff'">
+                        <span style="font-weight: 600; color: #262626;">${emp.fullName}</span>
                     </div>
                 </td>
-                <td class="py-3 px-4 text-gray-500">${emp.email}</td>
-                <td class="py-3 px-4">
-                    <span class="inline-flex bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-xs font-bold">
+                <td style="padding: 12px 16px; color: #595959;">${emp.email}</td>
+                <td style="padding: 12px 16px;">
+                    <span style="display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; background: ${roleBadgeBg}; color: ${roleBadgeColor}; font-size: 11px; font-weight: 600;">
                         ${emp.deptRole}
                     </span>
                 </td>
-                <td class="py-3 px-4 font-semibold ${wsiColor}">
-                    ${emp.wsiCapacity}%
+                <td style="padding: 12px 16px; width: 220px;">
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; color: #8c8c8c;">
+                            <span style="display: flex; align-items: center; ${emp.wsiCapacity > 100 ? 'color: #ff4d4f; font-weight: 600;' : ''}">${wsiLabel}</span>
+                            <span style="font-weight: 600; color: ${wsiColor};">${emp.wsiCapacity}%</span>
+                        </div>
+                        <div style="width: 100%; background: #f0f0f0; border-radius: 99px; height: 6px; overflow: hidden;">
+                            <div style="width: ${Math.min(emp.wsiCapacity, 100)}%; background: ${wsiColor}; height: 100%; border-radius: 99px; transition: width 0.4s ease;"></div>
+                        </div>
+                    </div>
                 </td>
             `;
             tbody.appendChild(tr);

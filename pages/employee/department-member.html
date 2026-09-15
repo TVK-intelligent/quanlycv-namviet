@@ -5,24 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thành viên Phòng ban - ETRMS</title>
 
-    <!-- Fonts & Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- CSS Hệ thống chung -->
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/layout.css">
-
-    <!-- Tailwind CSS (với preflight: false) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            corePlugins: {
-                preflight: false
-            }
-        };
-    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body data-breadcrumb-parent="Quản lý Nhân sự" data-breadcrumb-current="Thành viên phòng ban">
     <div class="app-container">
@@ -38,47 +29,52 @@
             <main class="main-content">
                 <!-- Breadcrumb -->
                 <div class="breadcrumb" style="margin-bottom: 16px;">
-                    <a href="/index.html">Dashboard</a>
-                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
-                    <span>Quản lý Nhân sự</span>
-                    <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
-                    <span>Thành viên Phòng ban</span>
+                    <span class="breadcrumb-item">Quản lý Nhân sự</span>
+                    <span class="breadcrumb-item">/</span>
+                    <span class="breadcrumb-item active">Thành viên Phòng ban</span>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm p-6 w-full min-h-[500px]" style="background: #ffffff;">
-                    <!-- Header & Filter -->
-                    <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
-                        <h1 class="text-2xl font-semibold text-gray-800">Danh sách Thành viên</h1>
-                        
-                        <div class="flex items-center gap-3">
-                            <label class="font-semibold text-sm text-gray-600">Chọn phòng ban:</label>
-                            <select id="select-dept-view" class="bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg text-sm focus:outline-none focus:border-[#005daa] min-w-[250px] shadow-sm cursor-pointer transition-all" style="border: 1px solid #e0e0e0;">
+                <!-- Page Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <h1 style="font-size: 22px; font-weight: 700; color: #262626; margin: 0 0 4px 0;">Danh sách Thành viên</h1>
+                        <p style="font-size: 13px; color: #8c8c8c; margin: 0;">Theo dõi phân bổ nhân sự, vị trí đảm nhiệm và khối lượng sức tải (WSI) theo từng phòng ban.</p>
+                    </div>
+                </div>
+
+                <!-- Table Card -->
+                <div class="table-card" style="background: #ffffff; border-radius: 8px; border: 1px solid #e8e8e8; box-shadow: 0 1px 3px rgba(0,0,0,0.03); overflow: hidden;">
+                    <!-- Filter Toolbar -->
+                    <div style="padding: 14px 18px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; background: #fafafa;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label style="font-size: 13px; font-weight: 600; color: #595959;">Chọn phòng ban:</label>
+                            <select id="select-dept-view" class="form-control" style="height: 36px; padding: 0 14px; border-radius: 6px; border: 1px solid #d9d9d9; font-size: 13px; font-weight: 600; color: #1890ff; background: #fff; cursor: pointer; outline: none; min-width: 260px;">
                                 <!-- JS sẽ đổ danh sách phòng ban vào đây -->
                             </select>
                         </div>
                     </div>
 
                     <!-- Table -->
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
+                    <div class="table-responsive" style="overflow-x: auto;">
+                        <table class="data-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
                             <thead>
-                                <tr class="bg-gray-100 text-gray-600 uppercase text-xs font-semibold tracking-wider" style="background-color: #f3f4f6;">
-                                    <th class="py-3 px-4 rounded-tl-lg">Nhân viên</th>
-                                    <th class="py-3 px-4">Email</th>
-                                    <th class="py-3 px-4">Chức vụ</th>
-                                    <th class="py-3 px-4 rounded-tr-lg">WSI (Sức tải)</th>
+                                <tr style="background: #fafafa; border-bottom: 1px solid #f0f0f0; color: #595959; font-weight: 600;">
+                                    <th style="padding: 12px 16px;">Nhân viên</th>
+                                    <th style="padding: 12px 16px;">Email</th>
+                                    <th style="padding: 12px 16px;">Chức vụ</th>
+                                    <th style="padding: 12px 16px; width: 220px;">WSI (Sức tải)</th>
                                 </tr>
                             </thead>
-                            <tbody class="text-sm text-gray-700" id="member-table-body">
+                            <tbody id="member-table-body">
                                 <!-- JS sẽ đổ dữ liệu nhân viên vào đây -->
                             </tbody>
                         </table>
                     </div>
                     
                     <!-- Trạng thái trống (Hiển thị khi phòng ban không có ai) -->
-                    <div id="empty-state" class="hidden flex-col items-center justify-center py-12 text-gray-400">
-                        <span class="material-symbols-outlined text-[48px] mb-3">group_off</span>
-                        <p class="text-base">Phòng ban này hiện chưa có nhân sự nào.</p>
+                    <div id="empty-state" class="hidden" style="display: none; flex-direction: column; align-items: center; justify-content: center; padding: 48px 20px; text-align: center; color: #8c8c8c;">
+                        <i class="fa-solid fa-users-slash" style="font-size: 40px; color: #bfbfbf; margin-bottom: 12px;"></i>
+                        <p style="font-size: 14px; margin: 0;">Phòng ban này hiện chưa có nhân sự nào.</p>
                     </div>
                 </div>
             </main>

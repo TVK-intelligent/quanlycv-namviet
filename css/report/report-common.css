@@ -229,7 +229,7 @@
   padding: 16px 20px;
   margin-bottom: 24px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
@@ -238,7 +238,7 @@
 
 .report-filter-inputs {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 12px;
   flex-wrap: wrap;
   flex: 1;
@@ -249,6 +249,10 @@
   flex-direction: column;
   gap: 4px;
   min-width: 170px;
+}
+
+.report-filter-group.report-search-group {
+  min-width: 260px;
 }
 
 .report-filter-group label {

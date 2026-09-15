@@ -31,23 +31,25 @@ function renderDepartmentList(dataToRender) {
         const empCount = getEmployeeCount(dept.id);
         
         const tr = document.createElement('tr');
-        tr.className = 'border-b border-gray-100 hover:bg-gray-50 transition-colors group';
+        tr.style.cssText = 'border-bottom: 1px solid #f0f0f0; transition: background-color 0.2s;';
+        tr.onmouseenter = () => tr.style.backgroundColor = '#fafafa';
+        tr.onmouseleave = () => tr.style.backgroundColor = '#ffffff';
         tr.innerHTML = `
-            <td class="py-3 px-4 font-semibold text-[#005daa]">${dept.code}</td>
-            <td class="py-3 px-4 font-medium">${dept.name}</td>
-            <td class="py-3 px-4">${getParentName(dept.parentId)}</td>
-            <td class="py-3 px-4 text-center">
-                <a href="department-member.html?deptId=${dept.id}" title="Xem danh sách thành viên" class="inline-flex items-center justify-center bg-blue-100 text-blue-800 rounded-full h-6 px-3 text-xs font-bold hover:bg-blue-200 transition-colors cursor-pointer">
-                    ${empCount}
+            <td style="padding: 12px 16px; font-weight: 700; color: #1890ff;">${dept.code}</td>
+            <td style="padding: 12px 16px; font-weight: 600; color: #262626;">${dept.name}</td>
+            <td style="padding: 12px 16px; color: #595959;">${getParentName(dept.parentId)}</td>
+            <td style="padding: 12px 16px; text-align: center;">
+                <a href="department-member.html?deptId=${dept.id}" title="Xem danh sách thành viên" style="display: inline-flex; align-items: center; justify-content: center; background: #e6f7ff; color: #1890ff; border: 1px solid #91d5ff; border-radius: 12px; height: 24px; padding: 0 10px; font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; transition: all 0.2s;">
+                    <i class="fa-solid fa-users" style="font-size: 10px; margin-right: 4px;"></i> ${empCount}
                 </a>
             </td>
-            <td class="py-3 px-4 text-right">
-                <div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button class="w-8 h-8 rounded hover:bg-gray-200 flex items-center justify-center text-[#005daa]" onclick="editDepartment('${dept.id}')" title="Sửa">
-                        <span class="material-symbols-outlined text-[18px]">edit</span>
+            <td style="padding: 12px 16px; text-align: right;">
+                <div style="display: flex; justify-content: flex-end; gap: 6px;">
+                    <button type="button" style="width: 30px; height: 30px; border-radius: 4px; border: 1px solid #d9d9d9; background: #fff; color: #1890ff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;" onclick="editDepartment('${dept.id}')" title="Sửa">
+                        <i class="fa-solid fa-pen-to-square" style="font-size: 13px;"></i>
                     </button>
-                    <button class="w-8 h-8 rounded hover:bg-red-100 flex items-center justify-center text-red-500" onclick="deleteDepartment('${dept.id}')" title="Xóa">
-                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                    <button type="button" style="width: 30px; height: 30px; border-radius: 4px; border: 1px solid #ffccc7; background: #fff1f0; color: #ff4d4f; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;" onclick="deleteDepartment('${dept.id}')" title="Xóa">
+                        <i class="fa-solid fa-trash-can" style="font-size: 13px;"></i>
                     </button>
                 </div>
             </td>

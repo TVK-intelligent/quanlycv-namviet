@@ -7,13 +7,17 @@
     <title>Danh sách Dự án | ETRMS</title>
     <meta name="description"
         content="Quản lý danh sách dự án theo cấu trúc phân cấp cha-con với chức năng tìm kiếm, lọc và phân trang.">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/layout.css">
     <link rel="stylesheet" href="/css/project/project.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
-<body>
+<body data-breadcrumb-parent="Quản lý Dự án" data-breadcrumb-current="Danh sách dự án">
     <div class="app-container">
         <div id="sidebar-container"></div>
         <div class="main-wrapper">
@@ -21,7 +25,7 @@
             <main class="main-content">
 
                 <!-- Breadcrumb -->
-                <div class="breadcrumb">
+                <div class="breadcrumb" style="margin-bottom: 16px;">
                     <a href="/index.html">Dashboard</a>
                     <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
                     <span>Quản lý Dự án</span>

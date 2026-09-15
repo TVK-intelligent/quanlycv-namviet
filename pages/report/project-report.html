@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ETRMS - Báo cáo Dự án</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/layout.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -18,21 +21,12 @@
             <div id="header-container"></div>
 
             <main class="main-content project-report-page">
-                <!-- Navigation Tabs -->
-                <nav class="report-tabs-nav" aria-label="Phân hệ Báo cáo">
-                    <a href="/pages/report/overview.html" class="report-tab-link">
-                        <i class="fa-solid fa-chart-pie"></i> Thống kê Tổng quan
-                    </a>
-                    <a href="/pages/report/project-report.html" class="report-tab-link active">
-                        <i class="fa-solid fa-briefcase"></i> Báo cáo Dự án
-                    </a>
-                    <a href="/pages/report/task-report.html" class="report-tab-link">
-                        <i class="fa-solid fa-list-check"></i> Báo cáo Công việc
-                    </a>
-                    <a href="/pages/report/employee-kpi-report.html" class="report-tab-link">
-                        <i class="fa-solid fa-users-gear"></i> KPI Nhân sự
-                    </a>
-                </nav>
+                <!-- Breadcrumb -->
+                <div class="breadcrumb" style="margin-bottom: 16px;">
+                    <span class="breadcrumb-item">Báo cáo &amp; Thống kê</span>
+                    <span class="breadcrumb-item">/</span>
+                    <span class="breadcrumb-item active">Báo cáo Dự án</span>
+                </div>
 
                 <!-- Page Header -->
                 <section class="report-header-section">
@@ -106,9 +100,12 @@
                 <!-- Filter Card -->
                 <section class="report-filter-wrapper" aria-label="Bộ lọc dự án">
                     <div class="report-filter-inputs">
-                        <div class="report-search-box">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="project-search-input" placeholder="Tìm theo mã hoặc tên dự án...">
+                        <div class="report-filter-group report-search-group">
+                            <label for="project-search-input">Tìm kiếm</label>
+                            <div class="report-search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="project-search-input" placeholder="Tìm theo mã hoặc tên dự án...">
+                            </div>
                         </div>
 
                         <div class="report-filter-group">
