@@ -433,7 +433,7 @@
                 const descVal = document.getElementById('ts-desc').value.trim();
 
                 if (!dateVal || isNaN(hoursVal) || hoursVal <= 0 || !descVal) {
-                    alert('Vui lòng điền đầy đủ ngày làm việc, số giờ hợp lệ (> 0) và mô tả công việc!');
+                    if (window.showToast) window.showToast('Vui lòng điền đầy đủ ngày làm việc, số giờ hợp lệ (> 0) và mô tả công việc!', 'warning');
                     return;
                 }
 
@@ -481,12 +481,10 @@
 
                 if (window.showToast) {
                     window.showToast(isEdit ? 'Đã cập nhật nhật ký thời gian thành công!' : 'Đã ghi nhận thời gian làm việc thành công!', 'success');
-                } else {
-                    alert('Đã lưu thời gian làm việc thành công!');
                 }
             });
         } else {
-            alert('Không tìm thấy modal component. Vui lòng tải lại trang!');
+            if (window.showToast) window.showToast('Không tìm thấy modal component. Vui lòng tải lại trang!', 'error');
         }
     }
 
@@ -568,8 +566,6 @@
 
                 if (window.showToast) {
                     window.showToast('Đã gửi bảng chấm công tuần này lên cấp Quản lý phê duyệt!', 'success');
-                } else {
-                    alert('Đã gửi bảng chấm công tuần này lên cấp Quản lý phê duyệt!');
                 }
             });
         }

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công việc định kỳ - Work Management</title>
+
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- CSS dùng chung của project -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/checklist.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        .rec-stat-card {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 16px 20px;
+            border: 1px solid #e8e8e8;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .rec-stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body data-breadcrumb-parent="Quy trình" data-breadcrumb-current="Công việc định kỳ">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div id="sidebar-container"></div>
+
+        <div class="main-wrapper">
+            <!-- Header -->
+            <div id="header-container"></div>
+
+            <main class="main-content">
+                <div class="checklist-page">
+                    <!-- Breadcrumb -->
+                    <div class="breadcrumb" style="margin-bottom: 16px;">
+                        <a href="/index.html">Dashboard</a>
+                        <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                        <span>Quy trình</span>
+                        <span class="breadcrumb-sep"><i class="fa fa-chevron-right"></i></span>
+                        <span class="current">Công việc định kỳ</span>
+                    </div>
+
+                    <!-- Header -->
+                    <div class="recurring-header" style="margin-bottom: 20px;">
+                        <div>
+                            <h1 style="font-size: 22px; font-weight: 700; color: #262626; margin: 0 0 4px 0;">Cấu hình Công việc định kỳ</h1>
+                            <p style="font-size: 13px; color: #8c8c8c; margin: 0;">Lên lịch trình lặp lại (Cron Scheduler) tự động giao việc cho nhân sự theo chu kỳ ngày, tuần, tháng.</p>
+                        </div>
+
+                        <button type="button" class="btn-create-checklist" id="create-recurring-btn" style="display: flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer;">
+                            <i class="fa-solid fa-plus"></i> Tạo Cấu hình Lặp
+                        </button>
+                    </div>
+
+                    <!-- KPI Stat Cards -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px;">
+                        <div class="rec-stat-card">
+                            <div class="rec-stat-icon" style="background: #e6f7ff; color: #1890ff;">
+                                <i class="fa-solid fa-rotate"></i>
+                            </div>
+                            <div>
+                                <div style="font-size: 11.5px; color: #8c8c8c; text-transform: uppercase; font-weight: 600;">Tổng cấu hình</div>
+                                <div id="stat-total-recurring" style="font-size: 22px; font-weight: 700; color: #262626;">6</div>
+                            </div>
+                        </div>
+
+                        <div class="rec-stat-card">
+                            <div class="rec-stat-icon" style="background: #f6ffed; color: #52c41a;">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div>
+                                <div style="font-size: 11.5px; color: #8c8c8c; text-transform: uppercase; font-weight: 600;">Đang kích hoạt</div>
+                                <div id="stat-active-recurring" style="font-size: 22px; font-weight: 700; color: #52c41a;">5</div>
+                            </div>
+                        </div>
+
+                        <div class="rec-stat-card">
+                            <div class="rec-stat-icon" style="background: #fff7e6; color: #fa8c16;">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                            </div>
+                            <div>
+                                <div style="font-size: 11.5px; color: #8c8c8c; text-transform: uppercase; font-weight: 600;">Chu kỳ chạy</div>
+                                <div style="font-size: 14px; font-weight: 600; color: #262626; margin-top: 4px;">Ngày / Tuần / Tháng</div>
+                            </div>
+                        </div>
+
+                        <div class="rec-stat-card">
+                            <div class="rec-stat-icon" style="background: #f5f5f5; color: #8c8c8c;">
+                                <i class="fa-solid fa-pause"></i>
+                            </div>
+                            <div>
+                                <div style="font-size: 11.5px; color: #8c8c8c; text-transform: uppercase; font-weight: 600;">Tạm ngưng</div>
+                                <div id="stat-inactive-recurring" style="font-size: 22px; font-weight: 700; color: #8c8c8c;">1</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Toolbar Bộ lọc -->
+                    <div class="checklist-card recurring-toolbar" style="margin-bottom: 16px;">
+                        <!-- Tìm kiếm -->
+                        <div class="recurring-search">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="recurring-search" placeholder="Tìm kiếm tên công việc hoặc người thực hiện..." />
+                        </div>
+
+                        <!-- Phòng ban -->
+                        <select id="recurring-department" class="recurring-select">
+                            <option value="all">Tất cả phòng ban</option>
+                            <option value="dev">Phát triển Phần mềm (DEV)</option>
+                            <option value="qa">Kiểm thử (QA/QC)</option>
+                            <option value="design">Thiết kế (UI/UX)</option>
+                            <option value="engineering">Phòng Kỹ thuật & Hạ tầng</option>
+                            <option value="hr">Phòng Nhân sự</option>
+                            <option value="marketing">Phòng Marketing</option>
+                        </select>
+
+                        <!-- Trạng thái -->
+                        <select id="recurring-status-filter" class="recurring-select">
+                            <option value="all">Tất cả trạng thái</option>
+                            <option value="ACTIVE">Đang kích hoạt (ACTIVE)</option>
+                            <option value="INACTIVE">Tạm ngưng (INACTIVE)</option>
+                        </select>
+                    </div>
+
+                    <!-- Bảng dữ liệu Task định kỳ -->
+                    <div class="checklist-card checklist-table-card">
+                        <div class="table-responsive">
+                            <table class="recurring-table">
+                                <thead>
+                                    <tr>
+                                        <th>Tên công việc định kỳ</th>
+                                        <th>Phòng ban</th>
+                                        <th>Người thực hiện</th>
+                                        <th>Chu kỳ</th>
+                                        <th>Thời gian chạy (Cron)</th>
+                                        <th>Trạng thái</th>
+                                        <th class="action-column" style="min-width: 130px;">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recurring-body">
+                                    <!-- Dynamic rows rendered by js/recurring.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <div id="footer-container"></div>
+        </div>
+    </div>
+
+    <!-- Modals & Containers dùng chung -->
+    <div id="modal-container"></div>
+    <div id="loading-container"></div>
+
+    <!-- Scripts -->
+    <script src="/js/common.js"></script>
+    <script src="/js/recurring.js"></script>
+</body>
+</html>

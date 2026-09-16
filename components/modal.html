@@ -14,7 +14,7 @@
             <p>Nội dung mô tả hoặc form nhập liệu...</p>
         </div>
         <div class="modal-footer" id="modal-footer">
-            <button class="btn btn-secondary" onclick="closeModal()">Hủy</button>
+            <button class="btn btn-secondary" id="modal-cancel-btn" onclick="closeModal()">Hủy</button>
             <button class="btn btn-primary" id="modal-confirm-btn">Xác nhận</button>
         </div>
     </div>
@@ -22,25 +22,46 @@
 
 <script>
     // Các hàm helper dùng chung để mở/đóng Modal từ mọi nơi
-    function openModal(title, contentHtml, onConfirmCallback) {
-        document.getElementById('modal-title').innerHTML = title || 'Xác nhận';
-        if (contentHtml) {
-            document.getElementById('modal-body').innerHTML = contentHtml;
-        }
-        
-        const confirmBtn = document.getElementById('modal-confirm-btn');
-        // Xóa event cũ
-        const newConfirmBtn = confirmBtn.cloneNode(true);
-        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-        
-        if (typeof onConfirmCallback === 'function') {
-            newConfirmBtn.addEventListener('click', onConfirmCallback);
-        }
+    if (typeof window.openModal !== 'function') {
+        window.openModal = function(title, contentHtml, onConfirmCallback, options = {}) {
+            const titleEl = document.getElementById('modal-title');
+            const bodyEl = document.getElementById('modal-body');
+            const confirmBtn = document.getElementById('modal-confirm-btn');
+            const cancelBtn = document.getElementById('modal-cancel-btn');
 
-        document.getElementById('global-modal').classList.add('active');
+            if (titleEl) titleEl.innerHTML = title || 'Xác nhận';
+            if (bodyEl && contentHtml) bodyEl.innerHTML = contentHtml;
+            
+            const showCancel = options && typeof options.showCancel === 'boolean' ? options.showCancel : !!onConfirmCallback;
+            if (cancelBtn) {
+                cancelBtn.style.display = showCancel ? '' : 'none';
+                if (options && options.cancelText) cancelBtn.textContent = options.cancelText;
+                else cancelBtn.textContent = 'Hủy';
+            }
+
+            if (confirmBtn) {
+                const newConfirmBtn = confirmBtn.cloneNode(true);
+                confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+                
+                if (options && options.confirmText) newConfirmBtn.textContent = options.confirmText;
+                else if (!onConfirmCallback) newConfirmBtn.textContent = 'Đóng';
+                else newConfirmBtn.textContent = 'Xác nhận';
+
+                if (typeof onConfirmCallback === 'function') {
+                    newConfirmBtn.addEventListener('click', onConfirmCallback);
+                } else {
+                    newConfirmBtn.addEventListener('click', closeModal);
+                }
+            }
+
+            document.getElementById('global-modal').classList.add('active');
+        };
     }
 
-    function closeModal() {
-        document.getElementById('global-modal').classList.remove('active');
+    if (typeof window.closeModal !== 'function') {
+        window.closeModal = function() {
+            const m = document.getElementById('global-modal');
+            if (m) m.classList.remove('active');
+        };
     }
 </script>

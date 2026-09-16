@@ -84,8 +84,8 @@
             <div class="hero-footer">
                 <span>© 2026 Nam Viet Corp. All rights reserved.</span>
                 <div style="display: flex; gap: 16px;">
-                    <a href="#" onclick="alert('Work Management Enterprise Edition'); return false;">Điều khoản</a>
-                    <a href="#" onclick="alert('Chính sách bảo mật nội bộ'); return false;">Bảo mật</a>
+                    <a href="#" onclick="if(window.AuthService) AuthService.showAuthToast('Work Management Enterprise Edition v2.6', 'info'); return false;">Điều khoản</a>
+                    <a href="#" onclick="if(window.AuthService) AuthService.showAuthToast('Chính sách bảo mật thông tin nội bộ Nam Việt Corp', 'info'); return false;">Bảo mật</a>
                 </div>
             </div>
         </section>

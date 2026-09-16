@@ -348,7 +348,7 @@
                     const cb2 = document.getElementById('dor-cb-2')?.checked;
                     const cb3 = document.getElementById('dor-cb-3')?.checked;
                     if (!cb1 || !cb2 || !cb3) {
-                        alert('Vui lòng tích xác nhận đủ 3 điều kiện DoR để bắt đầu công việc!');
+                        if (window.showToast) window.showToast('Vui lòng tích xác nhận đủ 3 điều kiện DoR để bắt đầu công việc!', 'warning');
                         return;
                     }
 
@@ -387,7 +387,7 @@
                 openModal('Báo cáo Nghẽn tiến độ (Blocked)', formHtml, function() {
                     const reason = document.getElementById('modal-blocker-reason')?.value.trim();
                     if (!reason) {
-                        alert('Vui lòng nhập nguyên nhân bị nghẽn!');
+                        if (window.showToast) window.showToast('Vui lòng nhập nguyên nhân bị nghẽn!', 'warning');
                         return;
                     }
 
@@ -448,11 +448,11 @@
                     const isDodChecked = document.getElementById('modal-dod-confirm')?.checked;
 
                     if (!proofUrl || (!proofUrl.startsWith('http://') && !proofUrl.startsWith('https://'))) {
-                        alert('Vui lòng nhập liên kết bằng chứng hoàn thành hợp lệ (bắt đầu bằng http:// hoặc https://)!');
+                        if (window.showToast) window.showToast('Vui lòng nhập liên kết bằng chứng hoàn thành hợp lệ (bắt đầu bằng http:// hoặc https://)!', 'warning');
                         return;
                     }
                     if (!isDodChecked) {
-                        alert('Vui lòng hoàn thành các tiêu chí DoD trước khi nộp nghiệm thu!');
+                        if (window.showToast) window.showToast('Vui lòng hoàn thành các tiêu chí DoD trước khi nộp nghiệm thu!', 'warning');
                         return;
                     }
 

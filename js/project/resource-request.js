@@ -48,6 +48,40 @@
         } catch (e) { return []; }
     }
 
+    function resolveProjectName(req) {
+        if (req.projectName) return req.projectName;
+        const projects = getProjects();
+        const p = projects.find(x => x.id === req.projectId || x.projectCode === req.projectId);
+        return p ? p.projectName : (req.projectId || 'Dự án chung');
+    }
+
+    function resolveDepartmentName(req) {
+        if (req.targetDepartmentName) return req.targetDepartmentName;
+        const deptId = req.targetDepartmentId;
+        if (!deptId) return 'Chưa phân bổ';
+        const depts1 = JSON.parse(localStorage.getItem('etrms-departments') || '[]');
+        const depts2 = JSON.parse(localStorage.getItem('etrms_departments') || '[]');
+        const allDepts = [...depts1, ...depts2];
+        const found = allDepts.find(d => d.id === deptId || d.code === deptId);
+        if (found) return found.name;
+        const map = {
+            'dept_001': 'Phòng Phát triển',
+            'dept_002': 'Phòng Kiểm thử',
+            'dept_003': 'Phòng Thiết kế',
+            'dept_004': 'Phòng BA',
+            'DEPT_DEV': 'Phòng Phát triển',
+            'DEPT_QA': 'Phòng Kiểm thử',
+            'DEPT_HR': 'Phòng Nhân sự'
+        };
+        return map[deptId] || deptId;
+    }
+
+    function resolveCapacity(req) {
+        if (req.capacityRequested !== undefined) return req.capacityRequested;
+        if (req.capacityPercent !== undefined) return req.capacityPercent;
+        return 50;
+    }
+
     function initDefaultDataIfEmpty() {
         const requests = getResourceRequests();
         if (requests.length === 0) {
@@ -190,18 +224,22 @@
                 </button>
             `;
 
+            const prjName = resolveProjectName(item);
+            const deptName = resolveDepartmentName(item);
+            const cap = resolveCapacity(item);
+
             tr.innerHTML = `
                 <td style="font-weight: 600; color: var(--primary-color, #1890ff);">${item.requestCode}</td>
-                <td style="font-weight: 600; color: var(--text-main, #262626);">${escapeHtml(item.projectName)}</td>
-                <td>${escapeHtml(item.targetDepartmentName)}</td>
+                <td style="font-weight: 600; color: var(--text-main, #262626);">${escapeHtml(prjName)}</td>
+                <td>${escapeHtml(deptName)}</td>
                 <td><span style="background: #e6f7ff; color: #096dd9; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500;">${escapeHtml(item.requiredRole)}</span></td>
                 <td style="text-align: center;"><strong>${item.quantity}</strong> người</td>
                 <td>
                     <div style="display: flex; align-items: center; gap: 6px;">
                         <div style="flex: 1; height: 6px; background: #e8e8e8; border-radius: 3px; overflow: hidden; width: 60px;">
-                            <div style="height: 100%; width: ${item.capacityRequested}%; background: ${item.capacityRequested > 50 ? '#faad14' : '#1890ff'};"></div>
+                            <div style="height: 100%; width: ${cap}%; background: ${cap > 50 ? '#faad14' : '#1890ff'};"></div>
                         </div>
-                        <span style="font-size: 11px; font-weight: 600;">${item.capacityRequested}%</span>
+                        <span style="font-size: 11px; font-weight: 600;">${cap}%</span>
                     </div>
                 </td>
                 <td style="font-size: 12px; color: var(--text-muted, #8c8c8c);">${startFormatted} - ${endFormatted}</td>
@@ -375,7 +413,7 @@
 
                 const selectedEmpIds = Array.from(document.querySelectorAll('input[name="assign-emp-cb"]:checked')).map(cb => cb.value);
                 if (selectedEmpIds.length === 0) {
-                    alert('Vui lòng tích chọn ít nhất 1 nhân sự để chỉ định vào dự án!');
+                    if (window.showToast) window.showToast('Vui lòng tích chọn ít nhất 1 nhân sự để chỉ định vào dự án!', 'warning');
                     return;
                 }
 
@@ -453,12 +491,12 @@
         if (btnConfirm) {
             btnConfirm.addEventListener('click', () => {
                 if (!rejectingRequestId) return;
-                const reason = document.getElementById('reject-rr-reason').value.trim();
+                const reason = textarea ? textarea.value.trim() : '';
                 if (!reason || reason.length < 10) {
-                    alert('Vui lòng nhập lý do từ chối rõ ràng (tối thiểu 10 ký tự)!');
+                    if (window.showToast) window.showToast('Vui lòng nhập lý do từ chối rõ ràng (tối thiểu 10 ký tự)!', 'warning');
+                    if (textarea) textarea.focus();
                     return;
                 }
-
                 const requests = getResourceRequests();
                 const req = requests.find(r => r.id === rejectingRequestId);
                 if (!req) return;
@@ -484,11 +522,86 @@
         const req = requests.find(r => r.id === id);
         if (!req) return;
 
-        let details = `Mã đơn: ${req.requestCode}\nDự án: ${req.projectName}\nPhòng ban: ${req.targetDepartmentName}\nVai trò: ${req.requiredRole}\nSố lượng: ${req.quantity} người (Tải: ${req.capacityRequested}%)\nThời gian: ${req.startDate} đến ${req.endDate}\nTrạng thái: ${req.status}\nGhi chú: ${req.note || 'Không có'}`;
-        if (req.rejectionReason) {
-            details += `\nLý do từ chối: ${req.rejectionReason}`;
+        const prjName = resolveProjectName(req);
+        const deptName = resolveDepartmentName(req);
+        const cap = resolveCapacity(req);
+        const startFormatted = formatDate(req.startDate);
+        const endFormatted = formatDate(req.endDate);
+
+        let statusBadge = '';
+        if (req.status === 'PENDING') {
+            statusBadge = '<span class="badge" style="background:#fff7e6; color:#d46b08; border:1px solid #ffd591; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:600;"><i class="fa-solid fa-clock"></i> Chờ duyệt</span>';
+        } else if (req.status === 'APPROVED') {
+            statusBadge = '<span class="badge" style="background:#f6ffed; color:#389e0d; border:1px solid #b7eb8f; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:600;"><i class="fa-solid fa-check"></i> Đã duyệt</span>';
+        } else {
+            statusBadge = '<span class="badge" style="background:#fff1f0; color:#cf1322; border:1px solid #ffa39e; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:600;"><i class="fa-solid fa-xmark"></i> Bị từ chối</span>';
         }
-        alert(details);
+
+        const modalTitle = `<i class="fa-solid fa-file-invoice" style="color: #1890ff; margin-right: 8px;"></i>Chi tiết Yêu cầu Nhân lực: <span style="color:#1890ff;">${req.requestCode}</span>`;
+        
+        const modalHtml = `
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0;">
+                    <div>
+                        <span style="font-size: 11px; color: #8c8c8c; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Trạng thái đơn</span>
+                        <div style="margin-top: 4px;">${statusBadge}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 11px; color: #8c8c8c; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Số lượng điều động</span>
+                        <div style="font-size: 16px; font-weight: 700; color: #262626; margin-top: 2px;">${req.quantity} <span style="font-size: 12px; font-weight: normal; color: #595959;">nhân sự</span></div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; background: #fafafa; padding: 14px; border-radius: 8px; border: 1px solid #f0f0f0;">
+                    <div>
+                        <span style="font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;">Dự án tiếp nhận</span>
+                        <strong style="font-size: 13px; color: #262626;">${escapeHtml(prjName)}</strong>
+                    </div>
+                    <div>
+                        <span style="font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;">Phòng ban cung cấp</span>
+                        <strong style="font-size: 13px; color: #262626;">${escapeHtml(deptName)}</strong>
+                    </div>
+                    <div>
+                        <span style="font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;">Vai trò yêu cầu</span>
+                        <span style="display: inline-block; background: #e6f7ff; color: #096dd9; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">${escapeHtml(req.requiredRole)}</span>
+                    </div>
+                    <div>
+                        <span style="font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;">Thời gian mượn</span>
+                        <strong style="font-size: 13px; color: #262626;">${startFormatted} → ${endFormatted}</strong>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+                        <span style="color: #595959; font-weight: 500;">Mức tải phân bổ (WSI Capacity)</span>
+                        <strong style="color: ${cap > 50 ? '#faad14' : '#1890ff'}; font-size: 13px;">${cap}%</strong>
+                    </div>
+                    <div style="width: 100%; height: 8px; background: #e8e8e8; border-radius: 4px; overflow: hidden;">
+                        <div style="height: 100%; width: ${Math.min(cap, 100)}%; background: ${cap > 50 ? '#faad14' : '#1890ff'}; border-radius: 4px;"></div>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <span style="font-size: 12px; color: #8c8c8c; font-weight: 600;">Ghi chú / Mục đích điều động:</span>
+                    <div style="background: #fff; border: 1px solid #d9d9d9; border-radius: 6px; padding: 10px 12px; font-size: 13px; color: #434343; line-height: 1.5;">
+                        ${escapeHtml(req.note || 'Không có ghi chú thêm.')}
+                    </div>
+                </div>
+
+                ${req.rejectionReason ? `
+                    <div style="background: #fff1f0; border: 1px solid #ffa39e; border-radius: 6px; padding: 10px 12px;">
+                        <div style="display: flex; align-items: center; gap: 6px; color: #cf1322; font-weight: 600; font-size: 12px; margin-bottom: 4px;">
+                            <i class="fa-solid fa-circle-exclamation"></i> Lý do từ chối:
+                        </div>
+                        <div style="font-size: 13px; color: #434343;">${escapeHtml(req.rejectionReason)}</div>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+
+        if (typeof window.openModal === 'function') {
+            window.openModal(modalTitle, modalHtml, null, { confirmText: 'Đóng', showCancel: false, width: '560px' });
+        }
     };
 
     // 8. TOOLBAR SEARCH & FILTER LISTENERS

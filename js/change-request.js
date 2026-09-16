@@ -349,7 +349,71 @@
         const cr = crs.find(c => c.id === id);
         if (!cr) return;
 
-        alert(`Mã CR: ${cr.code}\nTiêu đề: ${cr.title}\nKhách hàng: ${cr.clientName}\nDự án: ${cr.projectName}\nPhát sinh: +${cr.extraHours || 0} giờ / ${cr.extraCost ? Number(cr.extraCost).toLocaleString('vi-VN') + ' ₫' : '0 ₫'}\nHạn mới: ${cr.newDueDate}\nTrạng thái: ${cr.status}\nMô tả: ${cr.description}\nĐánh giá: ${cr.impactNote || 'Chưa có'}`);
+        const statusMap = {
+            'NEW': { label: 'Mới gửi', color: '#1890ff', bg: '#e6f7ff', border: '#91d5ff' },
+            'REVIEWING': { label: 'Đang thẩm định', color: '#fa8c16', bg: '#fff7e6', border: '#ffd591' },
+            'APPROVED': { label: 'Đã phê duyệt', color: '#52c41a', bg: '#f6ffed', border: '#b7eb8f' },
+            'REJECTED': { label: 'Từ chối', color: '#ff4d4f', bg: '#fff1f0', border: '#ffa39e' }
+        };
+        const st = statusMap[cr.status] || { label: cr.status, color: '#8c8c8c', bg: '#f5f5f5', border: '#d9d9d9' };
+
+        const modalTitle = `<i class="fa-solid fa-file-waveform" style="color: var(--primary-color); margin-right: 8px;"></i>Chi tiết Yêu cầu Thay đổi (${escapeHtml(cr.code || 'CR')})`;
+        const modalHtml = `
+            <div style="font-size: 13.5px; color: #262626; display: flex; flex-direction: column; gap: 14px; text-align: left;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0;">
+                    <div>
+                        <div style="font-size: 16px; font-weight: 700; color: #1f2937;">${escapeHtml(cr.title || '')}</div>
+                        <div style="font-size: 12px; color: #8c8c8c; margin-top: 2px;"><i class="fa-regular fa-calendar-days"></i> Tạo lúc: ${escapeHtml(cr.createdAt || 'N/A')}</div>
+                    </div>
+                    <span style="display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; color: ${st.color}; background: ${st.bg}; border: 1px solid ${st.border};">
+                        ${st.label}
+                    </span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: #fafafa; padding: 12px; border-radius: 8px; border: 1px solid #f0f0f0;">
+                    <div>
+                        <span style="font-size: 11.5px; color: #8c8c8c; display: block;">Dự án:</span>
+                        <strong style="color: #262626;">${escapeHtml(cr.projectName || 'N/A')}</strong>
+                    </div>
+                    <div>
+                        <span style="font-size: 11.5px; color: #8c8c8c; display: block;">Khách hàng:</span>
+                        <strong style="color: #262626;">${escapeHtml(cr.clientName || 'N/A')}</strong>
+                    </div>
+                    <div>
+                        <span style="font-size: 11.5px; color: #8c8c8c; display: block;">Thời gian phát sinh:</span>
+                        <strong style="color: #fa8c16;">+${cr.extraHours || 0} giờ</strong>
+                    </div>
+                    <div>
+                        <span style="font-size: 11.5px; color: #8c8c8c; display: block;">Chi phí phát sinh:</span>
+                        <strong style="color: #52c41a;">${cr.extraCost ? Number(cr.extraCost).toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</strong>
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <span style="font-size: 11.5px; color: #8c8c8c; display: block;">Hạn hoàn thành mới đề xuất:</span>
+                        <strong style="color: #1890ff;"><i class="fa-regular fa-clock"></i> ${escapeHtml(cr.newDueDate || 'Chưa xác định')}</strong>
+                    </div>
+                </div>
+
+                <div>
+                    <span style="font-size: 12px; font-weight: 600; color: #595959; display: block; margin-bottom: 4px;">Mô tả chi tiết yêu cầu:</span>
+                    <div style="background: #ffffff; border: 1px solid #e8e8e8; border-radius: 6px; padding: 10px 12px; font-size: 13px; line-height: 1.5; max-height: 120px; overflow-y: auto;">
+                        ${escapeHtml(cr.description || 'Không có mô tả chi tiết.')}
+                    </div>
+                </div>
+
+                ${cr.impactNote ? `
+                    <div>
+                        <span style="font-size: 12px; font-weight: 600; color: #595959; display: block; margin-bottom: 4px;">Đánh giá tác động (Impact Note):</span>
+                        <div style="background: #e6f7ff; border: 1px solid #91d5ff; border-radius: 6px; padding: 10px 12px; font-size: 12.5px; color: #0050b3; line-height: 1.5;">
+                            ${escapeHtml(cr.impactNote)}
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+
+        if (typeof window.openModal === 'function') {
+            window.openModal(modalTitle, modalHtml, null, { confirmText: 'Đóng', showCancel: false, width: '560px' });
+        }
     };
 
     function initFilterEvents() {

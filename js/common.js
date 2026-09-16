@@ -17,13 +17,15 @@ window.showToast = function(message, type = 'success') {
     }
     
     const toast = document.createElement('div');
-    const borderCol = type === 'error' ? '#FF4D4F' : (type === 'info' ? '#1890FF' : '#52C41A');
+    const borderCol = type === 'error' ? '#FF4D4F' : (type === 'warning' ? '#FAAD14' : (type === 'info' ? '#1890FF' : '#52C41A'));
+    const iconClass = type === 'error' ? 'fa-circle-xmark' : (type === 'warning' ? 'fa-triangle-exclamation' : (type === 'info' ? 'fa-circle-info' : 'fa-circle-check'));
+
     toast.style.cssText = `
-        padding: 12px 20px;
+        padding: 12px 18px;
         border-radius: var(--border-radius-md, 6px);
         background: #ffffff;
         color: var(--text-main, #262626);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
         display: flex;
         align-items: center;
         gap: 10px;
@@ -36,7 +38,7 @@ window.showToast = function(message, type = 'success') {
         border-left: 4px solid ${borderCol};
     `;
     
-    toast.textContent = message;
+    toast.innerHTML = `<i class="fa-solid ${iconClass}" style="color: ${borderCol}; font-size: 15px;"></i><span>${message}</span>`;
     container.appendChild(toast);
     
     requestAnimationFrame(() => {
@@ -48,7 +50,106 @@ window.showToast = function(message, type = 'success') {
         toast.style.transform = 'translateY(-20px)';
         toast.style.opacity = '0';
         setTimeout(() => toast.remove(), 300);
-    }, 3000);
+    }, 3200);
+};
+
+// Khởi tạo Modal dùng chung toàn hệ thống (hiện đại, tự động mount nếu chưa có)
+window.openModal = function(title, contentHtml, onConfirmCallback, options = {}) {
+    let modalOverlay = document.getElementById('global-modal');
+    if (!modalOverlay) {
+        modalOverlay = document.createElement('div');
+        modalOverlay.id = 'global-modal';
+        modalOverlay.className = 'modal-overlay';
+        modalOverlay.innerHTML = `
+            <div class="modal">
+                <div class="modal-header">
+                    <div class="modal-title" id="modal-title">Tiêu đề Modal</div>
+                    <button class="modal-close" onclick="closeModal()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-body"></div>
+                <div class="modal-footer" id="modal-footer">
+                    <button class="btn btn-secondary" id="modal-cancel-btn" onclick="closeModal()">Hủy</button>
+                    <button class="btn btn-primary" id="modal-confirm-btn">Xác nhận</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modalOverlay);
+    }
+
+    const titleEl = document.getElementById('modal-title');
+    const bodyEl = document.getElementById('modal-body');
+    const confirmBtn = document.getElementById('modal-confirm-btn');
+    const cancelBtn = document.getElementById('modal-cancel-btn') || modalOverlay.querySelector('.modal-footer .btn-secondary');
+    const modalBox = modalOverlay.querySelector('.modal');
+
+    if (modalBox) {
+        if (options && options.width) {
+            modalBox.style.maxWidth = options.width;
+        } else {
+            modalBox.style.maxWidth = '520px';
+        }
+    }
+
+    if (titleEl) titleEl.innerHTML = title || 'Thông báo';
+    if (bodyEl && contentHtml !== undefined) bodyEl.innerHTML = contentHtml;
+
+    const showCancel = options && typeof options.showCancel === 'boolean' ? options.showCancel : !!onConfirmCallback;
+    if (cancelBtn) {
+        cancelBtn.style.display = showCancel ? '' : 'none';
+        if (options && options.cancelText) cancelBtn.textContent = options.cancelText;
+        else cancelBtn.textContent = 'Hủy';
+    }
+
+    if (confirmBtn) {
+        const newConfirmBtn = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+        if (options && options.confirmText) {
+            newConfirmBtn.textContent = options.confirmText;
+        } else if (!onConfirmCallback) {
+            newConfirmBtn.textContent = 'Đóng';
+        } else {
+            newConfirmBtn.textContent = 'Xác nhận';
+        }
+
+        if (options && options.confirmClass) {
+            newConfirmBtn.className = options.confirmClass;
+        } else {
+            newConfirmBtn.className = 'btn btn-primary';
+        }
+
+        if (typeof onConfirmCallback === 'function') {
+            newConfirmBtn.addEventListener('click', onConfirmCallback);
+        } else {
+            newConfirmBtn.addEventListener('click', closeModal);
+        }
+    }
+
+    modalOverlay.classList.add('active');
+};
+
+window.closeModal = function() {
+    const modalOverlay = document.getElementById('global-modal');
+    if (modalOverlay) {
+        modalOverlay.classList.remove('active');
+    }
+};
+
+window.showConfirmModal = function(title, messageHtml, onConfirm) {
+    window.openModal(
+        title || 'Xác nhận hành động',
+        `<div style="font-size: 14px; color: var(--text-main, #262626); line-height: 1.6; padding: 4px 0;">${messageHtml}</div>`,
+        function() {
+            window.closeModal();
+            if (typeof onConfirm === 'function') onConfirm();
+        },
+        { confirmText: 'Đồng ý', cancelText: 'Hủy', showCancel: true }
+    );
 };
 
 document.addEventListener('DOMContentLoaded', () => {

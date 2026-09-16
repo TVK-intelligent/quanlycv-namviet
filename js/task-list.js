@@ -323,17 +323,17 @@ window.openTaskModal = function(taskId = null) {
 
             // Form Validation Gate
             if (!title || !dueDate) {
-                alert('Vui lòng nhập đầy đủ tên công việc và hạn chót!');
+                if (window.showToast) window.showToast('Vui lòng nhập đầy đủ tên công việc và hạn chót!', 'warning');
                 return;
             }
 
             if (status === 'BLOCKED' && !blockerReason) {
-                alert('Khi chọn trạng thái BLOCKED, bạn bắt buộc phải nhập nguyên nhân bị nghẽn!');
+                if (window.showToast) window.showToast('Khi chọn trạng thái BỊ NGHẼN, bạn bắt buộc phải nhập nguyên nhân bị nghẽn!', 'warning');
                 return;
             }
 
             if (status === 'IN_REVIEW' && proofUrl && !proofUrl.startsWith('http://') && !proofUrl.startsWith('https://')) {
-                alert('URL bằng chứng phải bắt đầu bằng http:// hoặc https://');
+                if (window.showToast) window.showToast('URL bằng chứng phải bắt đầu bằng http:// hoặc https://', 'warning');
                 return;
             }
 

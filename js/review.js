@@ -281,8 +281,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (window.showToast) {
                 window.showToast(`Đã phê duyệt hoàn thành công việc [${task.code}]!`, 'success');
-            } else {
-                alert(`Đã phê duyệt hoàn thành công việc [${task.code}]!`);
             }
             return;
         }
@@ -311,7 +309,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const reason = reasonInput ? reasonInput.value.trim() : '';
 
                     if (!reason) {
-                        alert('Vui lòng nhập lý do từ chối để nhân sự có thông tin sửa chữa!');
+                        if (window.showToast) window.showToast('Vui lòng nhập lý do từ chối để nhân sự có thông tin sửa chữa!', 'warning');
                         return;
                     }
 
@@ -333,8 +331,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     if (window.showToast) {
                         window.showToast(`Đã trả về task [${task.code}] để khắc phục lỗi.`, 'warning');
-                    } else {
-                        alert(`Đã trả về task [${task.code}] để khắc phục lỗi.`);
                     }
                 });
             } else {
@@ -393,7 +389,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 openModal('Bằng chứng Hoàn thành & Tiêu chuẩn DoD', formHtml, function () {
                     const newUrl = document.getElementById('modal-proof-url').value.trim();
                     if (newUrl && !newUrl.startsWith('http://') && !newUrl.startsWith('https://')) {
-                        alert('URL bằng chứng phải bắt đầu bằng http:// hoặc https://');
+                        if (window.showToast) window.showToast('URL bằng chứng phải bắt đầu bằng http:// hoặc https://', 'warning');
                         return;
                     }
                     task.proofUrl = newUrl;

@@ -235,28 +235,42 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (window.showToast) {
                 window.showToast(`Đã duyệt gia hạn thành công! Hạn chót của task đã dời sang ${ext.newDueDate}.`, 'success');
-            } else {
-                alert(`Đã duyệt gia hạn thành công! Hạn chót của task đã dời sang ${ext.newDueDate}.`);
             }
         }
 
         // --- TỪ CHỐI YÊU CẦU ---
         if (btn.classList.contains('btn-reject')) {
-            const reason = prompt(`Nhập lý do từ chối gia hạn cho task:\n"${ext.task}"`, 'Yêu cầu ưu tiên bàn giao đúng tiến độ cam kết.');
-            if (reason === null) return; // Bấm Cancel
-
-            ext.status = 'Rejected';
-            ext.rejectReason = reason.trim() || 'Không chấp thuận gia hạn';
-            ext.rejectedAt = new Date().toISOString();
-
-            saveExtensions(extensions);
-            renderExtensions();
-
-            if (window.showToast) {
-                window.showToast('Đã từ chối yêu cầu gia hạn.', 'warning');
-            } else {
-                alert('Đã từ chối yêu cầu gia hạn.');
+            const formHtml = `
+                <div style="text-align: left; display: flex; flex-direction: column; gap: 12px;">
+                    <div style="font-size: 13px; color: #595959;">
+                        Từ chối yêu cầu gia hạn cho task <strong>[#${ext.taskId}] ${ext.task}</strong>:
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #cf1322;">
+                            Lý do từ chối <span style="color: #ff4d4f;">*</span>
+                        </label>
+                        <textarea id="modal-reject-ext-reason" rows="3" placeholder="Nhập lý do từ chối..."
+                            style="width: 100%; padding: 8px 10px; border: 1px solid #d9d9d9; border-radius: 6px; font-size: 13px; box-sizing: border-box; outline: none;">Yêu cầu ưu tiên bàn giao đúng tiến độ cam kết.</textarea>
+                    </div>
+                </div>
+            `;
+            if (typeof openModal === 'function') {
+                openModal('Từ chối Yêu cầu Gia hạn', formHtml, function() {
+                    const reason = document.getElementById('modal-reject-ext-reason')?.value.trim();
+                    if (!reason) {
+                        if (window.showToast) window.showToast('Vui lòng nhập lý do từ chối!', 'warning');
+                        return;
+                    }
+                    ext.status = 'Rejected';
+                    ext.rejectReason = reason;
+                    ext.rejectedAt = new Date().toISOString();
+                    saveExtensions(extensions);
+                    if (typeof closeModal === 'function') closeModal();
+                    renderExtensions();
+                    if (window.showToast) window.showToast('Đã từ chối yêu cầu gia hạn.', 'info');
+                }, { confirmText: 'Xác nhận Từ chối', confirmClass: 'btn btn-danger' });
             }
+            return;
         }
 
         // --- XÓA YÊU CẦU ---
@@ -280,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const activeTasks = tasks.filter(t => t.status !== 'DONE');
 
             if (activeTasks.length === 0) {
-                alert('Hiện không có công việc nào đang thực hiện cần gia hạn!');
+                if (window.showToast) window.showToast('Hiện không có công việc nào đang thực hiện cần gia hạn!', 'warning');
                 return;
             }
 
@@ -360,12 +374,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     const reason = document.getElementById('ext-reason').value.trim();
 
                     if (!newDue || !reason) {
-                        alert('Vui lòng nhập ngày gia hạn mới và lý do xin gia hạn!');
+                        if (window.showToast) window.showToast('Vui lòng nhập ngày gia hạn mới và lý do xin gia hạn!', 'warning');
                         return;
                     }
 
                     if (curDue && curDue !== 'Chưa đặt' && newDue <= curDue) {
-                        alert('Hạn đề xuất mới phải sau ngày hạn chót hiện tại (' + curDue + ')!');
+                        if (window.showToast) window.showToast('Hạn đề xuất mới phải sau ngày hạn chót hiện tại (' + curDue + ')!', 'warning');
                         return;
                     }
 
@@ -393,8 +407,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     if (window.showToast) {
                         window.showToast(`Đã gửi yêu cầu gia hạn cho task "${taskTitle}" thành công!`, 'success');
-                    } else {
-                        alert('Đã gửi yêu cầu gia hạn thành công!');
                     }
                 });
 
@@ -415,7 +427,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }, 100);
             } else {
-                alert('Không thể mở modal. Vui lòng tải lại trang!');
+                if (window.showToast) window.showToast('Không thể mở modal. Vui lòng tải lại trang!', 'error');
             }
         });
     }

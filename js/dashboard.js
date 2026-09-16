@@ -388,9 +388,9 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn-icon" title="Chi tiết" onclick="alert('Xem chi tiết: ${task.title}')" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px;">
+                    <a href="/pages/task/my-task.html" class="btn-icon" title="Xem công việc cá nhân" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; display: inline-flex; align-items: center; text-decoration: none;">
                         <i class="fa-solid fa-chevron-right" style="font-size: 12px;"></i>
-                    </button>
+                    </a>
                 `;
 
                 // Bắt sự kiện check/uncheck to-do
@@ -448,7 +448,7 @@
                 <td>${bug.tester}</td>
                 <td><span class="badge ${bug.priorityClass}">${bug.priority}</span></td>
                 <td class="pin-right no-resize">
-                    <button class="btn btn-sm btn-primary" onclick="alert('Đã nhận xử lý ${bug.id}')" style="padding: 2px 8px; font-size: 11px; height: 24px;">Sửa ngay</button>
+                    <button class="btn btn-sm btn-primary" onclick="window.showToast('Đã nhận xử lý ${bug.id}', 'info')" style="padding: 2px 8px; font-size: 11px; height: 24px;">Sửa ngay</button>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -479,8 +479,8 @@
                 <td>${task.dev}</td>
                 <td><span class="badge ${task.priorityClass}">${task.priority}</span></td>
                 <td class="pin-right no-resize" style="display: flex; gap: 4px;">
-                    <button class="btn btn-sm btn-success" onclick="alert('Đã đánh dấu PASS cho ${task.id}')" style="padding: 2px 8px; font-size: 11px; height: 24px; background: var(--success-color); color: white; border: none; border-radius: 4px;">Pass</button>
-                    <button class="btn btn-sm btn-danger" onclick="alert('Đã đánh dấu FAILED cho ${task.id}')" style="padding: 2px 8px; font-size: 11px; height: 24px; background: var(--danger-color); color: white; border: none; border-radius: 4px;">Fail</button>
+                    <button class="btn btn-sm btn-success" onclick="window.showToast('Đã đánh dấu ĐẠT cho ${task.id}', 'success')" style="padding: 2px 8px; font-size: 11px; height: 24px; background: var(--success-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Đạt</button>
+                    <button class="btn btn-sm btn-danger" onclick="window.showToast('Đã đánh dấu KHÔNG ĐẠT cho ${task.id}', 'error')" style="padding: 2px 8px; font-size: 11px; height: 24px; background: var(--danger-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Lỗi</button>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -563,7 +563,7 @@
                 <td><strong style="color: ${u.wsi > 100 ? 'var(--danger-color)' : 'var(--primary-color)'};">${u.wsi}%</strong></td>
                 <td><span class="badge ${u.statusClass}">${u.status}</span></td>
                 <td class="pin-right no-resize">
-                    <button class="btn btn-sm btn-secondary" onclick="alert('Mở phân bổ việc cho ${u.name}')" style="padding: 2px 8px; font-size: 11px; height: 24px;">Phân việc</button>
+                    <a href="/pages/project/resource-request.html" class="btn btn-sm btn-secondary" style="padding: 2px 8px; font-size: 11px; height: 24px; text-decoration: none; display: inline-flex; align-items: center;">Phân việc</a>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -598,7 +598,7 @@
                 <td><strong style="color: ${u.wsi > 100 ? 'var(--danger-color)' : (u.wsi === 100 ? 'var(--warning-color)' : 'var(--success-color)')};">${u.wsi}%</strong></td>
                 <td><span class="badge ${tagClass}">${u.statusText}</span></td>
                 <td class="pin-right no-resize">
-                    <button class="btn btn-sm btn-primary" onclick="alert('Đã gửi thông báo điều phối giảm tải cho ${u.name}')" style="padding: 2px 8px; font-size: 11px; height: 24px;">Điều phối</button>
+                    <button class="btn btn-sm btn-primary" onclick="window.showToast('Đã gửi thông báo điều phối giảm tải cho ${u.name}', 'info')" style="padding: 2px 8px; font-size: 11px; height: 24px;">Điều phối</button>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -696,7 +696,7 @@
                 </div>
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <span class="badge badge-warning" style="font-size: 11px;">${item.status}</span>
-                    <button class="btn btn-sm btn-primary" onclick="alert('Đã duyệt yêu cầu: ${item.title}')" style="padding: 2px 10px; font-size: 11px; height: 26px;">Duyệt</button>
+                    <button class="btn btn-sm btn-primary" onclick="window.showToast('Đã duyệt yêu cầu: ${item.title}', 'success')" style="padding: 2px 10px; font-size: 11px; height: 26px;">Duyệt</button>
                 </div>
             `;
             container.appendChild(li);

@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const deptRole = document.getElementById('emp-role').value;
         
         if(!name || !email || !deptId) {
-            alert("Vui lòng nhập đầy đủ Họ tên, Email và Phòng ban!");
+            if (window.showToast) window.showToast("Vui lòng nhập đầy đủ Họ tên, Email và Phòng ban!", "warning");
             return; 
         }
 
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 wsiCapacity: 0 
             };
             currentEmployees.unshift(newEmp); // Dùng unshift để thêm lên đầu bảng cho dễ nhìn
-            alert("Thêm nhân viên thành công!");
+            if (window.showToast) window.showToast("Thêm nhân viên thành công!", "success");
         } else {
             const index = currentEmployees.findIndex(emp => emp.id === currentEditId);
             if (index !== -1) {
@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (avatar) currentEmployees[index].avatar = avatar; 
                 currentEmployees[index].deptId = deptId;
                 currentEmployees[index].deptRole = deptRole;
-                alert("Cập nhật thông tin thành công!");
+                if (window.showToast) window.showToast("Cập nhật thông tin thành công!", "success");
             }
         }
 

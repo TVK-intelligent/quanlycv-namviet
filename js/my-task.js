@@ -2,26 +2,39 @@ document.addEventListener('DOMContentLoaded', () => {
     initCurrentUser();
     loadAndRenderMyTasks();
     initFilterEvents();
+
+    window.addEventListener('etrms-role-changed', () => {
+        loadAndRenderMyTasks();
+    });
 });
 
 function initCurrentUser() {
     if (!localStorage.getItem('currentUser')) {
         const defaultUser = {
             id: 1,
-            name: 'Hải Nam',
+            name: 'Lê Gia Bách',
             role: 'employee',
-            department: 'Phòng CNTT'
+            department: 'Phòng Công nghệ Thông tin'
         };
         localStorage.setItem('currentUser', JSON.stringify(defaultUser));
     }
 }
 
 function getCurrentUser() {
-    try {
-        return JSON.parse(localStorage.getItem('currentUser')) || { name: 'Hải Nam' };
-    } catch (e) {
-        return { name: 'Hải Nam' };
+    if (window.AuthService && typeof window.AuthService.getCurrentUser === 'function') {
+        const authUser = window.AuthService.getCurrentUser();
+        if (authUser && authUser.name) return authUser;
     }
+    const simulatedRole = localStorage.getItem('etrms-simulated-role');
+    const profiles = JSON.parse(localStorage.getItem('etrms-user-profiles') || '{}');
+    if (simulatedRole && profiles[simulatedRole] && profiles[simulatedRole].name) {
+        return profiles[simulatedRole];
+    }
+    try {
+        const stored = JSON.parse(localStorage.getItem('currentUser'));
+        if (stored && stored.name) return stored;
+    } catch (e) {}
+    return { name: 'Lê Gia Bách' };
 }
 
 function getStoredTasks() {

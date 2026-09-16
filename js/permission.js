@@ -9,17 +9,17 @@
     const STORAGE_KEY = 'etrms_rbac_permissions';
 
     const DEFAULT_MODULES = [
-        { id: 'mod_dashboard', name: 'Dashboard & Giám sát Hệ thống' },
+        { id: 'mod_dashboard', name: 'Tổng quan & Giám sát Hệ thống' },
         { id: 'mod_project', name: 'Quản lý Dự án & Tiến độ' },
-        { id: 'mod_resource', name: 'Yêu cầu Mượn Nhân lực (Resource Request)' },
-        { id: 'mod_task', name: 'Quản lý Công việc & Bảng Kanban' },
-        { id: 'mod_subtask', name: 'Công việc phụ (Subtask)' },
+        { id: 'mod_resource', name: 'Yêu cầu Nhân lực' },
+        { id: 'mod_task', name: 'Quản lý Công việc' },
+        { id: 'mod_subtask', name: 'Công việc phụ' },
         { id: 'mod_employee', name: 'Quản lý Nhân sự & Phòng ban' },
-        { id: 'mod_checklist', name: 'Quy trình Tiêu chuẩn (DoR / DoD Checklist)' },
-        { id: 'mod_timesheet', name: 'Chấm công & Khai báo giờ (Timesheet)' },
-        { id: 'mod_review', name: 'Nghiệm thu & Đánh giá Công việc (Review)' },
-        { id: 'mod_extension', name: 'Gia hạn Công việc (Extension Request)' },
-        { id: 'mod_report', name: 'Báo cáo Thống kê & KPI Engine' }
+        { id: 'mod_checklist', name: 'Danh mục tiêu chuẩn kiểm tra' },
+        { id: 'mod_timesheet', name: 'Bảng chấm công & Ghi nhận giờ' },
+        { id: 'mod_review', name: 'Nghiệm thu & Đánh giá' },
+        { id: 'mod_extension', name: 'Yêu cầu gia hạn công việc' },
+        { id: 'mod_report', name: 'Báo cáo Thống kê & KPI' }
     ];
 
     const DEFAULT_ROLES = [
@@ -163,8 +163,6 @@
         saveAllPermissions(allPerms);
         if (window.showToast) {
             window.showToast(`Đã lưu thành công cấu hình phân quyền cho vai trò [${currentRole}]!`, 'success');
-        } else {
-            alert(`Đã lưu thành công cấu hình phân quyền cho vai trò [${currentRole}]!`);
         }
     }
 

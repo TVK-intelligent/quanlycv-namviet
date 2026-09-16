@@ -103,7 +103,7 @@ document.getElementById('btn-save-dept')?.addEventListener('click', () => {
     const parentId = document.getElementById('dept-parent').value || null;
 
     if (!code || !name) {
-        alert("Vui lòng nhập đủ Mã và Tên phòng ban!");
+        if (window.showToast) window.showToast("Vui lòng nhập đủ Mã và Tên phòng ban!", "warning");
         return;
     }
 
@@ -148,7 +148,7 @@ window.deleteDepartment = function(id) {
     // Ràng buộc bảo vệ dữ liệu: Nếu phòng đang có người thì không cho xóa
     const empCount = getEmployeeCount(id);
     if (empCount > 0) {
-        alert(`Không thể xóa! Phòng ban này đang có ${empCount} nhân sự. Vui lòng chuyển nhân sự sang phòng khác trước.`);
+        if (window.showToast) window.showToast(`Không thể xóa! Phòng ban này đang có ${empCount} nhân sự. Vui lòng chuyển nhân sự sang phòng khác trước.`, "error");
         return;
     }
 
